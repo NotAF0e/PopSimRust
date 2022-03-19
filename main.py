@@ -21,19 +21,19 @@ temp2 = 0
 temp3 = 0
 os.system('cls')  # Clears old terminal lines
 
-save = []
+gameSave = []
 # keyboard.press('f11')  # Puts terminal in fullscreen mode
 
 
 def SAVE():
-    global save
-    json.dump(save, open('save.json', 'w'))
+    global gameSave
+    json.dump(gameSave, open('save.json', 'w'))
 
 
 def LOAD():
-    global save
+    global gameSave
     try:
-        save = json.load(open('save.json', 'r'))
+        gameSave = json.load(open('save.json', 'r'))
     except FileNotFoundError:
         print("[red]No save file found!")
 
