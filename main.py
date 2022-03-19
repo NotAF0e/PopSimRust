@@ -1,7 +1,7 @@
 import random
 import time
 import keyboard
-import numpy
+import json
 import os
 from rich import print
 
@@ -20,7 +20,22 @@ temp1 = 0
 temp2 = 0
 temp3 = 0
 os.system('cls')  # Clears old terminal lines
+
+save = []
 # keyboard.press('f11')  # Puts terminal in fullscreen mode
+
+
+def SAVE():
+    global save
+    json.dump(save, open('save.json', 'w'))
+
+
+def LOAD():
+    global save
+    try:
+        save = json.load(open('save.json', 'r'))
+    except FileNotFoundError:
+        print("[red]No save file found!")
 
 
 def percentageIncrease(number, percentage_increase):
@@ -56,8 +71,8 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     # Population calculation ----------------------------------------------------------------------
     percent = develop_time
     while develop_time != 0:
-        born = numpy.add(born, random.randint(1, 4))
-        dead = numpy.add(dead, random.randint(0, 2))
+        born += random.randint(1, 4)
+        dead += random.randint(0, 2)
         print(f"{int(round(develop_time / percent, 2) * 100)}% left..", end="\r")
         develop_time -= 1
 
