@@ -132,4 +132,3 @@ createPopulation(temp0, temp1, temp3, 15)
 print("\n[blink]Press enter to continue...")
 keyboard.wait('enter')
 os.system("exit()")  # Closes terminal
-print(test)
