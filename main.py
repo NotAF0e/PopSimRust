@@ -33,11 +33,12 @@ class Biome:
 Biome.info = []
 
 
+# Saves game into save.json
 def SAVE():
     global gameSave
     json.dump(gameSave, open('save.json', 'w'))
 
-
+# Loads game save file
 def LOAD():
     global gameSave
     try:
