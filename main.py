@@ -22,7 +22,15 @@ temp3 = 0
 os.system('cls')  # Clears old terminal lines
 
 gameSave = []
+
+
 # keyboard.press('f11')  # Puts terminal in fullscreen mode
+
+class Biome:
+    pass
+
+
+Biome.info = []
 
 
 def SAVE():
@@ -94,33 +102,31 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
 
 def createLandscape(biome_num):
-    global biome
-
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
-    biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
-              "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
-              "[#ff4d00]lava lake", "[#6b8a89]treacherous cliffs", "[bold white]icy arctic"]
-    biome.append(biome_num)
-    formatted_biome = biomes[biome[0]]
+    Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
+                    "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
+                    "[#ff4d00]lava lake", "[#6b8a89]treacherous cliffs", "[bold white]icy arctic"]
+    Biome.info.append(biome_num)
+    formatted_biome = Biome.biomes[Biome.info[0]]
 
     # Elevation calculation -----------------------------------------------------------------------
-    low_elevations = [ 610,  100, 100, 900,  0, 1500, 30,  150,  0,   2000, 0]
-    high_elevations = [1220, 500, 300, 1500, 5, 8850, 150, 2600, 500, 7000, 500]
-    biome.append(random.randint(low_elevations[biome_num], high_elevations[biome_num]))
-    biome_elevation = biome[1]
+    Biome.low_elevations = [610, 100, 100, 900, 0, 1500, 30, 150, 0, 2000, 0]
+    Biome.high_elevations = [1220, 500, 300, 1500, 5, 8850, 150, 2600, 500, 7000, 500]
+    Biome.info.append(random.randint(Biome.low_elevations[biome_num], Biome.high_elevations[biome_num]))
+    Biome.set_elevation = Biome.info[1]
 
     # Temperature calculation ---------------------------------------------------------------------
-    temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
-                    "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
-    average_temperatures = [3, 4, 3, 3, 2, 1, 2, 5, 6, 1, 0]
-    biome.append(average_temperatures[biome_num])
+    Biome.temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
+                          "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
+    Biome.average_temperatures = [3, 4, 3, 3, 2, 1, 2, 5, 6, 1, 0]
+    Biome.info.append(Biome.average_temperatures[biome_num])
 
     # Biome description and details ---------------------------------------------------------------
     print("Biome:", formatted_biome)
-    if biome[0] == 8 or biome[0] == 9 or biome[0] == 10:
+    if Biome.info[0] == 8 or Biome.info[0] == 9 or Biome.info[0] == 10:
         print("[red]Very dangerous!")
-    print(f"Average temperature: {temperatures[biome[2]]}" + "°C")
-    print(f"Meters above sea level: [bold]{biome_elevation}m[/]")
+    print(f"Average temperature: {Biome.temperatures[Biome.info[2]]}" + "°C")
+    print(f"Meters above sea level: [bold]{Biome.set_elevation}m[/]")
 
 
 createLandscape(random.randint(0, 10))
