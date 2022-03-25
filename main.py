@@ -38,6 +38,7 @@ def SAVE():
     global gameSave
     json.dump(gameSave, open('save.json', 'w'))
 
+
 # Loads game save file
 def LOAD():
     global gameSave
@@ -79,11 +80,17 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
     # Population calculation ----------------------------------------------------------------------
     percent = develop_time
+    time_step_interval = (develop_time / 100).__round__()
+    print(time_step_interval)
+
     while develop_time != 0:
         born += random.randint(1, 4)
         dead += random.randint(0, 2)
-        print(f"{int(round(develop_time / percent, 2) * 100)}% left..", end="\r")
+        if time_step_interval == 0:
+            time_step_interval = (develop_time / 100).__round__()
+            print(f"{int(round(develop_time / percent, 2) * 100)}% left..", end="\r")
         develop_time -= 1
+        time_step_interval -= 1
 
     born += percentageIncrease(born, 5).__round__() * time_multiplier
     dead += percentageIncrease(dead, 1).__round__() * time_multiplier
