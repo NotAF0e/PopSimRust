@@ -81,18 +81,20 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     # Population calculation ----------------------------------------------------------------------
     percent = develop_time
     time_step_interval = (develop_time / 100).__round__()
-
+    print("100% left...", end="\r")
     while develop_time != 0:
         born += random.randint(1, 4)
         dead += random.randint(0, 2)
         if time_step_interval == 0:
+            # Optimised population percentage
+            # Instead of printing the percentage every time, it will print when the percent changes
             time_step_interval = (develop_time / 100).__round__()
             print(f"{int(round(develop_time / percent, 2) * 100)}% left..", end="\r")
         develop_time -= 1
         time_step_interval -= 1
 
-    born += percentageIncrease(born, 5).__round__() * time_multiplier
-    dead += percentageIncrease(dead, 1).__round__() * time_multiplier
+    born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
+    dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
     population = born - dead + base_population_size
     print(f"[bold]Population: [bold]{population}[/]\n"
           f"People born: [bold]{born}[/]\n"
