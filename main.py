@@ -72,7 +72,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     print("Creating population...")
     print(f"\nStarting population size: {base_population_size}\n"
           f"Starting money amount: {base_money}\n"
-          f"Amount of time for population to develop: {develop_time}\n\n")
+          f"Amount of weeks for population to develop: {develop_time}\n\n")
 
     money = base_money
 
@@ -137,22 +137,28 @@ def createLandscape(biome_num):
     if Biome.info[0] == 8 or Biome.info[0] == 9 or Biome.info[0] == 10:
         print("[red]Very dangerous!")
     print(f"Average temperature: {Biome.temperatures[Biome.info[2]]}" + "°C")
-    print(f"Meters above sea level: [bold]{Biome.set_elevation}m[/]")
+    print(f"Altitude: [bold]{Biome.set_elevation}m[/]")
 
 
 createLandscape(random.randint(0, 10))
 
 # User input to create a population ---------------------------------------------------------------
+
 while not BREAK:
-    temp0 = int(input("\nEnter population start size: "))
-    temp1 = int(input("Enter population base money: "))
-    # temp2 = int(input("Enter population start food: "))
-    temp3 = int(input("Enter population growth time: "))
+    temp0 = int(input("\nEnter the population start size: "))
+    temp1 = int(input("Enter the population base money: "))
+    temp3 = int(input("Enter the amount of weeks for population to grow: "))
+
     print("\nAre you sure you want to create a population with the "
           "following [white]stats([green]y[/], [red]n[/])?..")
     print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
           f"Starting money amount: [bold]{temp1}[/]\n"
-          f"Amount of time for population to develop: [bold]{temp3}[/]\n\n")
+          f"Amount of time for population to develop: [bold]{temp3}[/]")
+    if temp3 > 100000000:
+        print(f"[red]Caution! This may weeks may take a long time to complete!")
+    print("\n\n")
+
+    BREAK = False
     while not BREAK:
         if keyboard.read_key() == 'y':
             BREAK = True
