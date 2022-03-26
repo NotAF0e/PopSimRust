@@ -153,7 +153,7 @@ while not BREAK:
           "following [white]stats([green]y[/], [red]n[/])?..")
     print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
           f"Starting money amount: [bold]{temp1}[/]\n"
-          f"Amount of time for population to develop: [bold]{temp3}[/]")
+          f"Amount of weeks for population to develop: [bold]{temp3}[/]")
     if temp3 > 100000000:
         print(f"[red]Caution! This may weeks may take a long time to complete!")
     print("\n\n")
