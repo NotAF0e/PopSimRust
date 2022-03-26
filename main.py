@@ -81,7 +81,6 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     # Population calculation ----------------------------------------------------------------------
     percent = develop_time
     time_step_interval = (develop_time / 100).__round__()
-    print(time_step_interval)
 
     while develop_time != 0:
         born += random.randint(1, 4)
@@ -98,6 +97,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     print(f"[bold]Population: [bold]{population}[/]\n"
           f"People born: [bold]{born}[/]\n"
           f"People dead: [bold]{dead}[/]")
+    returner = [population, born, dead]
 
     end_process = time.process_time()  # End time calculation
 
@@ -107,6 +107,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
         print("\nCompleted very quickly...")
     else:
         print(f"\nCompleted in {time_of_process} seconds...")
+    return returner
 
 
 def createLandscape(biome_num):
