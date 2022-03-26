@@ -158,7 +158,8 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             break
 
-createPopulation(temp0, temp1, temp3, 15)
+populationInfo = createPopulation(temp0, temp1, temp3, 15)
+print(populationInfo)
 print("\n[blink]Press enter to continue...")
 keyboard.wait('enter')
 os.system("exit()")  # Closes terminal
