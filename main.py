@@ -144,7 +144,7 @@ def createLandscape(biome_num):
     Biome.info.append(random.randint(Biome.low_elevations[biome_num], Biome.high_elevations[biome_num]))
 
     returner = Biome.info
-    biomeDetailsPrinter(returner) # Prints biome details
+    biomeDetailsPrinter(returner)  # Prints biome details
     return returner
 
 
