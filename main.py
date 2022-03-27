@@ -164,7 +164,7 @@ while not BREAK:
           f"Starting money amount: [bold]{temp1}[/]\n"
           f"Amount of weeks for population to develop: [bold]{temp3}[/]")
     if temp3 > 100000000:
-        print(f"[red]Caution! This may weeks may take a long time to complete!")
+        print(f"[red]Caution! This many weeks may take a long time to complete!")
     print("\n\n")
 
     BREAK = False
