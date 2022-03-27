@@ -183,6 +183,6 @@ keyboard.wait('enter')
 # os.system("exit()")  # Closes terminal
 
 # Main game loop ----------------------------------------------------------------------------------
-GAME_PLAYING = True
+GAME_PLAYING = False
 while GAME_PLAYING:
     pass
