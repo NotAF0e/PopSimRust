@@ -111,6 +111,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
         print(f"\nCompleted in {time_of_process} seconds...")
     return returner
 
+
 def biomeDetailsPrinter(biome_info):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
@@ -127,8 +128,8 @@ def biomeDetailsPrinter(biome_info):
     print(f"Average temperature: {Biome.temperatures[biome_info[1]]}" + "°C")
     print(f"Altitude: [bold]{biome_info[2]}m[/]")
 
-def createLandscape(biome_num):
 
+def createLandscape(biome_num):
     # Adds name to Biome.info[0]
     Biome.info.append(biome_num)
 
