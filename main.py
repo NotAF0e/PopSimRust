@@ -19,7 +19,7 @@ temp0 = 0
 temp1 = 0
 temp2 = 0
 temp3 = 0
-os.system('cls')  # Clears old terminal lines
+os.system('cls' if os.name == 'nt' else 'clear')  # Clears terminal
 
 gameSave = []
 
@@ -48,6 +48,21 @@ def LOAD():
         print("[red]No save file found!")
 
 
+def printLogo():
+    print("d888888P dP     dP   88888888b     888888ba   .88888.   888888ba  dP     dP dP       "
+          "  .d888888  d888888P  .88888.   888888ba\n",
+          "  88    88     88   88            88    `8b d8'   `8b  88    `8b 88     88 88        "
+          "d8'    88     88    d8'   `8b  88    `8b   \n",
+          "  88    88aaaaa88a a88aaaa       a88aaaa8P' 88     88 a88aaaa8P' 88     88 88        "
+          "88aaaaa88a    88    88     88 a88aaaa8P'   \n",
+          "  88    88     88   88            88        88     88  88        88     88 88        "
+          "88     88     88    88     88  88   `8b.   \n",
+          "  88    88     88   88            88        Y8.   .8P  88        Y8.   .8P 88        "
+          "88     88     88    Y8.   .8P  88     88   \n",
+          "  dP    dP     dP   88888888P     dP         `8888P'   dP        `Y88888P' 88888888P "
+          "88     88     dP     `8888P'   dP     dP   \n")
+
+
 def percentageIncrease(number, percentage_increase):
     percentage_increase = (percentage_increase / 100) + 1
     result = number * percentage_increase
@@ -60,6 +75,7 @@ def percentageDecrease(number, percentage_decrease):
     return result
 
 
+# Main functions ----------------------------------------------------------------------------------
 def createPopulation(base_population_size, base_money, develop_time, time_multiplier):
     global population
     global born
@@ -112,6 +128,19 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     return returner
 
 
+def doXStepsInTime(x):
+    global population
+    global born
+    global dead
+    while x != 0:
+        born += random.randint(1, 4)
+        dead += random.randint(0, 2)
+        x -= 1
+    population = born - dead
+    returner = [population, born, dead]
+    return returner
+
+
 def biomeDetailsPrinter(biome_info):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
@@ -149,11 +178,10 @@ def createLandscape(biome_num):
     return returner
 
 
-biomeInfo = createLandscape(random.randint(0, 10))
+biomeInfo = createLandscape(random.randint(0, 10))  # This list holds the biome info
 print(biomeInfo)
 
 # User input to create a population ---------------------------------------------------------------
-
 while not BREAK:
     temp0 = int(input("\nEnter the population start size: "))
     temp1 = int(input("Enter the population base money: "))
@@ -176,14 +204,22 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             break
 
-populationInfo = createPopulation(temp0, temp1, temp3, 15)
+populationInfo = createPopulation(temp0, temp1, temp3, 15)  # This list holds the population info
 print(populationInfo)
 print("\n[blink]Press enter to continue...")
 keyboard.wait('enter')
 
 # os.system("exit()")  # Closes terminal
 
+
+GAME_PLAYING = True
+print("Welcome to...")
+printLogo()
 # Main game loop ----------------------------------------------------------------------------------
-GAME_PLAYING = False
 while GAME_PLAYING:
-    pass
+    keyboard.wait('enter')
+    os.system('cls' if os.name == 'nt' else 'clear')  # Clears terminal
+    populationInfo = doXStepsInTime(5)
+    print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
+          f"People born: [bold]{populationInfo[1]}[/]\n"
+          f"People dead: [bold]{populationInfo[2]}[/]")
