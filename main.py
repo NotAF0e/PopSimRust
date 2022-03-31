@@ -19,7 +19,6 @@ temp0 = 0
 temp1 = 0
 temp2 = 0
 temp3 = 0
-os.system('cls' if os.name == 'nt' else 'clear')  # Clears terminal
 
 gameSave = []
 
@@ -31,6 +30,13 @@ class Biome:
 
 
 Biome.info = []
+
+
+def clearTerminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+clearTerminal()
 
 
 # Saves game into save.json
@@ -83,7 +89,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     global food
     global money
 
-    os.system('cls' if os.name == 'nt' else 'clear')  # Clears terminal
+    clearTerminal()
 
     print("Creating population...")
     print(f"\nStarting population size: {base_population_size}\n"
@@ -215,11 +221,23 @@ keyboard.wait('enter')
 GAME_PLAYING = True
 print("Welcome to...")
 printLogo()
+lastNode = None
 # Main game loop ----------------------------------------------------------------------------------
 while GAME_PLAYING:
-    keyboard.wait('enter')
-    os.system('cls' if os.name == 'nt' else 'clear')  # Clears terminal
-    populationInfo = doXStepsInTime(5)
-    print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
-          f"People born: [bold]{populationInfo[1]}[/]\n"
-          f"People dead: [bold]{populationInfo[2]}[/]")
+    if keyboard.read_key() == 'enter' or lastNode == 2:
+        clearTerminal()
+        populationInfo = doXStepsInTime(5)
+        print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
+              f"People born: [bold]{populationInfo[1]}[/]\n"
+              f"People dead: [bold]{populationInfo[2]}[/]")
+
+    # Shows all keybindings
+    if keyboard.read_key() == 'h':
+        clearTerminal()
+        print("The game is still in development.")
+        if keyboard.read_key() == 'esc':
+            lastNode = 1
+
+    # Quits game
+    if keyboard.read_key() == 'q':
+        GAME_PLAYING = False
