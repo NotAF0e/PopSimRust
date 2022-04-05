@@ -221,10 +221,9 @@ keyboard.wait('enter')
 GAME_PLAYING = True
 print("Welcome to...")
 printLogo()
-lastNode = None
 # Main game loop ----------------------------------------------------------------------------------
 while GAME_PLAYING:
-    if keyboard.read_key() == 'enter' or lastNode == 2:
+    if keyboard.read_key() == 'enter':
         clearTerminal()
         populationInfo = doXStepsInTime(5)
         print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
@@ -235,8 +234,6 @@ while GAME_PLAYING:
     if keyboard.read_key() == 'h':
         clearTerminal()
         print("The game is still in development.")
-        if keyboard.read_key() == 'esc':
-            lastNode = 1
 
     # Quits game
     if keyboard.read_key() == 'q':
