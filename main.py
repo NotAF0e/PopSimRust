@@ -225,7 +225,7 @@ printLogo()
 while GAME_PLAYING:
     if keyboard.read_key() == 'enter':
         clearTerminal()
-        populationInfo = doXStepsInTime(5)
+        populationInfo = doXStepsInTime(10)
         print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
               f"People born: [bold]{populationInfo[1]}[/]\n"
               f"People dead: [bold]{populationInfo[2]}[/]")
