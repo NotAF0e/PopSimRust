@@ -230,10 +230,26 @@ while GAME_PLAYING:
               f"People born: [bold]{populationInfo[1]}[/]\n"
               f"People dead: [bold]{populationInfo[2]}[/]")
 
+    if keyboard.read_key() == 'b':
+        clearTerminal()
+        print("Biome node")
+
+    if keyboard.read_key() == 'l':
+        clearTerminal()
+        print("Law node")
+
+    if keyboard.read_key() == 'w':
+        clearTerminal()
+        print("War node")
+
+    if keyboard.read_key() == 's':
+        clearTerminal()
+        print("Settings node")
+
     # Shows all keybindings
     if keyboard.read_key() == 'h':
         clearTerminal()
-        print("The game is still in development.")
+        print("Help node")
 
     # Quits game
     if keyboard.read_key() == 'q':
