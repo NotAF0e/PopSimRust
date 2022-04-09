@@ -21,6 +21,8 @@ temp2 = 0
 temp3 = 0
 
 gameSave = []
+populationInfo = []
+biomeInfo = []
 
 
 # keyboard.press('f11')  # Puts terminal in fullscreen mode
@@ -40,16 +42,30 @@ clearTerminal()
 
 
 # Saves game into save.json
-def SAVE():
+def SAVE(save_enabled):
     global gameSave
-    json.dump(gameSave, open('save.json', 'w'))
+
+    if save_enabled:
+        json.dump(gameSave, open('save.json', 'w'))
+
+    if os.path.exists('save.json'):
+        return True
+    else:
+        return False
 
 
 # Loads game save file
 def LOAD():
     global gameSave
+    global populationInfo
+    global biomeInfo
+
     try:
+        gameSave.clear()
         gameSave = json.load(open('save.json', 'r'))
+        populationInfo = gameSave[:len(gameSave) - 3]
+        biomeInfo = gameSave[len(gameSave) - 3:]
+
     except FileNotFoundError:
         print("[red]No save file found!")
 
@@ -135,15 +151,13 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
 
 def doXStepsInTime(x):
-    global population
-    global born
-    global dead
+    global populationInfo
     while x != 0:
-        born += random.randint(1, 4)
-        dead += random.randint(0, 2)
+        populationInfo[1] += random.randint(1, 4)  # Born
+        populationInfo[2] += random.randint(0, 2)  # Dead
         x -= 1
-    population = born - dead
-    returner = [population, born, dead]
+    populationInfo[0] = populationInfo[1] - populationInfo[2]  # Population
+    returner = populationInfo
     return returner
 
 
@@ -184,55 +198,79 @@ def createLandscape(biome_num):
     return returner
 
 
-biomeInfo = createLandscape(random.randint(0, 10))  # This list holds the biome info
-print(biomeInfo)
-
 # User input to create a population ---------------------------------------------------------------
-while not BREAK:
-    temp0 = int(input("\nEnter the population start size: "))
-    temp1 = int(input("Enter the population base money: "))
-    temp3 = int(input("Enter the amount of weeks for population to grow: "))
+if not SAVE(False):
+    tempSave = []
+    while not BREAK:
+        print("Before you create your population you will need to create a biome.\n")
+        biomeInfo = createLandscape(random.randint(0, 10))
+        print(biomeInfo)
+        print("Press [green]y[/] to create this biome, or [red]n[/] to generate another.")
+        while not BREAK:
+            if keyboard.read_key() == 'y':
+                for b in biomeInfo:
+                    tempSave.append(b)
+                BREAK = True
 
-    print("\nAre you sure you want to create a population with the "
-          "following [white]stats([green]y[/], [red]n[/])?..")
-    print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
-          f"Starting money amount: [bold]{temp1}[/]\n"
-          f"Amount of weeks for population to develop: [bold]{temp3}[/]")
-    if temp3 > 100000000:
-        print(f"[red]Caution! This many weeks may take a long time to complete!")
-    print("\n\n")
+            if keyboard.read_key() == 'n':
+                biomeInfo.clear()
+                clearTerminal()
+                biomeInfo = createLandscape(random.randint(0, 10))
+                print(biomeInfo)
+                print("Press [green]y[/] to create this biome, or [red]n[/] to generate another.")
 
+    clearTerminal()
     BREAK = False
     while not BREAK:
-        if keyboard.read_key() == 'y':
-            BREAK = True
+        temp0 = int(input("\nEnter the population start size: "))
+        temp1 = int(input("Enter the population base money: "))
+        temp3 = int(input("Enter the amount of weeks for population to grow: "))
 
-        if keyboard.read_key() == 'n':
-            break
+        print("\nAre you sure you want to create a population with the "
+              "following [white]stats([green]y[/], [red]n[/])?..")
+        print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
+              f"Starting money amount: [bold]{temp1}[/]\n"
+              f"Amount of weeks for population to develop: [bold]{temp3}[/]")
+        if temp3 > 100000000:
+            print(f"[red]Caution! This many weeks may take a long time to complete!")
+        print("\n\n")
 
-populationInfo = createPopulation(temp0, temp1, temp3, 15)  # This list holds the population info
-print(populationInfo)
-print("\n[blink]Press enter to continue...")
-keyboard.wait('enter')
+        BREAK = False
+        while not BREAK:
+            if keyboard.read_key() == 'y':
+                BREAK = True
+
+            if keyboard.read_key() == 'n':
+                break
+
+    populationInfo = createPopulation(temp0, temp1, temp3, 15)  # This list holds the population info
+    for p in populationInfo:
+        gameSave.append(p)
+    for s in tempSave:
+        gameSave.append(s)
+    SAVE(True)
+    print("\n[blink]Press enter to continue...")
+    keyboard.wait('enter')
 
 # os.system("exit()")  # Closes terminal
-
+LOAD()
 
 GAME_PLAYING = True
 print("Welcome to...")
 printLogo()
+
 # Main game loop ----------------------------------------------------------------------------------
 while GAME_PLAYING:
     if keyboard.read_key() == 'enter':
         clearTerminal()
-        populationInfo = doXStepsInTime(10)
-        print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
-              f"People born: [bold]{populationInfo[1]}[/]\n"
-              f"People dead: [bold]{populationInfo[2]}[/]")
+        stepsInTime = doXStepsInTime(10)
+        print(f"[bold]Population: [bold]{stepsInTime[0]}[/]\n"
+              f"People born: [bold]{stepsInTime[1]}[/]\n"
+              f"People dead: [bold]{stepsInTime[2]}[/]")
 
     if keyboard.read_key() == 'b':
         clearTerminal()
-        print("Biome node")
+        biomeDetailsPrinter(biomeInfo)
 
     if keyboard.read_key() == 'l':
         clearTerminal()
@@ -253,4 +291,5 @@ while GAME_PLAYING:
 
     # Quits game
     if keyboard.read_key() == 'q':
+        SAVE(True)
         GAME_PLAYING = False
