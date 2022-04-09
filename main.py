@@ -171,9 +171,9 @@ def biomeDetailsPrinter(biome_info):
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
 
     formatted_biome = Biome.biomes[biome_info[0]]
-    print("Biome:", formatted_biome)
     if biome_info[0] == 8 or biome_info[0] == 9 or biome_info[0] == 10:
         print("[red]Very dangerous!")
+    print("Biome:", formatted_biome)
     print(f"Average temperature: {Biome.temperatures[biome_info[1]]}" + "°C")
     print(f"Altitude: [bold]{biome_info[2]}m[/]")
 
@@ -201,28 +201,33 @@ def createLandscape(biome_num):
 # User input to create a population ---------------------------------------------------------------
 if not SAVE(False):
     tempSave = []
+    temp0 = 0
     while not BREAK:
         print("Before you create your population you will need to create a biome.\n")
         biomeInfo = createLandscape(random.randint(0, 10))
-        print(biomeInfo)
-        print("Press [green]y[/] to create this biome, or [red]n[/] to generate another.")
+        print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
         while not BREAK:
             if keyboard.read_key() == 'y':
                 for b in biomeInfo:
                     tempSave.append(b)
+                temp0 += 5
                 BREAK = True
 
             if keyboard.read_key() == 'n':
                 biomeInfo.clear()
                 clearTerminal()
                 biomeInfo = createLandscape(random.randint(0, 10))
-                print(biomeInfo)
-                print("Press [green]y[/] to create this biome, or [red]n[/] to generate another.")
+                print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
+                temp0 += 5
 
-    clearTerminal()
     BREAK = False
     while not BREAK:
-        temp0 = int(input("\nEnter the population start size: "))
+        clearTerminal()
+        # A very bad way to clear input, but it works (lol)
+        while temp0 != 0:
+            keyboard.press('backspace')
+            temp0 -= 1
+        temp0 = int(input("Enter the population start size: "))
         temp1 = int(input("Enter the population base money: "))
         temp3 = int(input("Enter the amount of weeks for population to grow: "))
 
