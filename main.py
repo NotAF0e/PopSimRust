@@ -229,7 +229,7 @@ if not SAVE(False):
             temp0 -= 1
         temp0 = int(input("Enter the population start size: "))
         temp1 = int(input("Enter the population base money: "))
-        temp3 = int(input("Enter the amount of weeks for population to grow: "))
+        temp3 = int(input("Enter the amount of weeks for your population to grow: "))
 
         print("\nAre you sure you want to create a population with the "
               "following [white]stats([green]y[/], [red]n[/])?..")
@@ -259,20 +259,28 @@ if not SAVE(False):
 
 # os.system("exit()")  # Closes terminal
 LOAD()
-
+clearTerminal()
 GAME_PLAYING = True
-print("Welcome to...")
 printLogo()
 
 # Main game loop ----------------------------------------------------------------------------------
 while GAME_PLAYING:
-    if keyboard.read_key() == 'enter':
+    LEAVENODE = False
+    if keyboard.read_key() == 'e' and LEAVENODE is False:
         clearTerminal()
-        stepsInTime = doXStepsInTime(10)
-        print(f"[bold]Population: [bold]{stepsInTime[0]}[/]\n"
-              f"People born: [bold]{stepsInTime[1]}[/]\n"
-              f"People dead: [bold]{stepsInTime[2]}[/]")
-
+        print("Evolution node")
+        while True:
+            if keyboard.read_key() == 'enter':
+                clearTerminal()
+                stepsInTime = doXStepsInTime(10)
+                print(f"[bold]Population: [bold]{stepsInTime[0]}[/]\n"
+                      f"People born: [bold]{stepsInTime[1]}[/]\n"
+                      f"People dead: [bold]{stepsInTime[2]}[/]")
+            elif keyboard.read_key() == 'backspace':
+                clearTerminal()
+                printLogo()
+                LEAVENODE = True
+                break
     if keyboard.read_key() == 'b':
         clearTerminal()
         biomeDetailsPrinter(biomeInfo)
