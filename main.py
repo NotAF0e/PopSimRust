@@ -12,6 +12,7 @@ dead = 0
 
 money = 0
 food = 0
+happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 biome = []
 
 BREAK = False
@@ -44,6 +45,10 @@ clearTerminal()
 # Saves game into save.json
 def SAVE(save_enabled):
     global gameSave
+    global populationInfo
+    global biomeInfo
+
+    gameSave = populationInfo + biomeInfo
 
     if save_enabled:
         json.dump(gameSave, open('save.json', 'w'))
@@ -260,26 +265,26 @@ if not SAVE(False):
 # os.system("exit()")  # Closes terminal
 LOAD()
 clearTerminal()
-GAME_PLAYING = True
+game_playing = True
 printLogo()
 
 # Main game loop ----------------------------------------------------------------------------------
-while GAME_PLAYING:
-    LEAVENODE = False
-    if keyboard.read_key() == 'e' and LEAVENODE is False:
+while game_playing:
+    leave_node = False
+    if keyboard.read_key() == 'e' and leave_node is False:
         clearTerminal()
         print("Evolution node")
         while True:
             if keyboard.read_key() == 'enter':
                 clearTerminal()
-                stepsInTime = doXStepsInTime(10)
-                print(f"[bold]Population: [bold]{stepsInTime[0]}[/]\n"
-                      f"People born: [bold]{stepsInTime[1]}[/]\n"
-                      f"People dead: [bold]{stepsInTime[2]}[/]")
+                steps_in_time = doXStepsInTime(10)
+                print(f"[bold]Population: [bold]{steps_in_time[0]}[/]\n"
+                      f"People born: [bold]{steps_in_time[1]}[/]\n"
+                      f"People dead: [bold]{steps_in_time[2]}[/]")
             elif keyboard.read_key() == 'backspace':
                 clearTerminal()
                 printLogo()
-                LEAVENODE = True
+                leave_node = True
                 break
     if keyboard.read_key() == 'b':
         clearTerminal()
@@ -305,4 +310,4 @@ while GAME_PLAYING:
     # Quits game
     if keyboard.read_key() == 'q':
         SAVE(True)
-        GAME_PLAYING = False
+        game_playing = False
