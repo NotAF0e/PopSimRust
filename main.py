@@ -11,6 +11,7 @@ born = 0
 dead = 0
 
 money = 0
+taxes_percentage = 5  # (5%)
 food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 biome = []
@@ -277,21 +278,20 @@ if not SAVE(False):
 
 # os.system("exit()")  # Closes terminal
 LOAD()
-clearTerminal()
 game_playing = True
-printLogo()
 
 # Main game loop ----------------------------------------------------------------------------------
 while game_playing:
     # Main node(Shows most info in one place)
-    leave_node = False
+    clearTerminal()
+    printLogo()
     print(f"[bold]Population: [bold]{population_info[0]}[/]\n"
           f"People born: [bold]{population_info[1]}[/]\n"
           f"People dead: [bold]{population_info[2]}[/]\n")
     print(f"Week: [bold]{setup_info[0]}[/]\n"
           f"Month: [bold]{months[setup_info[0] % 12]}[/]\n")
 
-    if keyboard.read_key() == 'e' and leave_node is False:
+    if keyboard.read_key() == 'e':
         clearTerminal()
         print("Evolution node")
         while True:
@@ -302,18 +302,21 @@ while game_playing:
                       f"People born: [bold]{steps_in_time[1]}[/]\n"
                       f"People dead: [bold]{steps_in_time[2]}[/]")
             elif keyboard.read_key() == 'backspace':
-                clearTerminal()
-                printLogo()
-                leave_node = True
                 break
 
     if keyboard.read_key() == 'b':
         clearTerminal()
         biomeDetailsPrinter(biome_info)
 
-    if keyboard.read_key() == 'l':
+    if keyboard.read_key() == 'm':
         clearTerminal()
-        print("Law node")
+        print("Money node")
+        while True:
+            if keyboard.read_key() == 't':
+                clearTerminal()
+                print("Taxes node")
+            elif keyboard.read_key() == 'backspace':
+                break
 
     if keyboard.read_key() == 'w':
         clearTerminal()
