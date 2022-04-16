@@ -15,6 +15,11 @@ food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 biome = []
 
+# Decorative variables
+weeks_passed = 0
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December"]
+
 BREAK = False
 temp0 = 0
 temp1 = 0
@@ -24,6 +29,7 @@ temp3 = 0
 gameSave = []
 populationInfo = []
 biomeInfo = []
+setup_info = []
 
 
 # keyboard.press('f11')  # Puts terminal in fullscreen mode
@@ -47,8 +53,9 @@ def SAVE(save_enabled):
     global gameSave
     global populationInfo
     global biomeInfo
+    global setup_info
 
-    gameSave = populationInfo + biomeInfo
+    gameSave = populationInfo + biomeInfo + setup_info
 
     if save_enabled:
         json.dump(gameSave, open('save.json', 'w'))
@@ -64,12 +71,14 @@ def LOAD():
     global gameSave
     global populationInfo
     global biomeInfo
+    global setup_info
 
     try:
         gameSave.clear()
         gameSave = json.load(open('save.json', 'r'))
         populationInfo = gameSave[:len(gameSave) - 3]
         biomeInfo = gameSave[len(gameSave) - 3:]
+        setup_info = gameSave[len(gameSave) - 2:]
 
     except FileNotFoundError:
         print("[red]No save file found!")
@@ -203,8 +212,9 @@ def createLandscape(biome_num):
     return returner
 
 
-# User input to create a population ---------------------------------------------------------------
+# User input to start game ------------------------------------------------------------------------
 if not SAVE(False):
+    # Biome creation
     tempSave = []
     temp0 = 0
     while not BREAK:
@@ -225,6 +235,7 @@ if not SAVE(False):
                 print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
                 temp0 += 5
 
+    # Population creation
     BREAK = False
     while not BREAK:
         clearTerminal()
@@ -235,6 +246,8 @@ if not SAVE(False):
         temp0 = int(input("Enter the population start size: "))
         temp1 = int(input("Enter the population base money: "))
         temp3 = int(input("Enter the amount of weeks for your population to grow: "))
+        weeks_passed = temp3
+        setup_info.append(weeks_passed)
 
         print("\nAre you sure you want to create a population with the "
               "following [white]stats([green]y[/], [red]n[/])?..")
@@ -253,7 +266,7 @@ if not SAVE(False):
             if keyboard.read_key() == 'n':
                 break
 
-    populationInfo = createPopulation(temp0, temp1, temp3, 15)  # This list holds the population info
+    populationInfo = createPopulation(temp0, temp1, temp3, 15) + setup_info  # This list holds the population info
     for p in populationInfo:
         gameSave.append(p)
     for s in tempSave:
@@ -270,7 +283,14 @@ printLogo()
 
 # Main game loop ----------------------------------------------------------------------------------
 while game_playing:
+    # Main node(Shows most info in one place)
     leave_node = False
+    print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
+          f"People born: [bold]{populationInfo[1]}[/]\n"
+          f"People dead: [bold]{populationInfo[2]}[/]\n")
+    print(f"Week: [bold]{setup_info[0]}[/]\n"
+          f"Month: [bold]{months[setup_info[0] % 12]}[/]\n")
+
     if keyboard.read_key() == 'e' and leave_node is False:
         clearTerminal()
         print("Evolution node")
@@ -286,6 +306,7 @@ while game_playing:
                 printLogo()
                 leave_node = True
                 break
+
     if keyboard.read_key() == 'b':
         clearTerminal()
         biomeDetailsPrinter(biomeInfo)
