@@ -280,16 +280,26 @@ if not SAVE(False):
 LOAD()
 game_playing = True
 
+population = population_info[0]
+born = population_info[1]
+dead = population_info[2]
+
+weeks_passed = setup_info[0]
+
 # Main game loop ----------------------------------------------------------------------------------
 while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
-    print(f"[bold]Population: [bold]{population_info[0]}[/]\n"
-          f"People born: [bold]{population_info[1]}[/]\n"
-          f"People dead: [bold]{population_info[2]}[/]\n")
-    print(f"Week: [bold]{setup_info[0]}[/]\n"
-          f"Month: [bold]{months[setup_info[0] % 12]}[/]\n")
+    print(f"[bold]Population: [bold]{population}[/]\n"
+          f"People born: [bold]{born}[/]\n"
+          f"People dead: [bold]{dead}[/]\n")
+    if weeks_passed > 12:
+        print(f"[bold]Year: [bold]{weeks_passed // 12}[/]\n"
+              f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
+    else:
+        print(f"Week: [bold]{weeks_passed}[/]\n"
+              f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
 
     if keyboard.read_key() == 'e':
         clearTerminal()
