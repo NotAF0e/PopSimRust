@@ -308,13 +308,18 @@ while game_playing:
         clearTerminal()
         biomeDetailsPrinter(biome_info)
 
-    if keyboard.read_key() == 'm':
+    if keyboard.read_key() == 'l':
         clearTerminal()
-        print("Money node")
+        print("Law node")
         while True:
             if keyboard.read_key() == 't':
                 clearTerminal()
                 print("Taxes node")
+
+            if keyboard.read_key() == 'm':
+                clearTerminal()
+                print("Money node")
+
             elif keyboard.read_key() == 'backspace':
                 break
 
