@@ -26,13 +26,13 @@ temp1 = 0
 temp2 = 0
 temp3 = 0
 
-gameSave = []
-populationInfo = []
-biomeInfo = []
+GAMESAVE = []
+population_info = []
+biome_info = []
 setup_info = []
 
 
-# keyboard.press('f11')  # Puts terminal in fullscreen mode
+# keyboard.press('f11')  # Puts terminal in full screen mode
 
 class Biome:
     pass
@@ -50,15 +50,15 @@ clearTerminal()
 
 # Saves game into save.json
 def SAVE(save_enabled):
-    global gameSave
-    global populationInfo
-    global biomeInfo
+    global GAMESAVE
+    global population_info
+    global biome_info
     global setup_info
 
-    gameSave = populationInfo + biomeInfo + setup_info
+    GAMESAVE = population_info + biome_info + setup_info
 
     if save_enabled:
-        json.dump(gameSave, open('save.json', 'w'))
+        json.dump(GAMESAVE, open('save.json', 'w'))
 
     if os.path.exists('save.json'):
         return True
@@ -68,17 +68,17 @@ def SAVE(save_enabled):
 
 # Loads game save file
 def LOAD():
-    global gameSave
-    global populationInfo
-    global biomeInfo
+    global GAMESAVE
+    global population_info
+    global biome_info
     global setup_info
 
     try:
-        gameSave.clear()
-        gameSave = json.load(open('save.json', 'r'))
-        populationInfo = gameSave[:len(gameSave) - 3]
-        biomeInfo = gameSave[len(gameSave) - 3:]
-        setup_info = gameSave[len(gameSave) - 2:]
+        GAMESAVE.clear()
+        GAMESAVE = json.load(open('save.json', 'r'))
+        population_info = GAMESAVE[:len(GAMESAVE) - 3]
+        biome_info = GAMESAVE[len(GAMESAVE) - 3:]
+        setup_info = GAMESAVE[len(GAMESAVE) - 2:]
 
     except FileNotFoundError:
         print("[red]No save file found!")
@@ -165,17 +165,17 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
 
 def doXStepsInTime(x):
-    global populationInfo
+    global population_info
     while x != 0:
-        populationInfo[1] += random.randint(1, 4)  # Born
-        populationInfo[2] += random.randint(0, 2)  # Dead
+        population_info[1] += random.randint(1, 4)  # Born
+        population_info[2] += random.randint(0, 2)  # Dead
         x -= 1
-    populationInfo[0] = populationInfo[1] - populationInfo[2]  # Population
-    returner = populationInfo
+    population_info[0] = population_info[1] - population_info[2]  # Population
+    returner = population_info
     return returner
 
 
-def biomeDetailsPrinter(biome_info):
+def biomeDetailsPrinter(biome_info_lst):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
                     "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
@@ -184,12 +184,12 @@ def biomeDetailsPrinter(biome_info):
     Biome.temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
 
-    formatted_biome = Biome.biomes[biome_info[0]]
-    if biome_info[0] == 8 or biome_info[0] == 9 or biome_info[0] == 10:
+    formatted_biome = Biome.biomes[biome_info_lst[0]]
+    if biome_info_lst[0] == 8 or biome_info_lst[0] == 9 or biome_info_lst[0] == 10:
         print("[red]Very dangerous!")
     print("Biome:", formatted_biome)
-    print(f"Average temperature: {Biome.temperatures[biome_info[1]]}" + "°C")
-    print(f"Altitude: [bold]{biome_info[2]}m[/]")
+    print(f"Average temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C")
+    print(f"Altitude: [bold]{biome_info_lst[2]}m[/]")
 
 
 def createLandscape(biome_num):
@@ -219,19 +219,19 @@ if not SAVE(False):
     temp0 = 0
     while not BREAK:
         print("Before you create your population you will need to create a biome.\n")
-        biomeInfo = createLandscape(random.randint(0, 10))
+        biome_info = createLandscape(random.randint(0, 10))
         print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
         while not BREAK:
             if keyboard.read_key() == 'y':
-                for b in biomeInfo:
+                for b in biome_info:
                     tempSave.append(b)
                 temp0 += 5
                 BREAK = True
 
             if keyboard.read_key() == 'n':
-                biomeInfo.clear()
+                biome_info.clear()
                 clearTerminal()
-                biomeInfo = createLandscape(random.randint(0, 10))
+                biome_info = createLandscape(random.randint(0, 10))
                 print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
                 temp0 += 5
 
@@ -266,11 +266,11 @@ if not SAVE(False):
             if keyboard.read_key() == 'n':
                 break
 
-    populationInfo = createPopulation(temp0, temp1, temp3, 15) + setup_info  # This list holds the population info
-    for p in populationInfo:
-        gameSave.append(p)
+    population_info = createPopulation(temp0, temp1, temp3, 15) + setup_info  # This list holds the population info
+    for p in population_info:
+        GAMESAVE.append(p)
     for s in tempSave:
-        gameSave.append(s)
+        GAMESAVE.append(s)
     SAVE(True)
     print("\n[blink]Press enter to continue...")
     keyboard.wait('enter')
@@ -285,9 +285,9 @@ printLogo()
 while game_playing:
     # Main node(Shows most info in one place)
     leave_node = False
-    print(f"[bold]Population: [bold]{populationInfo[0]}[/]\n"
-          f"People born: [bold]{populationInfo[1]}[/]\n"
-          f"People dead: [bold]{populationInfo[2]}[/]\n")
+    print(f"[bold]Population: [bold]{population_info[0]}[/]\n"
+          f"People born: [bold]{population_info[1]}[/]\n"
+          f"People dead: [bold]{population_info[2]}[/]\n")
     print(f"Week: [bold]{setup_info[0]}[/]\n"
           f"Month: [bold]{months[setup_info[0] % 12]}[/]\n")
 
@@ -309,7 +309,7 @@ while game_playing:
 
     if keyboard.read_key() == 'b':
         clearTerminal()
-        biomeDetailsPrinter(biomeInfo)
+        biomeDetailsPrinter(biome_info)
 
     if keyboard.read_key() == 'l':
         clearTerminal()
