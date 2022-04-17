@@ -1,7 +1,7 @@
 import random
 import time
 import keyboard
-import json
+# import json
 import os
 from rich import print
 
@@ -11,7 +11,7 @@ born = 0
 dead = 0
 
 money = 0
-taxes_percentage = 5  # (5%)
+tax_percentage = 1001  # (0.1%)
 food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 biome = []
@@ -27,7 +27,6 @@ temp1 = 0
 temp2 = 0
 temp3 = 0
 
-GAMESAVE = []
 population_info = []
 biome_info = []
 setup_info = []
@@ -49,42 +48,6 @@ def clearTerminal():
 clearTerminal()
 
 
-# Saves game into save.json
-def SAVE(save_enabled):
-    global GAMESAVE
-    global population_info
-    global biome_info
-    global setup_info
-
-    GAMESAVE = population_info + biome_info + setup_info
-
-    if save_enabled:
-        json.dump(GAMESAVE, open('save.json', 'w'))
-
-    if os.path.exists('save.json'):
-        return True
-    else:
-        return False
-
-
-# Loads game save file
-def LOAD():
-    global GAMESAVE
-    global population_info
-    global biome_info
-    global setup_info
-
-    try:
-        GAMESAVE.clear()
-        GAMESAVE = json.load(open('save.json', 'r'))
-        population_info = GAMESAVE[:len(GAMESAVE) - 3]
-        biome_info = GAMESAVE[len(GAMESAVE) - 3:]
-        setup_info = GAMESAVE[len(GAMESAVE) - 2:]
-
-    except FileNotFoundError:
-        print("[red]No save file found!")
-
-
 def printLogo():
     print("d888888P dP     dP   88888888b     888888ba   .88888.   888888ba  dP     dP dP       "
           "  .d888888  d888888P  .88888.   888888ba\n",
@@ -104,7 +67,6 @@ def percentageIncrease(number, percentage_increase):
     percentage_increase = (percentage_increase / 100) + 1
     result = number * percentage_increase
     return result
-
 
 def percentageDecrease(number, percentage_decrease):
     percentage_decrease = number * ((100 - percentage_decrease) / 100)
@@ -152,7 +114,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     print(f"[bold]Population: [bold]{population}[/]\n"
           f"People born: [bold]{born}[/]\n"
           f"People dead: [bold]{dead}[/]")
-    returner = [population, born, dead]
+    returner = [population, born, dead, money]
 
     end_process = time.process_time()  # End time calculation
 
@@ -214,76 +176,68 @@ def createLandscape(biome_num):
 
 
 # User input to start game ------------------------------------------------------------------------
-if not SAVE(False):
-    # Biome creation
-    tempSave = []
-    temp0 = 0
+# Biome creation
+tempSave = []
+while not BREAK:
+    print("Before you create your population you will need to create a biome.\n")
+    biome_info = createLandscape(random.randint(0, 10))
+    print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
     while not BREAK:
-        print("Before you create your population you will need to create a biome.\n")
-        biome_info = createLandscape(random.randint(0, 10))
-        print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
-        while not BREAK:
-            if keyboard.read_key() == 'y':
-                for b in biome_info:
-                    tempSave.append(b)
-                temp0 += 5
-                BREAK = True
+        if keyboard.read_key() == 'y':
+            for b in biome_info:
+                tempSave.append(b)
+            temp0 += 5
+            BREAK = True
+        if keyboard.read_key() == 'n':
+            biome_info.clear()
+            clearTerminal()
+            biome_info = createLandscape(random.randint(0, 10))
+            print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
+            temp0 += 5
 
-            if keyboard.read_key() == 'n':
-                biome_info.clear()
-                clearTerminal()
-                biome_info = createLandscape(random.randint(0, 10))
-                print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
-                temp0 += 5
+# Population creation
+BREAK = False
+while not BREAK:
+    clearTerminal()
+    # A very bad way to clear input, but it works (lol)
+    while temp0 != 0:
+        keyboard.press('backspace')
+        temp0 -= 1
+    temp0 = int(input("Enter the population start size: "))
+    temp1 = int(input("Enter the population base money: "))
+    temp3 = int(input("Enter the amount of weeks for your population to grow: "))
+    weeks_passed = temp3
+    setup_info.append(weeks_passed)
 
-    # Population creation
+    print("\nAre you sure you want to create a population with the "
+          "following [white]stats([green]y[/], [red]n[/])?..")
+    print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
+          f"Starting money amount: [bold]{temp1}[/]\n"
+          f"Amount of weeks for population to develop: [bold]{temp3}[/]")
+    if temp3 > 100000000:
+        print(f"[red]Caution! This many weeks may take a long time to complete!")
+    print("\n\n")
+
     BREAK = False
     while not BREAK:
-        clearTerminal()
-        # A very bad way to clear input, but it works (lol)
-        while temp0 != 0:
-            keyboard.press('backspace')
-            temp0 -= 1
-        temp0 = int(input("Enter the population start size: "))
-        temp1 = int(input("Enter the population base money: "))
-        temp3 = int(input("Enter the amount of weeks for your population to grow: "))
-        weeks_passed = temp3
-        setup_info.append(weeks_passed)
+        if keyboard.read_key() == 'y':
+            BREAK = True
 
-        print("\nAre you sure you want to create a population with the "
-              "following [white]stats([green]y[/], [red]n[/])?..")
-        print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
-              f"Starting money amount: [bold]{temp1}[/]\n"
-              f"Amount of weeks for population to develop: [bold]{temp3}[/]")
-        if temp3 > 100000000:
-            print(f"[red]Caution! This many weeks may take a long time to complete!")
-        print("\n\n")
+        if keyboard.read_key() == 'n':
+            break
 
-        BREAK = False
-        while not BREAK:
-            if keyboard.read_key() == 'y':
-                BREAK = True
-
-            if keyboard.read_key() == 'n':
-                break
-
-    population_info = createPopulation(temp0, temp1, temp3, 15) + setup_info  # This list holds the population info
-    for p in population_info:
-        GAMESAVE.append(p)
-    for s in tempSave:
-        GAMESAVE.append(s)
-    SAVE(True)
-    print("\n[blink]Press enter to continue...")
-    keyboard.wait('enter')
+# This list holds the population info
+population_info = createPopulation(temp0, temp1, temp3, 15)
+print("\n[blink]Press enter to continue...")
+keyboard.wait('enter')
 
 # os.system("exit()")  # Closes terminal
-LOAD()
 game_playing = True
 
 population = population_info[0]
 born = population_info[1]
 dead = population_info[2]
-
+money = population_info[3]
 weeks_passed = setup_info[0]
 
 # Main game loop ----------------------------------------------------------------------------------
@@ -291,15 +245,18 @@ while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
-    print(f"[bold]Population: [bold]{population}[/]\n"
-          f"People born: [bold]{born}[/]\n"
-          f"People dead: [bold]{dead}[/]\n")
+    # Prints amount of time passed
     if weeks_passed > 12:
         print(f"[bold]Year: [bold]{weeks_passed // 12}[/]\n"
               f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
     else:
         print(f"Week: [bold]{weeks_passed}[/]\n"
               f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
+    # Prints population info
+    print(f"[bold]Population: [bold]{population}[/]\n"
+          f"People born: [bold]{born}[/]\n"
+          f"People dead: [bold]{dead}[/]\n")
+    print(f"[bold]Money: [green]${money}[/]\n")
 
     if keyboard.read_key() == 'e':
         clearTerminal()
@@ -311,6 +268,9 @@ while game_playing:
                 print(f"[bold]Population: [bold]{steps_in_time[0]}[/]\n"
                       f"People born: [bold]{steps_in_time[1]}[/]\n"
                       f"People dead: [bold]{steps_in_time[2]}[/]")
+                # Calculates money from taxes
+                money += (steps_in_time[1] // tax_percentage)
+                print(f"[bold]Money: [green]${money}[/]\n")
             elif keyboard.read_key() == 'backspace':
                 break
 
@@ -348,5 +308,4 @@ while game_playing:
 
     # Quits game
     if keyboard.read_key() == 'q':
-        SAVE(True)
         game_playing = False
