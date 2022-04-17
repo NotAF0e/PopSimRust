@@ -14,6 +14,7 @@ money = 0
 tax_percentage = 1001  # (0.1%)
 food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
+happiness_emoji = ["😡", "😠", "😐", "🙂", "😍"]
 biome = []
 
 # Decorative variables
@@ -44,6 +45,13 @@ Biome.info = []
 def clearTerminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def clearInput():
+    # A very bad way to clear input, but it works (lol)
+    num = 150
+    while num != 0:
+        keyboard.press('backspace')
+        num -= 1
+
 
 clearTerminal()
 
@@ -67,6 +75,7 @@ def percentageIncrease(number, percentage_increase):
     percentage_increase = (percentage_increase / 100) + 1
     result = number * percentage_increase
     return result
+
 
 def percentageDecrease(number, percentage_decrease):
     percentage_decrease = number * ((100 - percentage_decrease) / 100)
@@ -186,23 +195,18 @@ while not BREAK:
         if keyboard.read_key() == 'y':
             for b in biome_info:
                 tempSave.append(b)
-            temp0 += 5
             BREAK = True
         if keyboard.read_key() == 'n':
             biome_info.clear()
             clearTerminal()
             biome_info = createLandscape(random.randint(0, 10))
             print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
-            temp0 += 5
 
 # Population creation
 BREAK = False
 while not BREAK:
     clearTerminal()
-    # A very bad way to clear input, but it works (lol)
-    while temp0 != 0:
-        keyboard.press('backspace')
-        temp0 -= 1
+    clearInput()
     temp0 = int(input("Enter the population start size: "))
     temp1 = int(input("Enter the population base money: "))
     temp3 = int(input("Enter the amount of weeks for your population to grow: "))
@@ -228,10 +232,9 @@ while not BREAK:
 
 # This list holds the population info
 population_info = createPopulation(temp0, temp1, temp3, 15)
-print("\n[blink]Press enter to continue...")
-keyboard.wait('enter')
+clearInput()
+input("\nPress enter to continue...")
 
-# os.system("exit()")  # Closes terminal
 game_playing = True
 
 population = population_info[0]
