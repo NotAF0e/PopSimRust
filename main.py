@@ -138,13 +138,16 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
 def doXStepsInTime(x):
     global population_info
+    global population
+    global born
+    global dead
+    global weeks_passed
     while x != 0:
-        population_info[1] += random.randint(1, 4)  # Born
-        population_info[2] += random.randint(0, 2)  # Dead
+        born += random.randint(1, 4)  # Born
+        dead += random.randint(0, 2)  # Dead
+        weeks_passed += 1
         x -= 1
-    population_info[0] = population_info[1] - population_info[2]  # Population
-    returner = population_info
-    return returner
+    population = born - dead  # Population
 
 
 def biomeDetailsPrinter(biome_info_lst):
@@ -226,6 +229,7 @@ while not BREAK:
     while not BREAK:
         if keyboard.read_key() == 'y':
             BREAK = True
+            break
 
         if keyboard.read_key() == 'n':
             break
@@ -267,12 +271,12 @@ while game_playing:
         while True:
             if keyboard.read_key() == 'enter':
                 clearTerminal()
-                steps_in_time = doXStepsInTime(10)
-                print(f"[bold]Population: [bold]{steps_in_time[0]}[/]\n"
-                      f"People born: [bold]{steps_in_time[1]}[/]\n"
-                      f"People dead: [bold]{steps_in_time[2]}[/]")
+                doXStepsInTime(10)
+                print(f"[bold]Population: [bold]{population}[/]\n"
+                      f"People born: [bold]{born}[/]\n"
+                      f"People dead: [bold]{dead}[/]")
                 # Calculates money from taxes
-                money += (steps_in_time[1] // tax_percentage)
+                money += (born // tax_percentage)
                 print(f"[bold]Money: [green]${money}[/]\n")
             elif keyboard.read_key() == 'backspace':
                 break
@@ -280,6 +284,9 @@ while game_playing:
     if keyboard.read_key() == 'b':
         clearTerminal()
         biomeDetailsPrinter(biome_info)
+        while True:
+            if keyboard.read_key() == 'backspace':
+                break
 
     if keyboard.read_key() == 'l':
         clearTerminal()
@@ -299,15 +306,33 @@ while game_playing:
     if keyboard.read_key() == 'w':
         clearTerminal()
         print("War node")
+        while True:
+            if keyboard.read_key() == 'backspace':
+                break
 
     if keyboard.read_key() == 's':
         clearTerminal()
         print("Settings node")
+        while True:
+            if keyboard.read_key() == 'backspace':
+                break
 
     # Shows all keybindings
     if keyboard.read_key() == 'h':
         clearTerminal()
-        print("Help node")
+        print("Welcome to the help node!\n"
+              "Here you can find all the keybindings for the game.\n"
+              "Evolution node: [bold]e[/]\n"
+              "Biome node: [bold]b[/]\n"
+              "Law node: [bold]l[/]\n"
+              "War node: [bold]w[/]\n"
+              "Settings node: [bold]s[/]\n"
+              "Quit game: [bold]q[/]\n"
+              "\n"
+              "Press [bold]backspace[/] to exit any node.")
+        while True:
+            if keyboard.read_key() == 'backspace':
+                break
 
     # Quits game
     if keyboard.read_key() == 'q':
