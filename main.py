@@ -134,7 +134,6 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
 
 def doXStepsInTime(x):
-    global population_info
     global population
     global born
     global dead
