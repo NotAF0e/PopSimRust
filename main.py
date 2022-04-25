@@ -328,4 +328,3 @@ while game_playing:
     if keyboard.read_key() == 'q':
         game_playing = False
 
-# popdsfsdjgosduhgiudshgiusd
