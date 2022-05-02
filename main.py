@@ -9,6 +9,8 @@ from rich import print
 population = 0
 born = 0
 dead = 0
+born_temp = 0
+dead_temp = 0
 
 money = 0
 tax_percentage = 1001  # (0.1%)
@@ -47,10 +49,8 @@ def clearTerminal():
 
 def clearInput():
     # A very bad way to clear input, but it works (lol)
-    num = 150
-    while num != 0:
+    for key_press in range(150):
         keyboard.press('backspace')
-        num -= 1
 
 
 clearTerminal()
@@ -75,7 +75,6 @@ def percentageIncrease(number, percentage_increase):
     percentage_increase = (percentage_increase / 100) + 1
     result = number * percentage_increase
     return result
-
 
 def percentageDecrease(number, percentage_decrease):
     percentage_decrease = number * ((100 - percentage_decrease) / 100)
@@ -137,12 +136,16 @@ def doXStepsInTime(x):
     global population
     global born
     global dead
+    global born_temp
+    global dead_temp
     global weeks_passed
     global death_rate_a
     global death_rate_b
     while x != 0:
-        born += random.randint(1, 4)  # Born
-        dead += random.randint(death_rate_a, death_rate_b)  # Dead
+        born_temp = random.randint(1, 4)
+        dead_temp = random.randint(death_rate_a, death_rate_b)
+        born += born_temp  # Born
+        dead += dead_temp  # Dead
         weeks_passed += 1
         x -= 1
     population = born - dead  # Population
@@ -191,15 +194,12 @@ def createBiome(biome_num):
 
 # User input to start game ------------------------------------------------------------------------
 # Biome creation
-tempSave = []
 while not BREAK:
     print("Before you create your population you will need to create a biome.\n")
     biome_info = createBiome(random.randint(0, 10))
     print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
     while not BREAK:
         if keyboard.read_key() == 'y':
-            for b in biome_info:
-                tempSave.append(b)
             BREAK = True
         if keyboard.read_key() == 'n':
             biome_info.clear()
@@ -265,9 +265,14 @@ while game_playing:
           f"People dead: [bold]{dead}[/]\n"
           f"[bold]Money: [green]${money}[/]\n")
 
+    # Prints population happiness
+    print(f"\n[bold]Happiness: [bold]{happiness_emoji[happiness]}[/]\n")
+
+    # End of main node
     if keyboard.read_key() == 'e':
         clearTerminal()
         print("Evolution node")
+        temp0 = 0
         while True:
             if keyboard.read_key() == 'enter':
                 clearTerminal()
@@ -275,6 +280,9 @@ while game_playing:
                 print(f"[bold]Population: [bold]{population}[/]\n"
                       f"People born: [bold]{born}[/]\n"
                       f"People dead: [bold]{dead}[/]")
+
+                print(f"\n[green]+{born_temp} born[/]\n"
+                      f"[red]-{dead_temp} dead[/]\n")
 
                 # Calculates money from taxes
                 money += (population // tax_percentage)
