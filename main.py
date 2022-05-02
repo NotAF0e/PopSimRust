@@ -16,6 +16,8 @@ food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 happiness_emoji = ["😡", "😠", "😐", "🙂", "😍"]
 biome = []
+death_rate_a = 0
+death_rate_b = 2
 
 # Decorative variables
 weeks_passed = 0
@@ -131,16 +133,16 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     else:
         print(f"\nCompleted in {time_of_process} seconds...")
 
-
-
 def doXStepsInTime(x):
     global population
     global born
     global dead
     global weeks_passed
+    global death_rate_a
+    global death_rate_b
     while x != 0:
         born += random.randint(1, 4)  # Born
-        dead += random.randint(0, 2)  # Dead
+        dead += random.randint(death_rate_a, death_rate_b)  # Dead
         weeks_passed += 1
         x -= 1
     population = born - dead  # Population
@@ -156,27 +158,31 @@ def biomeDetailsPrinter(biome_info_lst):
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
 
     formatted_biome = Biome.biomes[biome_info_lst[0]]
-    if biome_info_lst[0] == 8 or biome_info_lst[0] == 9 or biome_info_lst[0] == 10:
+    if biome_info_lst[3] is True:
         print("[red]Very dangerous!")
     print("Biome:", formatted_biome)
     print(f"Average temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C")
     print(f"Altitude: [bold]{biome_info_lst[2]}m[/]")
 
-
-def createLandscape(biome_num):
+def createBiome(biome_num):
     # Adds name to Biome.info[0]
     Biome.info.append(biome_num)
 
-    # Temperature calculation ---------------------------------------------------------------------
+    # Temperature calculation
     Biome.average_temperatures = [3, 4, 3, 3, 2, 1, 2, 5, 6, 1, 0]
-    # Adds temperature to Biome.info[1]
     Biome.info.append(Biome.average_temperatures[biome_num])
 
-    # Elevation calculation -----------------------------------------------------------------------
+    # Elevation calculation
     Biome.low_elevations = [610, 100, 100, 900, 0, 1500, 30, 150, 0, 2000, 0]
     Biome.high_elevations = [1220, 500, 300, 1500, 5, 8850, 150, 2600, 500, 7000, 500]
-    # Adds elevation to Biome.info[2]
     Biome.info.append(random.randint(Biome.low_elevations[biome_num], Biome.high_elevations[biome_num]))
+
+    # Check if biome is dangerous
+    Biome.dangerous_biomes = [8, 9, 10]
+    if biome_num in Biome.dangerous_biomes:
+        Biome.info.append(True)
+    else:
+        Biome.info.append(False)
 
     returner = Biome.info
     biomeDetailsPrinter(returner)  # Prints biome details
@@ -188,7 +194,7 @@ def createLandscape(biome_num):
 tempSave = []
 while not BREAK:
     print("Before you create your population you will need to create a biome.\n")
-    biome_info = createLandscape(random.randint(0, 10))
+    biome_info = createBiome(random.randint(0, 10))
     print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
     while not BREAK:
         if keyboard.read_key() == 'y':
@@ -198,7 +204,7 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             biome_info.clear()
             clearTerminal()
-            biome_info = createLandscape(random.randint(0, 10))
+            biome_info = createBiome(random.randint(0, 10))
             print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
 
 # Population creation
@@ -229,19 +235,22 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             break
 
-# This list holds the population info
+
 createPopulation(temp0, temp1, temp3, 15)
 clearInput()
 input("\nPress enter to continue...")
 
+# Variables setup
 game_playing = True
-
+if biome_info[3]:
+    death_rate_b = 5
 
 # Main game loop ----------------------------------------------------------------------------------
 while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
+
     # Prints amount of time passed
     if weeks_passed > 12:
         print(f"[bold]Year: [bold]{weeks_passed // 12}[/]\n"
@@ -249,11 +258,12 @@ while game_playing:
     else:
         print(f"Week: [bold]{weeks_passed}[/]\n"
               f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
+
     # Prints population info
     print(f"[bold]Population: [bold]{population}[/]\n"
           f"People born: [bold]{born}[/]\n"
-          f"People dead: [bold]{dead}[/]\n")
-    print(f"[bold]Money: [green]${money}[/]\n")
+          f"People dead: [bold]{dead}[/]\n"
+          f"[bold]Money: [green]${money}[/]\n")
 
     if keyboard.read_key() == 'e':
         clearTerminal()
@@ -265,8 +275,9 @@ while game_playing:
                 print(f"[bold]Population: [bold]{population}[/]\n"
                       f"People born: [bold]{born}[/]\n"
                       f"People dead: [bold]{dead}[/]")
+
                 # Calculates money from taxes
-                money += (born // tax_percentage)
+                money += (population // tax_percentage)
                 print(f"[bold]Money: [green]${money}[/]\n")
             elif keyboard.read_key() == 'backspace':
                 break
