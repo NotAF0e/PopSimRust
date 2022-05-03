@@ -47,6 +47,7 @@ Biome.info = []
 def clearTerminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 def clearInput():
     # A very bad way to clear input, but it works (lol)
     for key_press in range(150):
@@ -75,6 +76,7 @@ def percentageIncrease(number, percentage_increase):
     percentage_increase = (percentage_increase / 100) + 1
     result = number * percentage_increase
     return result
+
 
 def percentageDecrease(number, percentage_decrease):
     percentage_decrease = number * ((100 - percentage_decrease) / 100)
@@ -132,6 +134,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     else:
         print(f"\nCompleted in {time_of_process} seconds...")
 
+
 def doXStepsInTime(x):
     global population
     global born
@@ -166,6 +169,7 @@ def biomeDetailsPrinter(biome_info_lst):
     print("Biome:", formatted_biome)
     print(f"Average temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C")
     print(f"Altitude: [bold]{biome_info_lst[2]}m[/]")
+
 
 def createBiome(biome_num):
     # Adds name to Biome.info[0]
@@ -235,7 +239,6 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             break
 
-
 createPopulation(temp0, temp1, temp3, 15)
 clearInput()
 input("\nPress enter to continue...")
@@ -303,7 +306,29 @@ while game_playing:
         while True:
             if keyboard.read_key() == 't':
                 clearTerminal()
-                print("Taxes node")
+                print("Do you want to increase or decrease the tax rate?([green]i[/], [red]d[/])\n")
+                while True:
+                    if keyboard.read_key() == 'i':
+                        clearInput()
+                        print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
+                        print("Enter by how much you want to increase the tax rate")
+                        temp0 = int(input("Tax rate increase: "))
+                        tax_percentage += temp0
+                        print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
+                        break
+
+                    elif keyboard.read_key() == 'd':
+                        clearInput()
+                        print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
+                        print("Enter by how much you want to decrease the tax rate")
+                        temp0 = int(input("Tax rate decrease: "))
+                        tax_percentage -= temp0
+                        print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
+                        break
+
+                    elif keyboard.read_key() == 'backspace':
+                        break
+
 
             if keyboard.read_key() == 'm':
                 clearTerminal()
