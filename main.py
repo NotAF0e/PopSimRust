@@ -50,7 +50,7 @@ def clearTerminal():
 
 def clearInput():
     # A very bad way to clear input, but it works (lol)
-    for key_press in range(150):
+    for key_press in range(500):
         keyboard.press('backspace')
 
 
@@ -309,18 +309,18 @@ while game_playing:
                 print("Do you want to increase or decrease the tax rate?([green]i[/], [red]d[/])\n")
                 while True:
                     if keyboard.read_key() == 'i':
-                        clearInput()
                         print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
                         print("Enter by how much you want to increase the tax rate")
+                        clearInput()
                         temp0 = int(input("Tax rate increase: "))
                         tax_percentage += temp0
                         print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
                         break
 
                     elif keyboard.read_key() == 'd':
-                        clearInput()
                         print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
                         print("Enter by how much you want to decrease the tax rate")
+                        clearInput()
                         temp0 = int(input("Tax rate decrease: "))
                         tax_percentage -= temp0
                         print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
