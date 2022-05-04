@@ -310,7 +310,7 @@ while game_playing:
                 while True:
                     if keyboard.read_key() == 'i':
                         print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                        print("Enter by how much you want to increase the tax rate")
+                        print("Enter by how much you want to [bold]increase[/] the tax rate")
                         clearInput()
                         temp0 = int(input("Tax rate increase: "))
                         tax_percentage += temp0
@@ -319,7 +319,7 @@ while game_playing:
 
                     elif keyboard.read_key() == 'd':
                         print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                        print("Enter by how much you want to decrease the tax rate")
+                        print("Enter by how much you want to [bold]decrease[/] the tax rate")
                         clearInput()
                         temp0 = int(input("Tax rate decrease: "))
                         tax_percentage -= temp0
