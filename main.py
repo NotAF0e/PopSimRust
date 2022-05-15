@@ -320,12 +320,12 @@ while game_playing:
                 try:
                     clearTerminal()
                     evolution_rate = int(input("Change evolution rate: "))
-                    if evolution_rate > 10000:
-                        print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
                     break
                 except ValueError:
                     pass  # oof
             clearTerminal()
+            if evolution_rate < 10000:
+                print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
             print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
             print("Press [bold]backspace[/] to continue...")
 
