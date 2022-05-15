@@ -14,12 +14,18 @@ dead_temp = 0
 
 money = 0
 tax_percentage = 1001  # (0.1%)
+
 food = 0
+
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 happiness_emoji = ["😡", "😠", "😐", "🙂", "😍"]
-biome = []
+
 death_rate_a = 0
 death_rate_b = 2
+
+evolution_rate = 10
+
+biome = []
 
 # Decorative variables
 weeks_passed = 0
@@ -279,7 +285,7 @@ while game_playing:
         while True:
             if keyboard.read_key() == 'enter':
                 clearTerminal()
-                doXStepsInTime(10)
+                doXStepsInTime(evolution_rate)
                 print(f"[bold]Population: [bold]{population}[/]\n"
                       f"People born: [bold]{born}[/]\n"
                       f"People dead: [bold]{dead}[/]")
@@ -290,6 +296,14 @@ while game_playing:
                 # Calculates money from taxes
                 money += (population // tax_percentage)
                 print(f"[bold]Money: [green]${money}[/]\n")
+
+            if keyboard.read_key() == 'r':
+                clearTerminal()
+                print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
+                evolution_rate = int(input("Change evolution rate...\n"))
+                clearTerminal()
+                print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
+
             elif keyboard.read_key() == 'backspace':
                 break
 
@@ -302,8 +316,15 @@ while game_playing:
 
     if keyboard.read_key() == 'l':
         clearTerminal()
-        print("Law node")
+        print("This is the law node\n"
+              "Change laws: [bold]j[/]\n"
+              "Control taxes: [bold]t[/]\n"
+              "See your detailed income: [bold]m[/]\n")
         while True:
+            if keyboard.read_key() == 'j':
+                clearTerminal()
+                print("Laws node")
+
             if keyboard.read_key() == 't':
                 clearTerminal()
                 print("Do you want to increase or decrease the tax rate?([green]i[/], [red]d[/])\n")
@@ -328,7 +349,6 @@ while game_playing:
 
                     elif keyboard.read_key() == 'backspace':
                         break
-
 
             if keyboard.read_key() == 'm':
                 clearTerminal()
