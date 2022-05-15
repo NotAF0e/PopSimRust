@@ -54,9 +54,9 @@ def clearTerminal():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
-def clearInput():
+def clearInput(deletes=500):
     # A very bad way to clear input, but it works (lol)
-    for key_press in range(500):
+    for key_press in range(deletes):
         keyboard.press('backspace')
 
 
@@ -91,7 +91,7 @@ def percentageDecrease(number, percentage_decrease):
 
 
 # Main functions ----------------------------------------------------------------------------------
-def createPopulation(base_population_size, base_money, develop_time, time_multiplier):
+def createPopulation(base_money, develop_time, time_multiplier):
     global population
     global born
     global dead
@@ -101,8 +101,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
     clearTerminal()
 
     print("Creating population...")
-    print(f"\nStarting population size: {base_population_size}\n"
-          f"Starting money amount: {base_money}\n"
+    print(f"Starting money amount: {base_money}\n"
           f"Amount of weeks for population to develop: {develop_time}\n\n")
 
     money = base_money
@@ -126,7 +125,7 @@ def createPopulation(base_population_size, base_money, develop_time, time_multip
 
     born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
     dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
-    population = born - dead + base_population_size
+    population = born - dead
     print(f"[bold]Population: [bold]{population}[/]\n"
           f"People born: [bold]{born}[/]\n"
           f"People dead: [bold]{dead}[/]")
@@ -222,15 +221,13 @@ BREAK = False
 while not BREAK:
     clearTerminal()
     clearInput()
-    temp0 = int(input("Enter the population start size: "))
     temp1 = int(input("Enter the population base money: "))
     temp3 = int(input("Enter the amount of weeks for your population to grow: "))
     weeks_passed = temp3
 
     print("\nAre you sure you want to create a population with the "
           "following [white]stats([green]y[/], [red]n[/])?..")
-    print(f"[bold]Starting population size: [bold]{temp0}[/]\n"
-          f"Starting money amount: [bold]{temp1}[/]\n"
+    print(f"Starting money amount: [bold]{temp1}[/]\n"
           f"Amount of weeks for population to develop: [bold]{temp3}[/]")
     if temp3 > 100000000:
         print(f"[red]Caution! This many weeks may take a long time to complete!")
@@ -245,7 +242,8 @@ while not BREAK:
         if keyboard.read_key() == 'n':
             break
 
-createPopulation(temp0, temp1, temp3, 15)
+clearTerminal()
+createPopulation(temp1, temp3, 15)
 clearInput()
 input("\nPress enter to continue...")
 
@@ -281,8 +279,22 @@ while game_playing:
     if keyboard.read_key() == 'e':
         clearTerminal()
         print("Evolution node")
-        temp0 = 0
+        print("Evolve: [bold]enter[/]\n"
+              "Change evolution rate: [bold]r[/]\n")
+
+        temp0 = False
+        temp1 = False
+        clearInput()
         while True:
+            if keyboard.read_key() == 'enter':
+                temp0 = True
+                break
+
+            if keyboard.read_key() == 'r':
+                temp1 = True
+                break
+
+        while temp0:
             if keyboard.read_key() == 'enter':
                 clearTerminal()
                 doXStepsInTime(evolution_rate)
@@ -296,16 +308,27 @@ while game_playing:
                 # Calculates money from taxes
                 money += (population // tax_percentage)
                 print(f"[bold]Money: [green]${money}[/]\n")
-
-            if keyboard.read_key() == 'r':
-                clearTerminal()
-                print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
-                evolution_rate = int(input("Change evolution rate...\n"))
-                clearTerminal()
-                print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
-
             elif keyboard.read_key() == 'backspace':
                 break
+
+        if temp1:
+            clearTerminal()
+            print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
+            time.sleep(1)
+            clearInput(1000)
+            while True:
+                try:
+                    clearTerminal()
+                    evolution_rate = int(input("Change evolution rate: "))
+                    if evolution_rate > 10000:
+                        print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
+                    break
+                except ValueError:
+                    pass  # oof
+            clearTerminal()
+            print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
+            print("Press [bold]backspace[/] to continue...")
+
 
     if keyboard.read_key() == 'b':
         clearTerminal()
