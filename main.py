@@ -89,8 +89,16 @@ def percentageDecrease(number, percentage_decrease):
     result = percentage_decrease
     return result
 
+def intInput(s_str):
+    while True:
+        try:
+            val = int(input(s_str))
+            break
+        except ValueError:
+            print(f"Please enter an int!")
+    return val
 
-# Main functions ----------------------------------------------------------------------------------
+# Population functions ----------------------------------------------------------------------------
 def createPopulation(base_money, develop_time, time_multiplier):
     global population
     global born
@@ -158,7 +166,7 @@ def doXStepsInTime(x):
         x -= 1
     population = born - dead  # Population
 
-
+# Biome functions ---------------------------------------------------------------------------------
 def biomeDetailsPrinter(biome_info_lst):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
@@ -221,8 +229,8 @@ BREAK = False
 while not BREAK:
     clearTerminal()
     clearInput()
-    temp1 = int(input("Enter the population base money: "))
-    temp3 = int(input("Enter the amount of weeks for your population to grow: "))
+    temp1 = intInput("Enter the population base money: ")
+    temp3 = intInput("Enter the amount of weeks for your population to grow: ")
     weeks_passed = temp3
 
     print("\nAre you sure you want to create a population with the "
@@ -319,7 +327,7 @@ while game_playing:
             while True:
                 try:
                     clearTerminal()
-                    evolution_rate = int(input("Change evolution rate: "))
+                    evolution_rate = intInput("Change evolution rate: ")
                     break
                 except ValueError:
                     pass  # oof
@@ -338,9 +346,9 @@ while game_playing:
             if keyboard.read_key() == 'backspace':
                 break
 
-    if keyboard.read_key() == 'l':
+    if keyboard.read_key() == 'c':
         clearTerminal()
-        print("This is the law node\n"
+        print("This is the control node\n"
               "Change laws: [bold]j[/]\n"
               "Control taxes: [bold]t[/]\n"
               "See your detailed income: [bold]m[/]\n")
@@ -351,28 +359,12 @@ while game_playing:
 
             if keyboard.read_key() == 't':
                 clearTerminal()
-                print("Do you want to increase or decrease the tax rate?([green]i[/], [red]d[/])\n")
-                while True:
-                    if keyboard.read_key() == 'i':
-                        print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                        print("Enter by how much you want to [bold]increase[/] the tax rate")
-                        clearInput()
-                        temp0 = int(input("Tax rate increase: "))
-                        tax_percentage += temp0
-                        print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
-                        break
-
-                    elif keyboard.read_key() == 'd':
-                        print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                        print("Enter by how much you want to [bold]decrease[/] the tax rate")
-                        clearInput()
-                        temp0 = int(input("Tax rate decrease: "))
-                        tax_percentage -= temp0
-                        print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
-                        break
-
-                    elif keyboard.read_key() == 'backspace':
-                        break
+                print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
+                clearInput(1000)
+                temp0 = intInput("New tax rate: ") + 1000
+                tax_percentage = temp0
+                print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
+                print("Press [bold]backspace[/] to continue...")
 
             if keyboard.read_key() == 'm':
                 clearTerminal()
@@ -402,7 +394,7 @@ while game_playing:
               "Here you can find all the keybindings for the game.\n"
               "Evolution node: [bold]e[/]\n"
               "Biome node: [bold]b[/]\n"
-              "Law node: [bold]l[/]\n"
+              "Control node: [bold]l[/]\n"
               "War node: [bold]w[/]\n"
               "Settings node: [bold]s[/]\n"
               "Quit game: [bold]q[/]\n"
