@@ -1,6 +1,5 @@
 import random
 import time
-import keyboard
 # import json
 import os
 from rich import print
@@ -52,12 +51,6 @@ Biome.info = []
 
 def clearTerminal():
     os.system('cls' if os.name == 'nt' else 'clear')
-
-
-def clearInput(deletes=500):
-    # A very bad way to clear input, but it works (lol)
-    for key_press in range(deletes):
-        keyboard.press('backspace')
 
 
 clearTerminal()
@@ -216,19 +209,20 @@ while not BREAK:
     biome_info = createBiome(random.randint(0, 10))
     print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
     while not BREAK:
-        if keyboard.read_key() == 'y':
+        temp0 = input(">>>").strip().lower()
+        if temp0 == "y":
             BREAK = True
-        if keyboard.read_key() == 'n':
+        if temp0 == "n":
             biome_info.clear()
             clearTerminal()
             biome_info = createBiome(random.randint(0, 10))
             print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
+            temp0 = input(">>>").strip().lower()
 
 # Population creation
 BREAK = False
 while not BREAK:
     clearTerminal()
-    clearInput()
     temp1 = intInput("Enter the population base money: ")
     temp3 = intInput("Enter the amount of weeks for your population to grow: ")
     weeks_passed = temp3
@@ -239,20 +233,20 @@ while not BREAK:
           f"Amount of weeks for population to develop: [bold]{temp3}[/]")
     if temp3 > 100000000:
         print(f"[red]Caution! This many weeks may take a long time to complete!")
-    print("\n\n")
-
+    print("\n")
     BREAK = False
     while not BREAK:
-        if keyboard.read_key() == 'y':
+        temp0 = input(">>>").strip().lower()
+        if temp0 == "y":
             BREAK = True
             break
 
-        if keyboard.read_key() == 'n':
+        if temp0 == "n":
             break
 
 clearTerminal()
 createPopulation(temp1, temp3, 15)
-clearInput()
+# clearInput()
 input("\nPress enter to continue...")
 
 # Variables setup
@@ -282,9 +276,9 @@ while game_playing:
 
     # Prints population happiness
     print(f"\n[bold]Happiness: [bold]{happiness_emoji[happiness]}[/]\n")
-
+    temp0 = input(">>>").strip().lower()
     # End of main node
-    if keyboard.read_key() == 'e':
+    if temp0 == 'e':
         clearTerminal()
         print("Evolution node")
         print("Evolve: [bold]enter[/]\n"
@@ -292,18 +286,19 @@ while game_playing:
 
         temp0 = False
         temp1 = False
-        clearInput()
+        temp2 = input(">>>").strip().lower()
         while True:
-            if keyboard.read_key() == 'enter':
+            if temp2 == "":
                 temp0 = True
                 break
 
-            if keyboard.read_key() == 'r':
+            if temp2 == "r":
                 temp1 = True
                 break
 
         while temp0:
-            if keyboard.read_key() == 'enter':
+            temp3 = input(">>>").strip().lower()
+            if temp3 == "":
                 clearTerminal()
                 doXStepsInTime(evolution_rate)
                 print(f"[bold]Population: [bold]{population}[/]\n"
@@ -316,14 +311,13 @@ while game_playing:
                 # Calculates money from taxes
                 money += (population // tax_percentage)
                 print(f"[bold]Money: [green]${money}[/]\n")
-            elif keyboard.read_key() == 'backspace':
+            elif temp3 == 'b':
                 break
 
         if temp1:
             clearTerminal()
             print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
             time.sleep(1)
-            clearInput(1000)
             while True:
                 try:
                     clearTerminal()
@@ -336,74 +330,78 @@ while game_playing:
                 print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
 
             print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
-            print("Press [bold]backspace[/] to continue...")
+            print("Press [bold]enter[/] to continue...")
+            input(">>>")
 
-
-    if keyboard.read_key() == 'b':
+    if temp0 == 'l':
         clearTerminal()
         biomeDetailsPrinter(biome_info)
         while True:
-            if keyboard.read_key() == 'backspace':
+            temp1 = input(">>>").strip().lower()
+            if temp1 == 'b':
                 break
 
-    if keyboard.read_key() == 'c':
+    if temp0 == 'c':
         clearTerminal()
         print("This is the control node\n"
               "Change laws: [bold]j[/]\n"
               "Control taxes: [bold]t[/]\n"
               "See your detailed income: [bold]m[/]\n")
         while True:
-            if keyboard.read_key() == 'j':
+            temp1 = input(">>>").strip().lower()
+            if temp1 == 'j':
                 clearTerminal()
                 print("Laws node")
 
-            if keyboard.read_key() == 't':
+            if temp1 == 't':
                 clearTerminal()
                 print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                clearInput(1000)
                 temp0 = intInput("New tax rate: ") + 1000
                 tax_percentage = temp0
                 print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
-                print("Press [bold]backspace[/] to continue...")
+                print("Press [bold]b[/] to continue...")
 
-            if keyboard.read_key() == 'm':
+            if temp1 == 'm':
                 clearTerminal()
                 print("Money node")
 
-            elif keyboard.read_key() == 'backspace':
+            elif temp1 == 'b':
                 break
 
-    if keyboard.read_key() == 'w':
+    if temp0 == 'w':
         clearTerminal()
         print("War node")
         while True:
-            if keyboard.read_key() == 'backspace':
+            temp1 = input(">>>").strip().lower()
+            if temp1 == 'b':
                 break
 
-    if keyboard.read_key() == 's':
+    if temp0 == 's':
         clearTerminal()
         print("Settings node")
         while True:
-            if keyboard.read_key() == 'backspace':
+            temp1 = input(">>>").strip().lower()
+            if temp1 == 'b':
                 break
 
     # Shows all keybindings
-    if keyboard.read_key() == 'h':
+    if temp0 == 'h':
         clearTerminal()
         print("Welcome to the help node!\n"
               "Here you can find all the keybindings for the game.\n"
               "Evolution node: [bold]e[/]\n"
-              "Biome node: [bold]b[/]\n"
-              "Control node: [bold]l[/]\n"
+              "Biome node: [bold]l[/]\n"
+              "Control node: [bold]c[/]\n"
               "War node: [bold]w[/]\n"
               "Settings node: [bold]s[/]\n"
               "Quit game: [bold]q[/]\n"
               "\n"
-              "Press [bold]backspace[/] to exit any node.")
+              "Press [bold]b[/] to exit any node.")
         while True:
-            if keyboard.read_key() == 'backspace':
+            temp1 = input(">>>").strip().lower()
+            if temp1 == 'b':
                 break
 
     # Quits game
-    if keyboard.read_key() == 'q':
+    if temp0 == 'q':
         game_playing = False
