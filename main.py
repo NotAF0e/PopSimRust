@@ -2,9 +2,13 @@ import random
 import time
 # import json
 import os
-from rich import print
+from rich.console import Console
+from rich.progress import Progress
+
+c = Console()
 
 # Declaration of variables ------------------------------------------------------------------------
+name = ""
 population = 0
 born = 0
 dead = 0
@@ -37,10 +41,6 @@ temp1 = 0
 temp2 = 0
 temp3 = 0
 
-biome_info = []
-
-
-# keyboard.press('f11')  # Puts terminal in full screen mode
 
 class Biome:
     pass
@@ -82,6 +82,7 @@ def percentageDecrease(number, percentage_decrease):
     result = percentage_decrease
     return result
 
+
 def intInput(s_str):
     while True:
         try:
@@ -91,8 +92,10 @@ def intInput(s_str):
             print(f"Please enter an int!")
     return val
 
+
 # Population functions ----------------------------------------------------------------------------
-def createPopulation(base_money, develop_time, time_multiplier):
+def createPopulation(population_name, base_money, develop_time, time_multiplier):
+    global name
     global population
     global born
     global dead
@@ -102,34 +105,36 @@ def createPopulation(base_money, develop_time, time_multiplier):
     clearTerminal()
 
     print("Creating population...")
-    print(f"Starting money amount: {base_money}\n"
-          f"Amount of weeks for population to develop: {develop_time}\n\n")
+    c.print(f"Starting money amount: {base_money}\n"
+            f"Amount of weeks for population to develop: {develop_time}\n\n")
 
+    name = population_name
     money = base_money
 
-    start_process = time.process_time()  # Start time calculation
-
     # Population calculation ----------------------------------------------------------------------
-    percent = develop_time
+    start_process = time.process_time()  # Start time calculation
     time_step_interval = (develop_time / 100).__round__()
-    print("100% left...", end="\r")
-    while develop_time != 0:
-        born += random.randint(1, 4)
-        dead += random.randint(0, 2)
-        if time_step_interval == 0:
-            # Optimised population percentage
-            # Instead of printing the percentage every time, it will print when the percent changes
-            time_step_interval = (develop_time / 100).__round__()
-            print(f"{int(round(develop_time / percent, 2) * 100)}% left..", end="\r")
-        develop_time -= 1
-        time_step_interval -= 1
 
-    born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
-    dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
-    population = born - dead
-    print(f"[bold]Population: [bold]{population}[/]\n"
-          f"People born: [bold]{born}[/]\n"
-          f"People dead: [bold]{dead}[/]")
+    # Using the rich library to create progress bar bellow
+    with Progress() as progress:
+        task = progress.add_task("", total=100)
+
+        while not progress.finished:
+            born += random.randint(1, 4)
+            dead += random.randint(0, 2)
+            if time_step_interval == 0:
+                time_step_interval = (develop_time / 100).__round__()
+                # Bellow updates the progress percentage
+                progress.update(task, advance=1)
+            develop_time -= 1
+            time_step_interval -= 1
+
+        born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
+        dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
+        population = born - dead
+    c.print(f"\n[bold]Population: [bold]{population}[/]\n"
+            f"People born: [bold]{born}[/]\n"
+            f"People dead: [bold]{dead}[/]")
 
     end_process = time.process_time()  # End time calculation
 
@@ -159,6 +164,7 @@ def doXStepsInTime(x):
         x -= 1
     population = born - dead  # Population
 
+
 # Biome functions ---------------------------------------------------------------------------------
 def biomeDetailsPrinter(biome_info_lst):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
@@ -171,10 +177,10 @@ def biomeDetailsPrinter(biome_info_lst):
 
     formatted_biome = Biome.biomes[biome_info_lst[0]]
     if biome_info_lst[3] is True:
-        print("[red]Very dangerous!")
-    print("Biome:", formatted_biome)
-    print(f"Average temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C")
-    print(f"Altitude: [bold]{biome_info_lst[2]}m[/]")
+        c.print("[red]Very dangerous (death rate will be higher)!")
+    c.print("Biome:", formatted_biome,
+            f"\nAverage temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C" + "[/]",
+            f"\nAltitude: [bold]{biome_info_lst[2]}m[/]")
 
 
 def createBiome(biome_num):
@@ -204,48 +210,46 @@ def createBiome(biome_num):
 
 # User input to start game ------------------------------------------------------------------------
 # Biome creation
-while not BREAK:
+while True:
     print("Before you create your population you will need to create a biome.\n")
     biome_info = createBiome(random.randint(0, 10))
-    print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
-    while not BREAK:
-        temp0 = input(">>>").strip().lower()
-        if temp0 == "y":
-            BREAK = True
-        if temp0 == "n":
-            biome_info.clear()
-            clearTerminal()
-            biome_info = createBiome(random.randint(0, 10))
-            print("\nPress [green]y[/] to create this biome, or [red]n[/] to generate another.")
-            temp0 = input(">>>").strip().lower()
+    c.print("\nEnter [green]y[/] to create this biome, or [red]n[/] to generate another.")
+    temp0 = input(">>>").strip().lower()
+    if temp0 == "y":
+        break
+    if temp0 == "n":
+        clearTerminal()
+        biome_info.clear()
+        pass
 
 # Population creation
-BREAK = False
 while not BREAK:
     clearTerminal()
-    temp1 = intInput("Enter the population base money: ")
-    temp3 = intInput("Enter the amount of weeks for your population to grow: ")
-    weeks_passed = temp3
+    temp0 = str(input("Enter the name of your population: ").strip())
+    temp1 = intInput("Enter your starting money: ")
+    temp2 = intInput("Enter the amount of weeks for your population to grow: ")
+    weeks_passed = temp2
 
-    print("\nAre you sure you want to create a population with the "
-          "following [white]stats([green]y[/], [red]n[/])?..")
-    print(f"Starting money amount: [bold]{temp1}[/]\n"
-          f"Amount of weeks for population to develop: [bold]{temp3}[/]")
-    if temp3 > 100000000:
-        print(f"[red]Caution! This many weeks may take a long time to complete!")
+    c.print("\nAre you sure you want to create a population with the "
+            "following [white]stats([green]y[/], [red]n[/])?.."
+            f"\nName: {temp0}\n"
+            f"Starting money amount: {temp1}\n"
+            f"Amount of weeks for population to develop: {temp2}")
+    if temp2 > 100000000:
+        c.print(f"[red]Caution! This many weeks may take a long time to complete!")
     print("\n")
     BREAK = False
     while not BREAK:
-        temp0 = input(">>>").strip().lower()
-        if temp0 == "y":
+        temp3 = input(">>>").strip().lower()
+        if temp3 == "y":
             BREAK = True
             break
 
-        if temp0 == "n":
+        if temp3 == "n":
             break
 
 clearTerminal()
-createPopulation(temp1, temp3, 15)
+createPopulation(temp0, temp1, temp2, 15)
 # clearInput()
 input("\nPress enter to continue...")
 
@@ -259,23 +263,23 @@ while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
-
+    c.print(f"\n[bold]{temp0}[/]\n")
     # Prints amount of time passed
     if weeks_passed > 12:
-        print(f"[bold]Year: [bold]{weeks_passed // 12}[/]\n"
-              f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
+        print(f"Year: {weeks_passed // 12}\n"
+              f"Month: {months[weeks_passed % 12]}\n")
     else:
-        print(f"Week: [bold]{weeks_passed}[/]\n"
-              f"Month: [bold]{months[weeks_passed % 12]}[/]\n")
+        print(f"Week: {weeks_passed}\n"
+              f"Month: {months[weeks_passed % 12]}\n")
 
     # Prints population info
-    print(f"[bold]Population: [bold]{population}[/]\n"
-          f"People born: [bold]{born}[/]\n"
-          f"People dead: [bold]{dead}[/]\n"
-          f"[bold]Money: [green]${money}[/]\n")
+    c.print(f"Population: {population}\n"
+            f"People born: {born}\n"
+            f"People dead: {dead}\n"
+            f"Money: [green]${money}[/]\n")
 
     # Prints population happiness
-    print(f"\n[bold]Happiness: [bold]{happiness_emoji[happiness]}[/]\n")
+    print(f"\nHappiness: {happiness_emoji[happiness]}\n")
     temp0 = input(">>>").strip().lower()
     # End of main node
     if temp0 == 'e':
@@ -343,10 +347,10 @@ while game_playing:
 
     if temp0 == 'c':
         clearTerminal()
-        print("This is the control node\n"
-              "Change laws: [bold]j[/]\n"
-              "Control taxes: [bold]t[/]\n"
-              "See your detailed income: [bold]m[/]\n")
+        c.print("This is the control node\n"
+                "Change laws: [bold]j[/]\n"
+                "Control taxes: [bold]t[/]\n")
+
         while True:
             temp1 = input(">>>").strip().lower()
             if temp1 == 'j':
@@ -355,15 +359,11 @@ while game_playing:
 
             if temp1 == 't':
                 clearTerminal()
-                print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
+                c.print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
                 temp0 = intInput("New tax rate: ") + 1000
                 tax_percentage = temp0
-                print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]")
-                print("Press [bold]b[/] to continue...")
-
-            if temp1 == 'm':
-                clearTerminal()
-                print("Money node")
+                c.print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]"
+                        "Enter [bold]b[/] to continue...")
 
             elif temp1 == 'b':
                 break
@@ -387,16 +387,16 @@ while game_playing:
     # Shows all keybindings
     if temp0 == 'h':
         clearTerminal()
-        print("Welcome to the help node!\n"
-              "Here you can find all the keybindings for the game.\n"
-              "Evolution node: [bold]e[/]\n"
-              "Biome node: [bold]l[/]\n"
-              "Control node: [bold]c[/]\n"
-              "War node: [bold]w[/]\n"
-              "Settings node: [bold]s[/]\n"
-              "Quit game: [bold]q[/]\n"
-              "\n"
-              "Press [bold]b[/] to exit any node.")
+        c.print("Welcome to the help node!\n"
+                "Here you can find all the commands for the game.\n"
+                "Evolution node: [bold]e[/]\n"
+                "Biome node: [bold]l[/]\n"
+                "Control node: [bold]c[/]\n"
+                "War node: [bold]w[/]\n"
+                "Settings node: [bold]s[/]\n"
+                "Quit game: [bold]q[/]\n"
+                "\n"
+                "Enter [bold]b[/] to exit any node.")
         while True:
             temp1 = input(">>>").strip().lower()
             if temp1 == 'b':
