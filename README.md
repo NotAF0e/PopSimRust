@@ -1,5 +1,5 @@
 An Infinitely unfinished population simulator
 
-If you want to give it a try then download the needed libraries then clone the repo and run main.py
+If you want to give it a try then download the needed library then clone the repo and run main.py
 
-Required libraries are: rich, keyboard
+The only required library is the rich library
