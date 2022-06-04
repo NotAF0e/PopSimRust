@@ -119,19 +119,22 @@ def createPopulation(population_name, base_money, develop_time, time_multiplier)
     with Progress() as progress:
         task = progress.add_task("", total=100)
 
-        while not progress.finished:
-            born += random.randint(1, 4)
-            dead += random.randint(0, 2)
-            if time_step_interval == 0:
-                time_step_interval = (develop_time / 100).__round__()
-                # Bellow updates the progress percentage
-                progress.update(task, advance=1)
-            develop_time -= 1
-            time_step_interval -= 1
+        if develop_time < 151:
+            for i in range(develop_time):
+                doXStepsInTime(1, False)
+                progress.update(task, advance=100/develop_time)
+        else:
+            while not progress.finished:
+                doXStepsInTime(1, False)
+                if time_step_interval == 0:
+                    time_step_interval = (develop_time / 100).__round__()
+                    # Bellow updates the progress percentage
+                    progress.update(task, advance=1)
+                develop_time -= 1
+                time_step_interval -= 1
 
         born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
         dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
-        population = born - dead
     c.print(f"\n[bold]Population: [bold]{population}[/]\n"
             f"People born: [bold]{born}[/]\n"
             f"People dead: [bold]{dead}[/]")
@@ -146,7 +149,7 @@ def createPopulation(population_name, base_money, develop_time, time_multiplier)
         print(f"\nCompleted in {time_of_process} seconds...")
 
 
-def doXStepsInTime(x):
+def doXStepsInTime(x, calc_weeks=True):
     global population
     global born
     global dead
@@ -155,12 +158,15 @@ def doXStepsInTime(x):
     global weeks_passed
     global death_rate_a
     global death_rate_b
+    num = 1
+    if calc_weeks:
+        num = 0
     while x != 0:
         born_temp = random.randint(1, 4)
         dead_temp = random.randint(death_rate_a, death_rate_b)
         born += born_temp  # Born
         dead += dead_temp  # Dead
-        weeks_passed += 1
+        weeks_passed += num
         x -= 1
     population = born - dead  # Population
 
@@ -263,7 +269,7 @@ while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
-    c.print(f"\n[bold]{temp0}[/]\n")
+    c.print(f"\n[bold]{name}[/]\n")
     # Prints amount of time passed
     if weeks_passed > 12:
         print(f"Year: {weeks_passed // 12}\n"
@@ -285,8 +291,8 @@ while game_playing:
     if temp0 == 'e':
         clearTerminal()
         print("Evolution node")
-        print("Evolve: [bold]enter[/]\n"
-              "Change evolution rate: [bold]r[/]\n")
+        c.print("Evolve: [bold]enter[/]\n"
+                "Change evolution rate: [bold]r[/]\n")
 
         temp0 = False
         temp1 = False
@@ -305,22 +311,22 @@ while game_playing:
             if temp3 == "":
                 clearTerminal()
                 doXStepsInTime(evolution_rate)
-                print(f"[bold]Population: [bold]{population}[/]\n"
-                      f"People born: [bold]{born}[/]\n"
-                      f"People dead: [bold]{dead}[/]")
+                c.print(f"[bold]Population: [bold]{population}[/]\n"
+                        f"People born: [bold]{born}[/]\n"
+                        f"People dead: [bold]{dead}[/]")
 
-                print(f"\n[green]+{born_temp} born[/]\n"
-                      f"[red]-{dead_temp} dead[/]\n")
+                c.print(f"\n[green]+{born_temp} born[/]\n"
+                        f"[red]-{dead_temp} dead[/]\n")
 
                 # Calculates money from taxes
                 money += (population // tax_percentage)
-                print(f"[bold]Money: [green]${money}[/]\n")
+                c.print(f"[bold]Money: [green]${money}[/]\n")
             elif temp3 == 'b':
                 break
 
         if temp1:
             clearTerminal()
-            print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
+            c.print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
             time.sleep(1)
             while True:
                 try:
@@ -331,10 +337,10 @@ while game_playing:
                     pass  # oof
             clearTerminal()
             if evolution_rate < 10000:
-                print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
+                c.print(f"[red]Evolution rate higher than 10000 will cause the game to lag![/]")
 
-            print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
-            print("Press [bold]enter[/] to continue...")
+            c.print(f"The evolution rate is now: [bold]{evolution_rate}[/]")
+            c.print("Press [bold]enter[/] to continue...")
             input(">>>")
 
     if temp0 == 'l':
