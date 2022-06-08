@@ -28,32 +28,26 @@ death_rate_b = 2
 
 evolution_rate = 10
 
-biome = []
-
-# Decorative variables
 weeks_passed = 0
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
           "October", "November", "December"]
 
 BREAK = False
-temp0 = 0
-temp1 = 0
-temp2 = 0
-temp3 = 0
+temp0 = None
+temp1 = None
+temp2 = None
+temp3 = None
 
 
 class Biome:
     pass
 
 
-Biome.info = []
+tempBiome = []
 
 
 def clearTerminal():
     os.system('cls' if os.name == 'nt' else 'clear')
-
-
-clearTerminal()
 
 
 def printLogo():
@@ -122,7 +116,7 @@ def createPopulation(population_name, base_money, develop_time, time_multiplier)
         if develop_time < 151:
             for i in range(develop_time):
                 doXStepsInTime(1, False)
-                progress.update(task, advance=100/develop_time)
+                progress.update(task, advance=100 / develop_time)
         else:
             while not progress.finished:
                 doXStepsInTime(1, False)
@@ -172,7 +166,7 @@ def doXStepsInTime(x, calc_weeks=True):
 
 
 # Biome functions ---------------------------------------------------------------------------------
-def biomeDetailsPrinter(biome_info_lst):
+def biomeDetailsPrint(biome_info_lst, detailed_info=False):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
                     "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
@@ -181,52 +175,114 @@ def biomeDetailsPrinter(biome_info_lst):
     Biome.temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
 
-    formatted_biome = Biome.biomes[biome_info_lst[0]]
-    if biome_info_lst[3] is True:
-        c.print("[red]Very dangerous (death rate will be higher)!")
-    c.print("Biome:", formatted_biome,
-            f"\nAverage temperature: {Biome.temperatures[biome_info_lst[1]]}" + "°C" + "[/]",
-            f"\nAltitude: [bold]{biome_info_lst[2]}m[/]")
+    formatted_biome = Biome.biomes[biome_info_lst[1]]
+    if detailed_info:
+        if biome_info_lst[4] is True:
+            c.print("[red]Very dangerous!")
+        c.print("Biome:", formatted_biome,
+                f"\nAverage temperature: {Biome.temperatures[biome_info_lst[2]]}" + "°C" + "[/]",
+                f"\nAltitude: [bold]{biome_info_lst[3]}m[/]")
+    else:
+        c.print(f"[white]{biome_info_lst[0]}.[/] {formatted_biome}")
 
 
-def createBiome(biome_num):
+def createBiome(biome_rand, biome_num):
+    tempBiome.clear()
+    tempBiome.append(biome_num)
     # Adds name to Biome.info[0]
-    Biome.info.append(biome_num)
+    tempBiome.append(biome_rand)
 
     # Temperature calculation
     Biome.average_temperatures = [3, 4, 3, 3, 2, 1, 2, 5, 6, 1, 0]
-    Biome.info.append(Biome.average_temperatures[biome_num])
+    tempBiome.append(Biome.average_temperatures[biome_rand])
 
     # Elevation calculation
     Biome.low_elevations = [610, 100, 100, 900, 0, 1500, 30, 150, 0, 2000, 0]
     Biome.high_elevations = [1220, 500, 300, 1500, 5, 8850, 150, 2600, 500, 7000, 500]
-    Biome.info.append(random.randint(Biome.low_elevations[biome_num], Biome.high_elevations[biome_num]))
+    tempBiome.append(random.randint(Biome.low_elevations[biome_rand], Biome.high_elevations[biome_rand]))
 
     # Check if biome is dangerous
     Biome.dangerous_biomes = [8, 9, 10]
-    if biome_num in Biome.dangerous_biomes:
-        Biome.info.append(True)
+    if biome_rand in Biome.dangerous_biomes:
+        tempBiome.append(True)
     else:
-        Biome.info.append(False)
+        tempBiome.append(False)
 
-    returner = Biome.info
-    biomeDetailsPrinter(returner)  # Prints biome details
+    returner = tempBiome
     return returner
 
 
+class World:
+    biomes = []
+    world_name = ""
+    start_biome = 0
+
+    def create(self, world_name, biome_amount):
+        self.world_name = world_name
+        biome_num = 0
+        while biome_amount != 0:
+            returner = createBiome(random.randint(0, 10), biome_num)
+            self.biomes.append(returner[:])
+            biomeDetailsPrint(returner, detailed_info=False)
+            # Debug lines
+            # print(returner)
+            # print(self.biomes)
+            biome_num += 1
+            biome_amount -= 1
+        # print(self.biomes)
+
+    def print(self, detailed_info=False, display_current_biome=False):
+        c.print(f"World name: [bold]{self.world_name}[/]\n")
+        x = 0
+        for biome in self.biomes:
+            if display_current_biome and self.biomes[x][0] == current_biome:
+                c.print("[bold](Current location)[/]")
+            biomeDetailsPrint(biome, detailed_info=detailed_info)
+            if detailed_info: print("\n")
+            x += 1
+
+
 # User input to start game ------------------------------------------------------------------------
-# Biome creation
+# World creation
+clearTerminal()
+print("Before you create your population you will need to create a world.\n")
+while temp0 is None:
+    temp0 = input("Enter the name of your world: ").strip()
+World.world_name = temp0
+
 while True:
-    print("Before you create your population you will need to create a biome.\n")
-    biome_info = createBiome(random.randint(0, 10))
-    c.print("\nEnter [green]y[/] to create this biome, or [red]n[/] to generate another.")
+    clearTerminal()
+    World.create(World(), "Name", 5)
+    c.print("\nEnter [green]y[/] to create this world, or [red]n[/] to generate another.")
+    temp0 = input(">>>").strip().lower()
+    if temp0 == "y":
+        clearTerminal()
+        break
+    elif temp0 == "n":
+        clearTerminal()
+        World.biomes.clear()  # Resets biomes in world
+        pass
+    else:
+        clearTerminal()
+        World.biomes.clear()
+        c.print("[red]Invalid input![/]")
+
+while True:
+    clearTerminal()
+    World.print(World())
+    c.print("\nWhat will be your starting biome? [red]You can not change this later![/]")
+    start_biome = intInput(">>>")
+    clearTerminal()
+    biomeDetailsPrint(World.biomes[start_biome:][0], detailed_info=True)  # Starting biome info
+    c.print("\nAre you sure want to start here?")
     temp0 = input(">>>").strip().lower()
     if temp0 == "y":
         break
-    if temp0 == "n":
+    elif temp0 == "n":
         clearTerminal()
-        biome_info.clear()
         pass
+
+
 
 # Population creation
 while not BREAK:
@@ -251,17 +307,17 @@ while not BREAK:
             BREAK = True
             break
 
-        if temp3 == "n":
+        elif temp3 == "n":
             break
 
 clearTerminal()
 createPopulation(temp0, temp1, temp2, 15)
-# clearInput()
 input("\nPress enter to continue...")
 
 # Variables setup
 game_playing = True
-if biome_info[3]:
+current_biome = start_biome
+if World.biomes[current_biome][4]:
     death_rate_b = 5
 
 # Main game loop ----------------------------------------------------------------------------------
@@ -343,9 +399,9 @@ while game_playing:
             c.print("Press [bold]enter[/] to continue...")
             input(">>>")
 
-    if temp0 == 'l':
+    if temp0 == 'w':
         clearTerminal()
-        biomeDetailsPrinter(biome_info)
+        World.print(World(), detailed_info=True, display_current_biome=True)
         while True:
             temp1 = input(">>>").strip().lower()
             if temp1 == 'b':
@@ -374,7 +430,7 @@ while game_playing:
             elif temp1 == 'b':
                 break
 
-    if temp0 == 'w':
+    if temp0 == 'f':
         clearTerminal()
         print("War node")
         while True:
@@ -396,9 +452,9 @@ while game_playing:
         c.print("Welcome to the help node!\n"
                 "Here you can find all the commands for the game.\n"
                 "Evolution node: [bold]e[/]\n"
-                "Biome node: [bold]l[/]\n"
+                "World node: [bold]w[/]\n"
                 "Control node: [bold]c[/]\n"
-                "War node: [bold]w[/]\n"
+                "War node: [bold]f[/]\n"
                 "Settings node: [bold]s[/]\n"
                 "Quit game: [bold]q[/]\n"
                 "\n"
