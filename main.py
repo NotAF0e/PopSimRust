@@ -1,7 +1,6 @@
 import random
 import time
 # import json
-import os
 from rich.console import Console
 from rich.progress import Progress
 
@@ -47,7 +46,7 @@ tempBiome = []
 
 
 def clearTerminal():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    c.clear()
 
 
 def printLogo():
@@ -165,8 +164,11 @@ def doXStepsInTime(x, calc_weeks=True):
     population = born - dead  # Population
 
 
-# Biome functions ---------------------------------------------------------------------------------
-def biomeDetailsPrint(biome_info_lst, detailed_info=False):
+# World functions ---------------------------------------------------------------------------------
+
+
+
+def printBiomeDetails(biome_info_lst, detailed_info=False):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
                     "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
@@ -212,9 +214,14 @@ def createBiome(biome_rand, biome_num):
     return returner
 
 
+def printAsciiWorld():
+    c.print(*World.ascii_world, sep='\n')
+
+
 class World:
-    biomes = []
     world_name = ""
+    biomes = []
+    ascii_world = []
     start_biome = 0
 
     def create(self, world_name, biome_amount):
@@ -223,7 +230,6 @@ class World:
         while biome_amount != 0:
             returner = createBiome(random.randint(0, 10), biome_num)
             self.biomes.append(returner[:])
-            biomeDetailsPrint(returner, detailed_info=False)
             # Debug lines
             # print(returner)
             # print(self.biomes)
@@ -231,13 +237,54 @@ class World:
             biome_amount -= 1
         # print(self.biomes)
 
+    # Bellow function is modified code from: https://youtu.be/YS-5ezQPWuU Thanks Dennis
+    def createAsciiWorld(self, width=145, height=50, land_amount=2500):
+        drunk = {
+            'landAmount': land_amount,
+            'padding': 2,
+            'x': int(width / 2),
+            'y': int(height / 2)
+        }
+
+        def getLevelRow():
+            return ['[blue]#'] * width
+
+        level = [getLevelRow() for _ in range(height)]
+
+        while drunk['landAmount'] >= 0:
+            x = drunk['x']
+            y = drunk['y']
+
+            if level[y][x] == '[blue]#':
+                level[y][x] = '[green]0'
+                drunk['landAmount'] -= 1
+
+            roll = random.randint(1, 4)
+
+            if roll == 1 and x > drunk['padding']:
+                drunk['x'] -= 1
+
+            if roll == 2 and x < width - 1 - drunk['padding']:
+                drunk['x'] += 1
+
+            if roll == 3 and y > drunk['padding']:
+                drunk['y'] -= 1
+
+            if roll == 4 and y < height - 1 - drunk['padding']:
+                drunk['y'] += 1
+
+        for row in level:
+            self.ascii_world.append(''.join(row))
+
+        return self.ascii_world
+
     def print(self, detailed_info=False, display_current_biome=False):
         c.print(f"World name: [bold]{self.world_name}[/]\n")
         x = 0
         for biome in self.biomes:
             if display_current_biome and self.biomes[x][0] == current_biome:
                 c.print("[bold](Current location)[/]")
-            biomeDetailsPrint(biome, detailed_info=detailed_info)
+            printBiomeDetails(biome, detailed_info=detailed_info)
             if detailed_info: print("\n")
             x += 1
 
@@ -250,22 +297,31 @@ while temp0 is None:
     temp0 = input("Enter the name of your world: ").strip()
 World.world_name = temp0
 
+temp1 = True
 while True:
     clearTerminal()
-    World.create(World(), "Name", 5)
+    if temp1 is True:
+        World.create(World(), "Name", 5)
+        World.createAsciiWorld(World())
+        clearTerminal()
+    World.print(World())
     c.print("\nEnter [green]y[/] to create this world, or [red]n[/] to generate another.")
+    c.print("You can press [bold]enter[/] to show world map [red](work in progress...)[/]")
     temp0 = input(">>>").strip().lower()
     if temp0 == "y":
         clearTerminal()
         break
     elif temp0 == "n":
+        temp1 = True
         clearTerminal()
-        World.biomes.clear()  # Resets biomes in world
+        World.biomes.clear()  # Resets biomes in ascii_world
+        World.ascii_world.clear()
         pass
     else:
+        temp1 = False
         clearTerminal()
-        World.biomes.clear()
-        c.print("[red]Invalid input![/]")
+        c.print(*World.ascii_world, sep='\n')
+        input("Press b to exit world preview...")
 
 while True:
     clearTerminal()
@@ -273,8 +329,8 @@ while True:
     c.print("\nWhat will be your starting biome? [red]You can not change this later![/]")
     start_biome = intInput(">>>")
     clearTerminal()
-    biomeDetailsPrint(World.biomes[start_biome:][0], detailed_info=True)  # Starting biome info
-    c.print("\nAre you sure want to start here?")
+    printBiomeDetails(World.biomes[start_biome:][0], detailed_info=True)  # Starting biome info
+    c.print("\nAre you sure want to start [white]here([green]y[/], [red]n[/])?..")
     temp0 = input(">>>").strip().lower()
     if temp0 == "y":
         break
@@ -294,7 +350,7 @@ while not BREAK:
 
     c.print("\nAre you sure you want to create a population with the "
             "following [white]stats([green]y[/], [red]n[/])?.."
-            f"\nName: {temp0}\n"
+            f"\nName: [bold]{temp0}[/]\n"
             f"Starting money amount: {temp1}\n"
             f"Amount of weeks for population to develop: {temp2}")
     if temp2 > 100000000:
@@ -402,10 +458,13 @@ while game_playing:
     if temp0 == 'w':
         clearTerminal()
         World.print(World(), detailed_info=True, display_current_biome=True)
+        c.print("\nYou can press [bold]enter[/] to show world map [red](work in progress...)[/]")
         while True:
             temp1 = input(">>>").strip().lower()
             if temp1 == 'b':
                 break
+            elif temp1 == '':
+                printAsciiWorld()
 
     if temp0 == 'c':
         clearTerminal()
