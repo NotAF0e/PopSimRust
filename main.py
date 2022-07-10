@@ -11,8 +11,8 @@ name = ""
 population = 0
 born = 0
 dead = 0
-born_temp = 0
-dead_temp = 0
+player_born_temp = 0
+player_dead_temp = 0
 
 money = 0
 tax_percentage = 1001  # (0.1%)
@@ -86,7 +86,7 @@ def intInput(s_str):
     return val
 
 
-# Population functions ----------------------------------------------------------------------------
+# Pop functions ----------------------------------------------------------------------------
 def createPopulation(population_name, base_money, develop_time, time_multiplier):
     global name
     global population
@@ -104,7 +104,7 @@ def createPopulation(population_name, base_money, develop_time, time_multiplier)
     name = population_name
     money = base_money
 
-    # Population calculation ----------------------------------------------------------------------
+    # Pop calculation ----------------------------------------------------------------------
     start_process = time.process_time()  # Start time calculation
     time_step_interval = (develop_time / 100).__round__()
 
@@ -146,8 +146,8 @@ def doXStepsInTime(x, calc_weeks=True):
     global population
     global born
     global dead
-    global born_temp
-    global dead_temp
+    global player_born_temp
+    global player_dead_temp
     global weeks_passed
     global death_rate_a
     global death_rate_b
@@ -161,7 +161,7 @@ def doXStepsInTime(x, calc_weeks=True):
         dead += dead_temp  # Dead
         weeks_passed += num
         x -= 1
-    population = born - dead  # Population
+    population = born - dead  # Pop
 
 
 # World functions ---------------------------------------------------------------------------------
@@ -340,7 +340,7 @@ while True:
 
 
 
-# Population creation
+# Pop creation
 while not BREAK:
     clearTerminal()
     temp0 = str(input("Enter the name of your population: ").strip())
@@ -427,8 +427,8 @@ while game_playing:
                         f"People born: [bold]{born}[/]\n"
                         f"People dead: [bold]{dead}[/]")
 
-                c.print(f"\n[green]+{born_temp} born[/]\n"
-                        f"[red]-{dead_temp} dead[/]\n")
+                c.print(f"\n[green]+{player_born_temp} born[/]\n"
+                        f"[red]-{player_dead_temp} dead[/]\n")
 
                 # Calculates money from taxes
                 money += (population // tax_percentage)

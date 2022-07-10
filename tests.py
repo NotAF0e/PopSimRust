@@ -92,7 +92,7 @@ class Pop:
     death_rate_a = 0
     death_rate_b = 2
 
-    def createPopulation(self, population_name, base_money, develop_time, time_multiplier):
+    def create(self, population_name, base_money, develop_time, time_multiplier):
         clearTerminal()
 
         print("Creating population...")
@@ -146,10 +146,10 @@ class Pop:
         if calc_weeks:
             temp0 = 0
         while x != 0:
-            player_born_temp = random.randint(1, 4)
-            player_dead_temp = random.randint(self.death_rate_a, self.death_rate_b)
-            self.born[0] += player_born_temp  # Born
-            self.dead[0] += player_dead_temp  # Dead
+            self.player_born_temp = random.randint(1, 4)
+            self.player_dead_temp = random.randint(self.death_rate_a, self.death_rate_b)
+            self.born[0] += self.player_born_temp  # Born
+            self.dead[0] += self.player_dead_temp  # Dead
             weeks_passed += temp0
             x -= 1
         self.population[0] = self.born[0] - self.dead[0]  # Pop
@@ -358,7 +358,7 @@ while not BREAK:
             break
 
 clearTerminal()
-Pop.createPopulation(Pop(), tmp0, tmp1, tmp2, 15)
+Pop.create(Pop(), tmp0, tmp1, tmp2, 15)
 input("\nPress enter to continue...")
 
 # Variables setup
