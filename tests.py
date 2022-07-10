@@ -10,14 +10,6 @@ from rich.progress import Progress
 c = Console()
 
 # Declaration of variables ------------------------------------------------------------------------
-name = ""
-population = 0
-born = 0
-dead = 0
-born_temp = 0
-dead_temp = 0
-
-money = 0
 tax_percentage = 1001  # (0.1%)
 
 food = 0
@@ -25,8 +17,6 @@ food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 happiness_emoji = ["😡", "😠", "😐", "🙂", "😍"]
 
-death_rate_a = 0
-death_rate_b = 2
 
 evolution_rate = 10
 
@@ -35,10 +25,10 @@ months = ["January", "February", "March", "April", "May", "June", "July", "Augus
           "October", "November", "December"]
 
 BREAK = False
-temp0 = None
-temp1 = None
-temp2 = None
-temp3 = None
+tmp0 = None
+tmp1 = None
+tmp2 = None
+tmp3 = None
 
 
 class Biome:
@@ -89,82 +79,80 @@ def intInput(s_str):
     return val
 
 
-# Population functions ----------------------------------------------------------------------------
-def createPopulation(population_name, base_money, develop_time, time_multiplier):
-    global name
-    global population
-    global born
-    global dead
-    global food
-    global money
+# Pop functions ----------------------------------------------------------------------------
 
-    clearTerminal()
+class Pop:
+    pop_name = [""]
+    population = [0]
+    born = [0]
+    dead = [0]
+    money = [0]
+    player_born_temp = 0
+    player_dead_temp = 0
+    death_rate_a = 0
+    death_rate_b = 2
 
-    print("Creating population...")
-    c.print(f"Starting money amount: {base_money}\n"
-            f"Amount of weeks for population to develop: {develop_time}\n\n")
+    def createPopulation(self, population_name, base_money, develop_time, time_multiplier):
+        clearTerminal()
 
-    name = population_name
-    money = base_money
+        print("Creating population...")
+        c.print(f"Starting money amount: {base_money}\n"
+                f"Amount of weeks for population to develop: {develop_time}\n\n")
 
-    # Population calculation ----------------------------------------------------------------------
-    start_process = time.process_time()  # Start time calculation
-    time_step_interval = (develop_time / 100).__round__()
+        self.pop_name[0] = population_name
+        self.money[0] = base_money
 
-    # Using the rich library to create progress bar bellow
-    with Progress() as progress:
-        task = progress.add_task("", total=100)
+        # Pop calculation ----------------------------------------------------------------------
+        start_process = time.process_time()  # Start time calculation
+        time_step_interval = (develop_time / 100).__round__()
 
-        if develop_time < 151:
-            for i in range(develop_time):
-                doXStepsInTime(1, False)
-                progress.update(task, advance=100 / develop_time)
+        # Using the rich library to create progress bar bellow
+        with Progress() as progress:
+            task = progress.add_task("", total=100)
+
+            if develop_time < 151:
+                for i in range(develop_time):
+                    self.doXStepsInTime(1, False)
+                    progress.update(task, advance=100 / develop_time)
+            else:
+                while not progress.finished:
+                    self.doXStepsInTime(1, False)
+                    if time_step_interval == 0:
+                        time_step_interval = (develop_time / 100).__round__()
+                        # Bellow updates the progress percentage
+                        progress.update(task, advance=1)
+                    develop_time -= 1
+                    time_step_interval -= 1
+
+            self.born[0] += percentageIncrease(self.born[0], 5).__round__() * time_multiplier  # Increases born by 5%
+            self.dead[0] += percentageIncrease(self.dead[0], 1).__round__() * time_multiplier  # Increases dead by 1%
+        c.print(f"\n[bold]Population: [bold]{self.population[0]}[/]\n"
+                f"People born: [bold]{self.born[0]}[/]\n"
+                f"People dead: [bold]{self.dead[0]}[/]")
+
+        end_process = time.process_time()  # End time calculation
+
+        # Time calculation ----------------------------------------------------------------------------
+        time_of_process = end_process - start_process
+        if time_of_process == 0:
+            print("\nCompleted very quickly...")
         else:
-            while not progress.finished:
-                doXStepsInTime(1, False)
-                if time_step_interval == 0:
-                    time_step_interval = (develop_time / 100).__round__()
-                    # Bellow updates the progress percentage
-                    progress.update(task, advance=1)
-                develop_time -= 1
-                time_step_interval -= 1
+            print(f"\nCompleted in {time_of_process} seconds...")
 
-        born += percentageIncrease(born, 5).__round__() * time_multiplier  # Increases born by 5%
-        dead += percentageIncrease(dead, 1).__round__() * time_multiplier  # Increases dead by 1%
-    c.print(f"\n[bold]Population: [bold]{population}[/]\n"
-            f"People born: [bold]{born}[/]\n"
-            f"People dead: [bold]{dead}[/]")
+    def doXStepsInTime(self, x, calc_weeks=True):
+        global weeks_passed
 
-    end_process = time.process_time()  # End time calculation
-
-    # Time calculation ----------------------------------------------------------------------------
-    time_of_process = end_process - start_process
-    if time_of_process == 0:
-        print("\nCompleted very quickly...")
-    else:
-        print(f"\nCompleted in {time_of_process} seconds...")
-
-
-def doXStepsInTime(x, calc_weeks=True):
-    global population
-    global born
-    global dead
-    global born_temp
-    global dead_temp
-    global weeks_passed
-    global death_rate_a
-    global death_rate_b
-    num = 1
-    if calc_weeks:
-        num = 0
-    while x != 0:
-        born_temp = random.randint(1, 4)
-        dead_temp = random.randint(death_rate_a, death_rate_b)
-        born += born_temp  # Born
-        dead += dead_temp  # Dead
-        weeks_passed += num
-        x -= 1
-    population = born - dead  # Population
+        temp0 = 1
+        if calc_weeks:
+            temp0 = 0
+        while x != 0:
+            player_born_temp = random.randint(1, 4)
+            player_dead_temp = random.randint(self.death_rate_a, self.death_rate_b)
+            self.born[0] += player_born_temp  # Born
+            self.dead[0] += player_dead_temp  # Dead
+            weeks_passed += temp0
+            x -= 1
+        self.population[0] = self.born[0] - self.dead[0]  # Pop
 
 
 # World functions ---------------------------------------------------------------------------------
@@ -296,32 +284,32 @@ class World:
 # World creation
 clearTerminal()
 print("Before you create your population you will need to create a world.\n")
-while temp0 is None:
-    temp0 = input("Enter the name of your world: ").strip()
-World.world_name = temp0
+while tmp0 is None:
+    tmp0 = input("Enter the name of your world: ").strip()
+World.world_name = tmp0
 
-temp1 = True
+tmp1 = True
 while True:
     clearTerminal()
-    if temp1 is True:
+    if tmp1 is True:
         World.create(World(), "Name", 5)
         World.createAsciiWorld(World())
         clearTerminal()
     World.print(World())
     c.print("\nEnter [green]y[/] to create this world, or [red]n[/] to generate another.")
     c.print("You can press [bold]enter[/] to show world map [red](work in progress...)[/]")
-    temp0 = input(">>>").strip().lower()
-    if temp0 == "y":
+    tmp0 = input(">>>").strip().lower()
+    if tmp0 == "y":
         clearTerminal()
         break
-    elif temp0 == "n":
-        temp1 = True
+    elif tmp0 == "n":
+        tmp1 = True
         clearTerminal()
         World.biomes.clear()  # Resets biomes in ascii_world
         World.ascii_world.clear()
         pass
     else:
-        temp1 = False
+        tmp1 = False
         clearTerminal()
         c.print(*World.ascii_world, sep='\n')
         input("Press b to exit world preview...")
@@ -334,43 +322,43 @@ while True:
     clearTerminal()
     printBiomeDetails(World.biomes[start_biome:][0], detailed_info=True)  # Starting biome info
     c.print("\nAre you sure want to start [white]here([green]y[/], [red]n[/])?..")
-    temp0 = input(">>>").strip().lower()
-    if temp0 == "y":
+    tmp0 = input(">>>").strip().lower()
+    if tmp0 == "y":
         break
-    elif temp0 == "n":
+    elif tmp0 == "n":
         clearTerminal()
         pass
 
 
 
-# Population creation
+# Pop creation
 while not BREAK:
     clearTerminal()
-    temp0 = str(input("Enter the name of your population: ").strip())
-    temp1 = intInput("Enter your starting money: ")
-    temp2 = intInput("Enter the amount of weeks for your population to grow: ")
-    weeks_passed = temp2
+    tmp0 = str(input("Enter the name of your population: ").strip())
+    tmp1 = intInput("Enter your starting money: ")
+    tmp2 = intInput("Enter the amount of weeks for your population to grow: ")
+    weeks_passed = tmp2
 
     c.print("\nAre you sure you want to create a population with the "
             "following [white]stats([green]y[/], [red]n[/])?.."
-            f"\nName: [bold]{temp0}[/]\n"
-            f"Starting money amount: {temp1}\n"
-            f"Amount of weeks for population to develop: {temp2}")
-    if temp2 > 100000000:
+            f"\nName: [bold]{tmp0}[/]\n"
+            f"Starting money amount: {tmp1}\n"
+            f"Amount of weeks for population to develop: {tmp2}")
+    if tmp2 > 100000000:
         c.print(f"[red]Caution! This many weeks may take a long time to complete!")
     print("\n")
     BREAK = False
     while not BREAK:
-        temp3 = input(">>>").strip().lower()
-        if temp3 == "y":
+        tmp3 = input(">>>").strip().lower()
+        if tmp3 == "y":
             BREAK = True
             break
 
-        elif temp3 == "n":
+        elif tmp3 == "n":
             break
 
 clearTerminal()
-createPopulation(temp0, temp1, temp2, 15)
+Pop.createPopulation(Pop(), tmp0, tmp1, tmp2, 15)
 input("\nPress enter to continue...")
 
 # Variables setup
@@ -384,7 +372,7 @@ while game_playing:
     # Main node(Shows most info in one place)
     clearTerminal()
     printLogo()
-    c.print(f"\n[bold]{name}[/]\n")
+    c.print(f"\n[bold]{Pop.pop_name[0]}[/]\n")
     # Prints amount of time passed
     if weeks_passed > 12:
         print(f"Year: {weeks_passed // 12}\n"
@@ -394,52 +382,52 @@ while game_playing:
               f"Month: {months[weeks_passed % 12]}\n")
 
     # Prints population info
-    c.print(f"Population: {population}\n"
-            f"People born: {born}\n"
-            f"People dead: {dead}\n"
-            f"Money: [green]${money}[/]\n")
+    c.print(f"Population: {Pop.population[0]}\n"
+            f"People born: {Pop.born[0]}\n"
+            f"People dead: {Pop.dead[0]}\n"
+            f"Money: [green]${Pop.money[0]}[/]\n")
 
     # Prints population happiness
     print(f"\nHappiness: {happiness_emoji[happiness]}\n")
-    temp0 = input(">>>").strip().lower()
+    tmp0 = input(">>>").strip().lower()
     # End of main node
-    if temp0 == 'e':
+    if tmp0 == 'e':
         clearTerminal()
         print("Evolution node")
         c.print("Evolve: [bold]enter[/]\n"
                 "Change evolution rate: [bold]r[/]\n")
 
-        temp0 = False
-        temp1 = False
-        temp2 = input(">>>").strip().lower()
+        tmp0 = False
+        tmp1 = False
+        tmp2 = input(">>>").strip().lower()
         while True:
-            if temp2 == "":
-                temp0 = True
+            if tmp2 == "":
+                tmp0 = True
                 break
 
-            if temp2 == "r":
-                temp1 = True
+            if tmp2 == "r":
+                tmp1 = True
                 break
 
-        while temp0:
-            temp3 = input(">>>").strip().lower()
-            if temp3 == "":
+        while tmp0:
+            tmp3 = input(">>>").strip().lower()
+            if tmp3 == "":
                 clearTerminal()
-                doXStepsInTime(evolution_rate)
-                c.print(f"[bold]Population: [bold]{population}[/]\n"
-                        f"People born: [bold]{born}[/]\n"
-                        f"People dead: [bold]{dead}[/]")
+                Pop.doXStepsInTime(Pop(), evolution_rate)
+                c.print(f"[bold]Population: [bold]{Pop.population[0]}[/]\n"
+                        f"People born: [bold]{Pop.born[0]}[/]\n"
+                        f"People dead: [bold]{Pop.dead[0]}[/]")
 
-                c.print(f"\n[green]+{born_temp} born[/]\n"
-                        f"[red]-{dead_temp} dead[/]\n")
+                c.print(f"\n[green]+{Pop.player_born_temp} born[/]\n"
+                        f"[red]-{Pop.player_dead_temp} dead[/]\n")
 
                 # Calculates money from taxes
-                money += (population // tax_percentage)
-                c.print(f"[bold]Money: [green]${money}[/]\n")
-            elif temp3 == 'b':
+                Pop.money[0] += (Pop.population[0] // tax_percentage)
+                c.print(f"[bold]Money: [green]${Pop.money[0]}[/]\n")
+            elif tmp3 == 'b':
                 break
 
-        if temp1:
+        if tmp1:
             clearTerminal()
             c.print(f"The evolution rate is currently: [bold]{evolution_rate}[/]")
             time.sleep(1)
@@ -458,58 +446,58 @@ while game_playing:
             c.print("Press [bold]enter[/] to continue...")
             input(">>>")
 
-    if temp0 == 'w':
+    if tmp0 == 'w':
         clearTerminal()
         World.print(World(), detailed_info=True, display_current_biome=True)
         c.print("\nYou can press [bold]enter[/] to show world map [red](work in progress...)[/]")
         while True:
-            temp1 = input(">>>").strip().lower()
-            if temp1 == 'b':
+            tmp1 = input(">>>").strip().lower()
+            if tmp1 == 'b':
                 break
-            elif temp1 == '':
+            elif tmp1 == '':
                 printAsciiWorld()
 
-    if temp0 == 'c':
+    if tmp0 == 'c':
         clearTerminal()
         c.print("This is the control node\n"
                 "Change laws: [bold]j[/]\n"
                 "Control taxes: [bold]t[/]\n")
 
         while True:
-            temp1 = input(">>>").strip().lower()
-            if temp1 == 'j':
+            tmp1 = input(">>>").strip().lower()
+            if tmp1 == 'j':
                 clearTerminal()
                 print("Laws node")
 
-            if temp1 == 't':
+            if tmp1 == 't':
                 clearTerminal()
                 c.print(f"Tax rate is currently: [bold]{tax_percentage - 1000}%[/]")
-                temp0 = intInput("New tax rate: ") + 1000
-                tax_percentage = temp0
+                tmp0 = intInput("New tax rate: ") + 1000
+                tax_percentage = tmp0
                 c.print(f"Tax rate is now: [bold]{tax_percentage - 1000}%[/]"
                         "Enter [bold]b[/] to continue...")
 
-            elif temp1 == 'b':
+            elif tmp1 == 'b':
                 break
 
-    if temp0 == 'f':
+    if tmp0 == 'f':
         clearTerminal()
         print("War node")
         while True:
-            temp1 = input(">>>").strip().lower()
-            if temp1 == 'b':
+            tmp1 = input(">>>").strip().lower()
+            if tmp1 == 'b':
                 break
 
-    if temp0 == 's':
+    if tmp0 == 's':
         clearTerminal()
         print("Settings node")
         while True:
-            temp1 = input(">>>").strip().lower()
-            if temp1 == 'b':
+            tmp1 = input(">>>").strip().lower()
+            if tmp1 == 'b':
                 break
 
     # Shows all keybindings
-    if temp0 == 'h':
+    if tmp0 == 'h':
         clearTerminal()
         c.print("Welcome to the help node!\n"
                 "Here you can find all the commands for the game.\n"
@@ -522,10 +510,10 @@ while game_playing:
                 "\n"
                 "Enter [bold]b[/] to exit any node.")
         while True:
-            temp1 = input(">>>").strip().lower()
-            if temp1 == 'b':
+            tmp1 = input(">>>").strip().lower()
+            if tmp1 == 'b':
                 break
 
     # Quits game
-    if temp0 == 'q':
+    if tmp0 == 'q':
         game_playing = False
