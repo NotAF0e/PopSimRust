@@ -17,7 +17,6 @@ food = 0
 happiness = 2  # 0 --> 4 (0 = hated, 1 = disliked 2 = neutral, 3 = liked, 4 = loved)
 happiness_emoji = ["😡", "😠", "😐", "🙂", "😍"]
 
-
 evolution_rate = 10
 
 weeks_passed = 0
@@ -158,8 +157,7 @@ class Pop:
 # World functions ---------------------------------------------------------------------------------
 
 
-
-def printBiomeDetails(biome_info_lst, detailed_info=False):
+def printBiomeDetails(biome_info_lst, populated_biome, detailed_info=False):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
                     "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
@@ -167,7 +165,8 @@ def printBiomeDetails(biome_info_lst, detailed_info=False):
 
     Biome.temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
-
+    if populated_biome is True:
+        c.print("Biome populated")
     formatted_biome = Biome.biomes[biome_info_lst[1]]
     if detailed_info:
         if biome_info_lst[4] is True:
@@ -212,6 +211,7 @@ def printAsciiWorld():
 class World:
     world_name = ""
     biomes = []
+    populated_biomes = []
     ascii_world = []
     start_biome = 0
 
@@ -221,6 +221,12 @@ class World:
         while biome_amount != 0:
             returner = createBiome(random.randint(0, 10), biome_num)
             self.biomes.append(returner[:])
+
+            if random.randint(0, 1) == 0:
+                temp0 = False
+            else:
+                temp0 = True
+            self.populated_biomes.append(temp0)
             # Debug lines
             # print(returner)
             # print(self.biomes)
@@ -275,7 +281,7 @@ class World:
         for biome in self.biomes:
             if display_current_biome and self.biomes[x][0] == current_biome:
                 c.print("[bold](Current location)[/]")
-            printBiomeDetails(biome, detailed_info=detailed_info)
+            printBiomeDetails(biome, self.populated_biomes[x], detailed_info=detailed_info)
             if detailed_info: print("\n")
             x += 1
 
@@ -320,7 +326,7 @@ while True:
     c.print("\nWhat will be your starting biome? [red]You can not change this later![/]")
     start_biome = intInput(">>>")
     clearTerminal()
-    printBiomeDetails(World.biomes[start_biome:][0], detailed_info=True)  # Starting biome info
+    printBiomeDetails(World.biomes[start_biome:][0], World.populated_biomes, detailed_info=True)
     c.print("\nAre you sure want to start [white]here([green]y[/], [red]n[/])?..")
     tmp0 = input(">>>").strip().lower()
     if tmp0 == "y":
@@ -328,8 +334,6 @@ while True:
     elif tmp0 == "n":
         clearTerminal()
         pass
-
-
 
 # Pop creation
 while not BREAK:
