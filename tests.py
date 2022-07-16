@@ -11,6 +11,8 @@ c = Console()
 
 # Declaration of variables ------------------------------------------------------------------------
 tax_percentage = 1001  # (0.1%)
+player_born_temp = 0
+player_dead_temp = 0
 
 food = 0
 
@@ -86,8 +88,6 @@ class Pop:
     born = [0]
     dead = [0]
     money = [0]
-    player_born_temp = 0
-    player_dead_temp = 0
     death_rate_a = 0
     death_rate_b = 2
 
@@ -140,15 +140,17 @@ class Pop:
 
     def doXStepsInTime(self, x, calc_weeks=True):
         global weeks_passed
+        global player_born_temp
+        global player_dead_temp
 
         temp0 = 1
         if calc_weeks:
             temp0 = 0
         while x != 0:
-            self.player_born_temp = random.randint(1, 4)
-            self.player_dead_temp = random.randint(self.death_rate_a, self.death_rate_b)
-            self.born[0] += self.player_born_temp  # Born
-            self.dead[0] += self.player_dead_temp  # Dead
+            player_born_temp = random.randint(1, 4)
+            player_dead_temp = random.randint(self.death_rate_a, self.death_rate_b)
+            self.born[0] += player_born_temp  # Born
+            self.dead[0] += player_dead_temp  # Dead
             weeks_passed += temp0
             x -= 1
         self.population[0] = self.born[0] - self.dead[0]  # Pop
@@ -165,17 +167,22 @@ def printBiomeDetails(biome_info_lst, populated_biome, detailed_info=False):
 
     Biome.temperatures = ["[#5468ff]-25", "[#8a96f2]-10", "[#bfc7ff]10", "[#ffd0bf]20",
                           "[#ff6c47]25", "[#ff3b21]35", "[#ff3636]40"]
-    if populated_biome is True:
-        c.print("Biome populated")
+
     formatted_biome = Biome.biomes[biome_info_lst[1]]
+    if populated_biome is True:
+        temp0, temp1 = "[red]Biome populated", " - "
+    else:
+        temp0, temp1 = "", ""
+
     if detailed_info:
         if biome_info_lst[4] is True:
             c.print("[red]Very dangerous!")
         c.print("Biome:", formatted_biome,
                 f"\nAverage temperature: {Biome.temperatures[biome_info_lst[2]]}" + "°C" + "[/]",
-                f"\nAltitude: [bold]{biome_info_lst[3]}m[/]")
+                f"\nAltitude: [bold]{biome_info_lst[3]}m[/]"
+                f"\n{temp0}")
     else:
-        c.print(f"[white]{biome_info_lst[0]}.[/] {formatted_biome}")
+        c.print(f"[white]{biome_info_lst[0]}.[/] {formatted_biome}[/]{temp1}{temp0}")
 
 
 def createBiome(biome_rand, biome_num):
@@ -218,11 +225,12 @@ class World:
     def create(self, world_name, biome_amount):
         self.world_name = world_name
         biome_num = 0
+        self.populated_biomes.clear()
         while biome_amount != 0:
             returner = createBiome(random.randint(0, 10), biome_num)
             self.biomes.append(returner[:])
 
-            if random.randint(0, 1) == 0:
+            if random.randint(0, 100) > 25:
                 temp0 = False
             else:
                 temp0 = True
@@ -422,8 +430,8 @@ while game_playing:
                         f"People born: [bold]{Pop.born[0]}[/]\n"
                         f"People dead: [bold]{Pop.dead[0]}[/]")
 
-                c.print(f"\n[green]+{Pop.player_born_temp} born[/]\n"
-                        f"[red]-{Pop.player_dead_temp} dead[/]\n")
+                c.print(f"\n[green]+{player_born_temp} born[/]\n"
+                        f"[red]-{player_dead_temp} dead[/]\n")
 
                 # Calculates money from taxes
                 Pop.money[0] += (Pop.population[0] // tax_percentage)
