@@ -98,8 +98,8 @@ class Pop:
         c.print(f"Starting money amount: {base_money}\n"
                 f"Amount of weeks for population to develop: {develop_time}\n\n")
 
-        self.pop_name[0] = population_name
-        self.money[0] = base_money
+        self.pop_name.append(population_name)
+        self.money.append(base_money)
 
         # Pop calculation ----------------------------------------------------------------------
         start_process = time.process_time()  # Start time calculation
@@ -159,7 +159,7 @@ class Pop:
 # World functions ---------------------------------------------------------------------------------
 
 
-def printBiomeDetails(biome_info_lst, populated_biome, detailed_info=False):
+def printBiomeDetails(biome_info_lst, populated_biome, population, detailed_info=False):
     # Biomes 0-7 are normal. Biomes 8-10 are dangerous --------------------------------------------
     Biome.biomes = ["[#00bf2d]grassland", "[#998642]savanna", "[#d1cdc2]taiga", "[green]forest",
                     "[#f7f372]beach", "[#7691e8]mountains", "[green]hills", "[#b8ab1d]desert",
@@ -183,6 +183,8 @@ def printBiomeDetails(biome_info_lst, populated_biome, detailed_info=False):
                 f"\n{temp0}")
     else:
         c.print(f"[white]{biome_info_lst[0]}.[/] {formatted_biome}[/]{temp1}{temp0}")
+        if temp1 == " - ":
+            c.print(f"Population: {population}")
 
 
 def createBiome(biome_rand, biome_num):
@@ -198,7 +200,8 @@ def createBiome(biome_rand, biome_num):
     # Elevation calculation
     Biome.low_elevations = [610, 100, 100, 900, 0, 1500, 30, 150, 0, 2000, 0]
     Biome.high_elevations = [1220, 500, 300, 1500, 5, 8850, 150, 2600, 500, 7000, 500]
-    tempBiome.append(random.randint(Biome.low_elevations[biome_rand], Biome.high_elevations[biome_rand]))
+    tempBiome.append(random.randint(Biome.low_elevations[biome_rand],
+                                    Biome.high_elevations[biome_rand]))
 
     # Check if biome is dangerous
     Biome.dangerous_biomes = [8, 9, 10]
@@ -241,6 +244,21 @@ class World:
             biome_num += 1
             biome_amount -= 1
         # print(self.biomes)
+
+    def populate(self):
+        Pop.population.clear()
+        for pb in self.populated_biomes:
+            print(pb)
+            size = random.randint(0, 10000000)
+            seed = random.randint(1, (round(size / random.randint(1, 100))))
+            large = random.randint(0, 1)
+            if pb is True:
+                if large == 1:
+                    Pop.population.append(round(size / seed * 10.123456))
+                else:
+                    Pop.population.append(round(size / seed))
+            else:
+                Pop.population.append(0)
 
     # Bellow function is modified code from: https://youtu.be/YS-5ezQPWuU Thanks Dennis
     def createAsciiWorld(self, width=145, height=50, land_amount=2500):
@@ -289,7 +307,8 @@ class World:
         for biome in self.biomes:
             if display_current_biome and self.biomes[x][0] == current_biome:
                 c.print("[bold](Current location)[/]")
-            printBiomeDetails(biome, self.populated_biomes[x], detailed_info=detailed_info)
+            printBiomeDetails(biome, self.populated_biomes[x], Pop.population[x],
+                              detailed_info=detailed_info)
             if detailed_info: print("\n")
             x += 1
 
@@ -308,6 +327,7 @@ while True:
     if tmp1 is True:
         World.create(World(), "Name", 5)
         World.createAsciiWorld(World())
+        World.populate(World())
         clearTerminal()
     World.print(World())
     c.print("\nEnter [green]y[/] to create this world, or [red]n[/] to generate another.")
@@ -334,7 +354,8 @@ while True:
     c.print("\nWhat will be your starting biome? [red]You can not change this later![/]")
     start_biome = intInput(">>>")
     clearTerminal()
-    printBiomeDetails(World.biomes[start_biome:][0], World.populated_biomes, detailed_info=True)
+    printBiomeDetails(World.biomes[start_biome:][0], World.populated_biomes,
+                      Pop.population, detailed_info=True)
     c.print("\nAre you sure want to start [white]here([green]y[/], [red]n[/])?..")
     tmp0 = input(">>>").strip().lower()
     if tmp0 == "y":
