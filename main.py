@@ -477,14 +477,6 @@ while game_playing:
             elif tmp1 == 'b':
                 break
 
-    if tmp0 == 'f':
-        clearTerminal()
-        print("War node")
-        while True:
-            tmp1 = input(">>>").strip().lower()
-            if tmp1 == 'b':
-                break
-
     if tmp0 == 's':
         clearTerminal()
         print("Settings node")
@@ -501,7 +493,6 @@ while game_playing:
                 "Evolution node: [bold]e[/]\n"
                 "World node: [bold]w[/]\n"
                 "Control node: [bold]c[/]\n"
-                "War node: [bold]f[/]\n"
                 "Settings node: [bold]s[/]\n"
                 "Quit game: [bold]q[/]\n"
                 "\n"
