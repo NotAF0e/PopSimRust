@@ -289,7 +289,7 @@ tmp1 = True
 while True:
     clearTerminal()
     if tmp1 is True:
-        World.create(World(), "Name", 5)
+        World.create(World(), "Name", 10)
         World.createAsciiWorld(World())
         clearTerminal()
     World.print(World())
