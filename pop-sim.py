@@ -1,5 +1,6 @@
 import random
 
+
 male_names = open("male-names.txt").readlines()
 female_names = open("female-names.txt").readlines()
 
@@ -38,18 +39,22 @@ class Sim:
 
         self.temp_person.append(gender)
 
+        # Gives person a starting affection rating
+        # self.people.append()
+
         # Appends the person to people
         self.people.append(self.temp_person)
+
 
 
     def printPeople(self):
         gender = ["Male", "Female"]
 
-        age_years_formatters = [0, ""]
         for self.p in self.people:
             age = self.p[1]
+            age_years, age_months = divmod(age, 12)
             print(f"Name: {self.p[0]}\n"
-                  f"Age: {age}\n"
+                  f"Age: {age_years} years, {age_months} months\n"
                   f"Gender: {gender[self.p[2]]}\n")
 
 
@@ -61,11 +66,11 @@ class Sim:
             print(self.p[1])
 
 
-
+    # def updateAffection(self):
+    #     for
 Sim.createPerson(Sim(), giveName())
 Sim.createPerson(Sim(), giveName())
 while True:
     Sim.printPeople(Sim())
     time_amount = input(">>> ").strip()
     Sim.passTime(Sim(), time_amount)
-
