@@ -8,7 +8,8 @@ def giveName():
     # Returns 2 names: a male and female
     # These names are taken from 2 text files
     global male_names, female_names
-    both_gender_names = [random.choice(male_names), random.choice(female_names)]
+    both_gender_names = [random.choice(male_names).replace("\n", ""),
+                         random.choice(female_names).replace("\n", "")]
     return both_gender_names
 
 
@@ -16,6 +17,7 @@ class Sim:
     people = []
 
     def __init__(self):
+        self.p = None
         self.temp_person = None
 
     def createPerson(self, name_given):
@@ -41,9 +43,29 @@ class Sim:
 
 
     def printPeople(self):
-        print(self.people)
+        gender = ["Male", "Female"]
+
+        age_years_formatters = [0, ""]
+        for self.p in self.people:
+            age = self.p[1]
+            print(f"Name: {self.p[0]}\n"
+                  f"Age: {age}\n"
+                  f"Gender: {gender[self.p[2]]}\n")
+
+
+    def passTime(self, amount_of_time):
+        if amount_of_time == "": amount_of_time = 1
+        amount_of_time = int(amount_of_time)
+        for self.p in self.people:
+            self.p[1] += amount_of_time
+            print(self.p[1])
+
 
 
 Sim.createPerson(Sim(), giveName())
 Sim.createPerson(Sim(), giveName())
-Sim.printPeople(Sim())
+while True:
+    Sim.printPeople(Sim())
+    time_amount = input(">>> ").strip()
+    Sim.passTime(Sim(), time_amount)
+
