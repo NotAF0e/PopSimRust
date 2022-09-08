@@ -5,14 +5,6 @@ male_names = open("male-names.txt").readlines()
 female_names = open("female-names.txt").readlines()
 
 
-def giveName():
-    # Returns 2 names: a male and female
-    # These names are taken from 2 text files
-    global male_names, female_names
-    both_gender_names = [random.choice(male_names).replace("\n", ""),
-                         random.choice(female_names).replace("\n", "")]
-    return both_gender_names
-
 
 def debugTimer(mode):
     _debug_start = 0
@@ -32,8 +24,14 @@ class Sim:
         self.p = None
         self.temp_person = None
 
-    def createPerson(self, name_given):
+    def createPerson(self):
+        # These names are taken from 2 text files
+        global male_names, female_names
+        both_gender_names = [random.choice(male_names).replace("\n", ""),
+                             random.choice(female_names).replace("\n", "")]
+
         self.temp_person = []
+
         # Gives person a gender
         # 0 is male, 1 is female
         if random.randint(0, 100) >= 50:
@@ -42,7 +40,7 @@ class Sim:
             gender = 1
 
         # Gives person a name
-        self.temp_person.append(name_given[gender])
+        self.temp_person.append(both_gender_names[gender])
 
         # Gives person a starting age of 0 months old
         # Time in pop-sim is in months throughout
@@ -51,7 +49,7 @@ class Sim:
         self.temp_person.append(gender)
 
         # Gives person a starting affection rating
-        self.temp_person.append(50)
+        self.temp_person.append(100)  # 100 is a test!!!
 
         # Appends the person to people
         self.people.append(self.temp_person)
@@ -61,6 +59,8 @@ class Sim:
 
         for self.p in self.people:
             age = self.p[1]
+
+            # Calculates years and months, out of months
             age_years, age_months = divmod(age, 12)
             print(f"Name: {self.p[0]}\n"
                   f"Age: {age_years} years, {age_months} months\n"
@@ -72,18 +72,26 @@ class Sim:
         if amount_of_time == "": amount_of_time = 1
         amount_of_time = int(amount_of_time)
 
+        # Adds age to all people
+        for self.p in self.people:
+            self.p[1] += amount_of_time
+
         for self.time in range(amount_of_time):
-            # Adds age to all people
+
+            # Calculates who will reproduce
             for self.p in self.people:
-                self.p[1] += amount_of_time
+                # |Checks if age 16|checks affection 90|randomly decides|
+                if self.p[1] > 16*12 and self.p[3] > 90 and random.randint(0, 100) > 60:
+                    self.createPerson()
 
 
 
-Sim.createPerson(Sim(), giveName())
-Sim.createPerson(Sim(), giveName())
+Sim.createPerson(Sim())
+Sim.createPerson(Sim())
 while True:
     Sim.printPeople(Sim())
     time_amount = input(">>> ").strip()
     debugTimer("s")
     Sim.updateSim(Sim(), time_amount)
     debugTimer("e")
+    print(Sim.people)
