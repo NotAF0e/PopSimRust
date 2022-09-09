@@ -20,7 +20,9 @@ def debugTimer(mode):
 class Sim:
     people = []
 
+
     def __init__(self):
+        self.love_lst = None
         self.p = None
         self.temp_person = None
 
@@ -55,8 +57,9 @@ class Sim:
         # Gives person a starting affection rating
         self.temp_person.append(100)  # 100 is a test!!!
 
+        self.love_lst = [None, None]
         # Gives person a lover
-        self.temp_person.append(None)
+        self.temp_person.append(self.love_lst)
 
         # Appends the person to people
         self.people.append(self.temp_person)
@@ -88,16 +91,32 @@ class Sim:
             # Calculates who will reproduce
             for self.p in self.people:
 
-                # |Checks if age 16|checks affection 90|randomly decides|
-                if self.p[2] > 16*12 and self.p[4] > 90 and random.randint(0, 100) > 60 and not self.p[5]:
-                    # self.createPerson()
-                    pass
+                # Chooses lover unless person already has one
+                if self.p[2] > 16*12 and not self.p[5][1]:
+                    if not self.p[5][0]:
+                        choice_of_lover = None
+                        while choice_of_lover is None or choice_of_lover == self.p[0]:
+                            choice_of_lover = random.choice(self.people)[0]
+                            print(choice_of_lover)
 
+                        if self.people[choice_of_lover][2] > 16*12:
+                            self.p[5][0] = choice_of_lover
+
+                    else:
+                        for self.temp_person in self.people:
+                            if self.p[5][0] == self.temp_person[0] and random.randint(0, 100) < 10:
+                                self.temp_person[5][1] = True
+                                self.p[5][1] = True
+
+                for self.temp_person in self.people:
+                    if self.p[5][0] == self.temp_person[0] and random.randint(0, 100) < 8:
+                        # Creates a baby!!!
+                        self.createPerson()
 
 
 Sim.createPerson(Sim())
 Sim.createPerson(Sim())
-Sim.people[0][5] = 1
+# Sim.people[0][5] = 1
 while True:
     Sim.printPeople(Sim())
     time_amount = input(">>> ").strip()
