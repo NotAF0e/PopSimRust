@@ -109,14 +109,14 @@ class Sim:
                                 self.p[5][1] = True
 
                 for self.temp_person in self.people:
-                    if self.p[5][0] == self.temp_person[0] and random.randint(0, 100) < 8:
+                    if self.p[5][0] == self.temp_person[0] and self.p[5][1] and random.randint(0, 100) < 8:
                         # Creates a baby!!!
                         self.createPerson()
 
 
 Sim.createPerson(Sim())
 Sim.createPerson(Sim())
-# Sim.people[0][5] = 1
+
 while True:
     Sim.printPeople(Sim())
     time_amount = input(">>> ").strip()
