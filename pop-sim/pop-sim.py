@@ -92,7 +92,7 @@ class Sim:
             # Adds age to all people or kills them
             for self.p in self.people:
                 self.p[2] += 1
-                if self.p[2] > 35*12:
+                if self.p[2] > 30*12:
                     temp_person = self.people.remove(self.p)
                     self.dead_people.append(temp_person)
                     # del self.people[self.p[0]]
@@ -151,12 +151,12 @@ while True:
             mp.append(a[2])
             pop.append(p)
 
-        pop.reverse()
-        print(mp, pop)
+        mp.reverse()
+        print(pop, mp)
         fig, ax = plt.subplots()
-        ax.plot(mp, pop)
+        ax.plot(pop, mp)
 
-        ax.set(xlabel='time (months)', ylabel='population',
+        ax.set(xlabel='population', ylabel='time (months)',
                title='Pop-sim population/time graph')
         ax.grid()
 
