@@ -107,7 +107,7 @@ class Sim:
                         choices_of_lovers = []
                         # print(self.people)
                         for temp_lover in self.people:
-                            if temp_lover != self.p[0] and temp_lover[2] != self.p[2]:
+                            if temp_lover != self.p[0] and temp_lover[3] != self.p[3]:
                                 choices_of_lovers.append(temp_lover[0])
                                 # print(choices_of_lovers)
 
