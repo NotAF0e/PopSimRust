@@ -33,7 +33,7 @@ class Sim:
         self.temp_person = None
 
 
-    def createPerson(self):
+    def createPerson(self, gender_choice=-1):
         global population
         population += 1
 
@@ -46,10 +46,11 @@ class Sim:
 
         # Gives person a gender
         # 0 is male, 1 is female
-        if random.randint(0, 100) >= 50:
-            gender = 0
-        else:
-            gender = 1
+        gender = random.randint(0, 1)
+        if gender_choice != -1:
+            gender = gender_choice
+
+
         self.temp_person.append(population)
 
         # Gives person a name
@@ -106,7 +107,7 @@ class Sim:
                         choices_of_lovers = []
                         # print(self.people)
                         for temp_lover in self.people:
-                            if temp_lover != self.p[0]:
+                            if temp_lover != self.p[0] and temp_lover[2] != self.p[2]:
                                 choices_of_lovers.append(temp_lover[0])
                                 # print(choices_of_lovers)
 
@@ -135,8 +136,8 @@ class Sim:
 
 
 
-Sim.createPerson(Sim())
-Sim.createPerson(Sim())
+Sim.createPerson(Sim(), 0)
+Sim.createPerson(Sim(), 1)
 Sim.printPeople(Sim())
 
 while True:
