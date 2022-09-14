@@ -2,17 +2,21 @@ import random
 import time
 import matplotlib.pyplot as plt
 from rich.progress import track
+from rich.console import Console
+
+c = Console()
 
 male_names = open("male-names.txt").readlines()
 female_names = open("female-names.txt").readlines()
 
 population = -1
 months_passed = 0
+event = None
 
+# Graphing variables
 mp = []
 pop = []
 tp = -1
-event = None
 
 def debugTimer(mode):
     _debug_start = 0
@@ -207,4 +211,4 @@ while True:
     Sim.updateSim(Sim(), time_amount)
     Sim.printPeople(Sim())
     debugTimer("e")
-    print(Sim.dead_people)
+    c.print(Sim.dead_people)
