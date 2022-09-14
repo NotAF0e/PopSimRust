@@ -10,6 +10,10 @@ female_names = open("female-names.txt").readlines()
 population = -1
 months_passed = 0
 
+mp = []
+pop = []
+pp = -1
+
 def debugTimer(mode):
     _debug_start = 0
     _debug_end = 0
@@ -82,7 +86,7 @@ class Sim:
                   f"Gender: {gender[self.p[3]]}\n")
 
     def updateSim(self, amount_of_time):
-        global months_passed
+        global population, months_passed, pop, mp, pp
         debugTimer("s")
 
         if amount_of_time == "": amount_of_time = 1
@@ -90,12 +94,21 @@ class Sim:
         months_passed += amount_of_time
 
         for self.time in track(range(amount_of_time), "Total load\n"):
+            # Bellow is for graph and storing population at a certain time
+            pop.append(len(self.people))
+            pp += 1
+            mp.append(pp)
+
+            ages_of_death = [10, 20, 35, 50, 70, 80, 100]
+
             # Adds age to all people or kills them
             for self.p in self.people:
                 self.p[2] += 1
-                if self.p[2] > 30*12:
+                if self.p[2] > random.choices(ages_of_death, [0.05, 1, 15, 25, 50, 5, 1],
+                                              k=10)[random.randint(0, 9)]*12:
                     temp_person = self.people.remove(self.p)
                     self.dead_people.append(temp_person)
+
                     # del self.people[self.p[0]]
 
             # Calculates who will reproduce
@@ -143,21 +156,19 @@ Sim.printPeople(Sim())
 while True:
     time_amount = input(">>> ").strip()
     if time_amount == "q":
-        mp = []
-        pop = []
-        p = 0
-        for a in Sim.people:
+        # p = 0
+        # for a in Sim.people:
+        #
+        #    p += 1
+        #    mp.append(a[2])
+        #    pop.append(p)
 
-            p += 1
-            mp.append(a[2])
-            pop.append(p)
-
-        mp.reverse()
-        print(pop, mp)
+        # mp.reverse()
+        print(pop, pp)
         fig, ax = plt.subplots()
-        ax.plot(pop, mp)
+        ax.plot(mp, pop)
 
-        ax.set(xlabel='population', ylabel='time (months)',
+        ax.set(xlabel='time (months)', ylabel='population',
                title='Pop-sim population/time graph')
         ax.grid()
 
@@ -170,4 +181,4 @@ while True:
     Sim.updateSim(Sim(), time_amount)
     Sim.printPeople(Sim())
     debugTimer("e")
-    # print(Sim.people)
+    print(Sim.dead_people)
