@@ -106,7 +106,6 @@ class Sim:
 
     def updateSim(self, amount_of_time):
         global population, months_passed, pop, mp, tp, event
-        debugTimer("s")
 
         if amount_of_time == "": amount_of_time = 1
         amount_of_time = int(amount_of_time)
@@ -189,17 +188,19 @@ class Sim:
             event = None
 
 
-
+# "Adam and Eve" are created
 Sim.createPerson(Sim(), 0)
 Sim.createPerson(Sim(), 1)
 Sim.printPeople(Sim())
+
+print_every_person = True  # For higher performance
 
 while True:
     time_amount = input(">>> ").strip()
     if time_amount == "q":
         graph()
         time_amount = 0
-    elif time_amount == "p":
+    elif time_amount == "p" or print_every_person is False:
         print(f"Population: {len(Sim.people)}\n")
         time_amount = 0
 
@@ -208,7 +209,9 @@ while True:
         event = 1
         time_amount = 0
 
+    debugTimer("s")
     Sim.updateSim(Sim(), time_amount)
-    Sim.printPeople(Sim())
     debugTimer("e")
+
+    if print_every_person: Sim.printPeople(Sim())
     c.print(Sim.dead_people)
