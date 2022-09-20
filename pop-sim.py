@@ -180,9 +180,8 @@ class Sim:
         if event == 1 and ml_for_disaster != 0:
             kill_multiple = random.randint(1, 40)
 
-            while kill_multiple != 0:
+            for kills in range(kill_multiple):
                 self.kill(random.choice(self.people))
-                kill_multiple -= 1
             ml_for_disaster -= 1
         else:
             event = None
