@@ -9,8 +9,8 @@ people = []
 dead_people = []
 
 
-cdef list male_names = open("names/male-names.txt").readlines()
-cdef list female_names = open("names/female-names.txt").readlines()
+cdef list male_names = open("../male-names.txt").readlines()
+cdef list female_names = open("../female-names.txt").readlines()
 
 cdef long population = -1
 cdef long months_passed = 0
