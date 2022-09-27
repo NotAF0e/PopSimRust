@@ -6,8 +6,8 @@ from rich.console import Console
 
 c = Console()
 
-male_names = open("male_names.txt").readlines()
-female_names = open("female_names.txt").readlines()
+male_names = open("../male_names.txt").readlines()
+female_names = open("../female_names.txt").readlines()
 
 population = -1
 months_passed = 0
