@@ -19,7 +19,7 @@ pop = []
 tp = -1
 
 
-def debugTimer(mode):
+def debug_timer(mode):
     _debug_start = 0
     _debug_end = 0
     if mode == "s":
@@ -52,7 +52,7 @@ class Sim:
         self.p = None
         self.temp_person = None
 
-    def createPerson(self, gender_choice=-1, id_who_created=0):
+    def create_person(self, gender_choice=-1, id_who_created=0):
         global population
         population += 1
 
@@ -95,7 +95,7 @@ class Sim:
         # Appends the person to people
         self.people.append(self.temp_person)
 
-    def printPeople(self):
+    def print_people(self):
         gender = ["Male", "Female"]
 
         for self.p in self.people:
@@ -114,7 +114,7 @@ class Sim:
         temp_person = self.people.remove(person)
         self.dead_people.append(temp_person)
 
-    def updateSim(self, amount_of_time):
+    def update_sim(self, amount_of_time):
         global population, months_passed, pop, mp, tp, event
 
         amount_of_time = int(amount_of_time)
@@ -126,7 +126,7 @@ class Sim:
             tp += 1
             mp.append(tp)
 
-            ages_of_death = [2, 10, 20, 35, 50, 70, 80, 90]
+            # ages_of_death = [2, 10, 20, 35, 50, 70, 80, 90]
 
             # Adds age to all people or kills them
             for self.p in self.people:
@@ -175,7 +175,7 @@ class Sim:
                     if self.p[4][0] == self.temp_person[0] and self.p[4][1] \
                             and random.randint(0, 100) < 8:
                         # Creates a baby!!!
-                        self.createPerson(id_who_created=self.p[0])
+                        self.create_person(id_who_created=self.p[0])
 
             self.disaster()
 
@@ -201,9 +201,9 @@ class Cmds:
 
 
 # "Adam and Eve" are created
-Sim.createPerson(Sim(), 0)
-Sim.createPerson(Sim(), 1)
-Sim.printPeople(Sim())
+Sim.create_person(Sim(), 0)
+Sim.create_person(Sim(), 1)
+Sim.print_people(Sim())
 
 print_every_person = True  # For higher performance
 
@@ -214,7 +214,8 @@ while True:
         time_amount = int(time_amount)
     except ValueError:
         time_amount = str(time_amount)
-        if time_amount == "": time_amount = 1
+        if time_amount == "":
+            time_amount = 1
 
     if time_amount == "g":
         graph()
@@ -231,12 +232,12 @@ while True:
         print("Invalid command!")
         time_amount = 0
     else:
-        debugTimer("s")
-        Sim.updateSim(Sim(), time_amount)
-        debugTimer("e")
+        debug_timer("s")
+        Sim.update_sim(Sim(), time_amount)
+        debug_timer("e")
 
         if print_every_person:
-            Sim.printPeople(Sim())
+            Sim.print_people(Sim())
         else:
             print(f"Population: {len(Sim.people)}\n")
         # c.print()
