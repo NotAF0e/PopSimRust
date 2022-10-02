@@ -1,11 +1,12 @@
 use std::str;
 
+// Person data struct
 #[derive(Debug)]
-pub struct Person{
+pub struct Person {
+    id: i32,
     name: &'static str,
     age: i32,
     gender: i8,
-    id: i32
 }
 
 fn main() {
@@ -14,16 +15,15 @@ fn main() {
 
     pub unsafe fn create_person() -> Person {
         POPULATION += 1;
-        let temp_person: Person = Person{name: "John", age: 0, gender: 0, id: POPULATION};
+        let temp_person: Person = Person { name: "John", age: 0, gender: 0, id: POPULATION };
 
-        return temp_person
+        return temp_person;
     }
 
-
-    let john: Person = unsafe {create_person()};
+    let john: Person = unsafe { create_person() };
     people.push(john);
 
-    let john2: Person = unsafe {create_person()};
+    let john2: Person = unsafe { create_person() };
     people.push(john2);
 
     // Graphing variables
@@ -32,11 +32,11 @@ fn main() {
     // let tp: i32 = -1;
     println!("{:?}", people);
 
-    for id in 0..2{
-        println!("Name: {:?}\n\
-             Age: {:?}\n\
-             Gender: {:?}\n", people[id].name, people[id].age, people[0].gender)
+    for id in 0..2 {
+        println!("[ID: {:?}]\n\
+                  Name: {:?}\n\
+                  Age: {:?}\n\
+                  Gender: {:?}\n", people[id].id, people[id].name, people[id].age,
+                 people[0].gender)
     }
-
-
 }
