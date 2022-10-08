@@ -20,10 +20,22 @@ fn main() {
         return temp_person;
     }
 
-    pub unsafe fn update_sim() {
-        let people_temp = &mut PEOPLE;
+    pub fn update_sim() {
+        let people_temp = unsafe { &mut PEOPLE };
         for id in 0..2 {
             people_temp[id].age += 1;
+        }
+    }
+
+    pub fn print_people() {
+        for id in 0..unsafe { PEOPLE.len() } {
+            unsafe {
+                println!("[ID: {:?}]\n\
+                  Name: {:?}\n\
+                  Age: {:?}\n\
+                  Gender: {:?}\n", PEOPLE[id].id, PEOPLE[id].name, PEOPLE[id].age,
+                         PEOPLE[0].gender)
+            }
         }
     }
     let people_vec = unsafe { &mut PEOPLE };
@@ -39,24 +51,7 @@ fn main() {
     // let pop: Vec<i32> = Vec::new();
     // let tp: i32 = -1;
 
-    for id in 0..2 {
-        unsafe {
-            println!("[ID: {:?}]\n\
-                  Name: {:?}\n\
-                  Age: {:?}\n\
-                  Gender: {:?}\n", PEOPLE[id].id, PEOPLE[id].name, PEOPLE[id].age,
-                     PEOPLE[0].gender)
-        }
-    }
-    unsafe { update_sim() };
-
-    for id in 0..2 {
-        unsafe {
-            println!("[ID: {:?}]\n\
-                  Name: {:?}\n\
-                  Age: {:?}\n\
-                  Gender: {:?}\n", PEOPLE[id].id, PEOPLE[id].name, PEOPLE[id].age,
-                     PEOPLE[0].gender)
-        }
-    }
+    print_people();
+    update_sim();
+    print_people();
 }
