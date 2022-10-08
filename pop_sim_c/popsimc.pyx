@@ -3,9 +3,9 @@ import random
 import time
 import matplotlib.pyplot as plt
 
-cdef list people
+cdef list PEOPLE
 cdef list dead_people
-people = []
+PEOPLE = []
 dead_people = []
 
 
@@ -54,7 +54,7 @@ cdef class Sim:
         temp_person = []
 
     cdef void createPerson(self, int gender_choice, long id_who_created=0):
-        global population, people
+        global population, PEOPLE
         population += 1
 
         # These names are taken from 2 text files
@@ -88,18 +88,18 @@ cdef class Sim:
         if id_who_created == 0:
             parents_and_children_lst = [[id_who_created, id_who_created], [0]]
         else:
-            parents_and_children_lst = [[id_who_created, people[id_who_created][4]], [0]]
+            parents_and_children_lst = [[id_who_created, PEOPLE[id_who_created][4]], [0]]
 
         # print(parents_and_children_lst)
         temp_person.append(0)
 
-        # Appends the person to people
-        people.append(temp_person)
+        # Appends the person to PEOPLE
+        PEOPLE.append(temp_person)
 
     cdef void printPeople(self):
         gender = ["Male", "Female"]
 
-        for p in people:
+        for p in PEOPLE:
             age = p[2]
 
             # Calculates years and months, out of months
@@ -109,14 +109,14 @@ cdef class Sim:
                   f"Gender: {gender[p[3]]}\n")
 
     cdef void kill(self, long person):
-        if len(people) == 1:
+        if len(PEOPLE) == 1:
             graph()
             exit("The population has ceased")
         
-        temp_person = people.index(people[person])
+        temp_person = PEOPLE.index(PEOPLE[person])
         # print(temp_person)
         dead_people.append(temp_person)
-        # del people[temp_person]
+        # del PEOPLE[temp_person]
 
     
     cdef void updateSim(self, long amount_of_time) except *:
@@ -131,14 +131,14 @@ cdef class Sim:
 
         for time in range(amount_of_time):
             # Bellow is for graph and storing population at a certain time
-            pop.append(len(people))
+            pop.append(len(PEOPLE))
             tp += 1
             mp.append(tp)
 
             # ages_of_death = [2, 10, 20, 35, 50, 70, 80, 90]
 
-            # Adds age to all people or kills them
-            for p in people:
+            # Adds age to all PEOPLE or kills them
+            for p in PEOPLE:
                 ptk = p[0]
                 p[2] += 1
                 # random.choices(ages_of_death, [0.5, 0.005, 0.05, 1, 15, 40, 50, 20],
@@ -149,14 +149,14 @@ cdef class Sim:
 
 
             # Calculates who will reproduce
-            for p in people:
+            for p in PEOPLE:
                 
                 # Chooses lover unless person already has one
                 if p[2] > 15 * 12 and not p[4][1]:
                     if not p[4][0]:
                         choices_of_lovers = []
-                        # print(people)
-                        for temp_lover in people:
+                        # print(PEOPLE)
+                        for temp_lover in PEOPLE:
                             if temp_lover != p[0] and temp_lover[3] != p[3]:
                                 choices_of_lovers.append(temp_lover[0])
                                 # print(choices_of_lovers)
@@ -168,19 +168,19 @@ cdef class Sim:
                             for x in range(10):
                                 choice_of_lover = random.choice(choices_of_lovers)
 
-                        if choice_of_lover and choice_of_lover < len(people) \
-                                and people[choice_of_lover][2] > 15 * 12:
+                        if choice_of_lover and choice_of_lover < len(PEOPLE) \
+                                and PEOPLE[choice_of_lover][2] > 15 * 12:
                             p[4][0] = choice_of_lover
 
                     else:
                         # Sets lover
-                        for temp_person in people:
+                        for temp_person in PEOPLE:
                             if p[4][0] == temp_person[0] and random.randint(0, 100) < 10:
                                 temp_person[4][1] = True
                                 p[4][1] = True
 
                 # Checks if baby should be born
-                for temp_person in people:
+                for temp_person in PEOPLE:
                     if p[4][0] == temp_person[0] and p[4][1] \
                             and random.randint(0, 100) < 8:
 
@@ -201,7 +201,7 @@ cdef class Sim:
             kill_multiple = random.randint(1, 40)
 
             for kills in range(kill_multiple):
-                self.kill(random.choice(people))
+                self.kill(random.choice(PEOPLE))
             ml_for_disaster -= 1
         else:
             event = -1
@@ -226,7 +226,7 @@ while True:
         graph()
         time_amount = 0
     elif time_amount == "p" or print_every_person is 1:
-        print(f"Population: {len(people)}\n")
+        print(f"Population: {len(PEOPLE)}\n")
         time_amount = 0
 
     # elif time_amount == "d":
@@ -238,6 +238,6 @@ while True:
     Sim.updateSim(Sim(), time_amount)
 
     if print_every_person == 0: Sim.printPeople(Sim())
-    # print(Sim.people)
+    # print(Sim.PEOPLE)
     print(dead_people)
     debugTimer("e")
