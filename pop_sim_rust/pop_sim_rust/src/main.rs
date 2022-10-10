@@ -1,5 +1,7 @@
 use std::str;
+use std::time::{Duration, Instant};
 use rand::Rng;
+
 
 // Person data struct
 #[derive(Debug)]
@@ -34,15 +36,19 @@ fn main() {
             // Ages all people by 1 day
             people_temp[id].age += 1;
 
-            // Creates a random number to chose a lover for person
-            let lover = rand::thread_rng().gen_range(0..=(unsafe { PEOPLE.len() } - 1)) as i64;
+            if people_temp[id].love_vec[0] == -1 {
+                // Creates a random number to chose a lover for person
+                let lover = rand::thread_rng().gen_range(0..=(unsafe { PEOPLE.len() } - 1)) as i64;
 
-            // If the person is not the lover and if the person does not have a lover one is given
-            if lover != id as i64 && people_temp[id].love_vec[0] == -1 {
-                people_temp[id].love_vec[0] = lover;
+                // If the person is not the lover and if the person does not have a lover one is given
+                if lover != id as i64 && people_temp[id].love_vec[0] == -1 {
+                    people_temp[id].love_vec[0] = lover;
+                }
             }
 
+
             if id as i32 != -1 {
+                // Creates a baby!!!
                 let people_temp = unsafe { &mut PEOPLE };
                 let john: Person = create_person();
                 people_temp.push(john);
@@ -64,6 +70,8 @@ fn main() {
         }
     }
 
+    let start = Instant::now();
+
     let people_temp = unsafe { &mut PEOPLE };
 
     let john: Person = create_person();
@@ -79,9 +87,13 @@ fn main() {
 
     print_people();
 
-    for _ in 0..100 {
+    for _ in 0..25 {
         update_sim();
     }
 
-    print_people();
+    println!("{}", people_temp.len() - 1);
+
+    // Time took to complete code
+    println!("Time taken: {:?}", start.elapsed());
+    // print_people();
 }
