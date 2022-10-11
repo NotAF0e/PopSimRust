@@ -30,7 +30,7 @@ fn main() {
         return temp_person;
     }
 
-    pub fn update_sim() {
+    pub fn update_sim(mut steps: i32) -> i32 {
         let people_temp = unsafe { &mut PEOPLE };
         for id in 0..unsafe { PEOPLE.len() } {
             // Ages all people by 1 day
@@ -43,8 +43,11 @@ fn main() {
                 // If the person is not the lover and if the person does not have a lover one is given
                 if lover != id as i64 && people_temp[id].love_vec[0] == -1 {
                     people_temp[id].love_vec[0] = lover;
+                    steps += 1;
                 }
+                steps += 1;
             }
+            steps += 1;
 
 
             if id as i32 != -1 {
@@ -52,8 +55,11 @@ fn main() {
                 let people_temp = unsafe { &mut PEOPLE };
                 let john: Person = create_person();
                 people_temp.push(john);
+                steps += 1;
             }
+            steps += 1;
         }
+        steps
     }
 
     pub fn print_people() {
@@ -86,12 +92,12 @@ fn main() {
     // let tp: i32 = -1;
 
     print_people();
-
+    let mut steps = 0;
     for _ in 0..25 {
-        update_sim();
+        steps = update_sim(steps);
     }
 
-    println!("{}", people_temp.len() - 1);
+    println!("People: {:?} | Steps: {}", people_temp.len() - 1, steps);
 
     // Time took to complete code
     println!("Time taken: {:?}", start.elapsed());
