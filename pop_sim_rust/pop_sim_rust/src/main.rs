@@ -32,8 +32,10 @@ fn main() {
 
     pub fn update_sim(mut steps: i32) -> i32 {
         let people_temp = unsafe { &mut PEOPLE };
-        for id in 0..unsafe { PEOPLE.len() } {
-            // Ages all people by 1 day
+
+        for id in 0..unsafe { PEOPLE.len() as usize } {
+            // Ages all people by 1 month
+            // println!("{:?}", people_temp);
             people_temp[id].age += 1;
 
             if people_temp[id].love_vec[0] == -1 {
@@ -47,15 +49,21 @@ fn main() {
                 }
                 steps += 1;
             }
-            steps += 1;
 
 
-            if id as i32 != -1 {
-                // Creates a baby!!!
-                let people_temp = unsafe { &mut PEOPLE };
-                let john: Person = create_person();
-                people_temp.push(john);
-                steps += 1;
+            if people_temp[id].love_vec[1] as i32 != -1 {
+                let baby_chance = rand::thread_rng().gen_range(0..100) as i32;
+                if baby_chance < 2 {
+                    // Creates a baby!!!
+                    let people_temp = unsafe { &mut PEOPLE };
+                    let john: Person = create_person();
+                    people_temp.push(john);
+                    steps += 1;
+                }
+            }
+
+            if people_temp[id].age > 12 * 30 {
+                unsafe { PEOPLE.remove(id); }
             }
             steps += 1;
         }
@@ -63,8 +71,9 @@ fn main() {
     }
 
     pub fn print_people() {
+        println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
         for id in 0..unsafe { PEOPLE.len() } {
-            println!("-------------------------------------------");
+            println!("------------------------------------------");
             unsafe {
                 println!("[ID: {:?}]\n\
                   Name: {:?}\n\
@@ -93,13 +102,16 @@ fn main() {
 
     print_people();
     let mut steps = 0;
-    for _ in 0..25 {
+
+    for _ in 0..12 * 100 {
         steps = update_sim(steps);
     }
 
-    println!("People: {:?} | Steps: {}", people_temp.len() - 1, steps);
+    let duration = start.elapsed();
+
+    println!("\nPeople: {:?} | Steps: {}", people_temp.len(), steps);
 
     // Time took to complete code
-    println!("Time taken: {:?}", start.elapsed());
+    println!("Time taken to calculate: {:?}", duration);
     // print_people();
 }
