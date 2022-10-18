@@ -1,115 +1,116 @@
+use rand::Rng;
 use std::str;
 use std::time::Instant;
-use rand::Rng;
-
+// use plotters;
 
 // Person data struct
 #[derive(Debug)]
 pub struct Person {
-    id: i64,
+    id: u64,
     name: &'static str,
-    gender: i16,
-    age: i32,
+    gender: u8,
+    age: u32,
     love_vec: Vec<i64>,
 }
+struct Sim {
+    population: u64,
+    people: Vec<Person>,
+}
 
-fn main() {
-    static mut POPULATION: i64 = -1;
-    static mut PEOPLE: Vec<Person> = Vec::new();
-
-    pub fn create_person() -> Person {
-        unsafe { POPULATION += 1 };
+impl Sim {
+    pub fn create_person(&mut self) -> Person {
+        self.population += 1;
         let temp_person: Person = Person {
-            id: unsafe { POPULATION },
+            id: self.population,
             name: "John",
             gender: 0,
             age: 0,
             love_vec: vec![-1, 100],
         };
 
-        return temp_person;
+        temp_person
     }
-
-    pub fn update_sim(mut steps: i32) -> i32 {
-        let people_temp = unsafe { &mut PEOPLE };
-
-        for id in 0..unsafe { PEOPLE.len() as usize } {
+    pub fn update_sim(&mut self, mut steps: i32) -> i32 {
+        for id in 0..self.people.len() {
             // Ages all people by 1 month
             // println!("{:?}", people_temp);
-            people_temp[id].age += 1;
+            self.people[id].age += 1;
 
-            if people_temp[id].love_vec[0] == -1 {
+            if self.people[id].love_vec[0] == -1 {
                 // Creates a random number to chose a lover for person
-                let lover = rand::thread_rng().gen_range(0..=(unsafe { PEOPLE.len() } - 1)) as i64;
+                let lover = rand::thread_rng().gen_range(0..=self.people.len()) as i64;
 
                 // If the person is not the lover and if the person does not have a lover one is given
-                if lover != id as i64 && people_temp[id].love_vec[0] == -1 {
-                    people_temp[id].love_vec[0] = lover;
+                if lover != id as i64 && self.people[id].love_vec[0] == -1 {
+                    self.people[id].love_vec[0] = lover;
                     steps += 1;
                 }
                 steps += 1;
             }
 
-
-            if people_temp[id].love_vec[1] as i32 != -1 {
-                let baby_chance = rand::thread_rng().gen_range(0..100) as i32;
+            if self.people[id].love_vec[1] as i32 != -1 {
+                let baby_chance = rand::thread_rng().gen_range(0..100) as u32;
                 if baby_chance < 2 {
                     // Creates a baby!!!
-                    let people_temp = unsafe { &mut PEOPLE };
-                    let john: Person = create_person();
-                    people_temp.push(john);
+                    let john: Person = self.create_person();
+                    self.people.push(john);
                     steps += 1;
                 }
             }
 
-            if people_temp[id].age > 12 * 30 {
-                unsafe { PEOPLE.remove(id); }
+            if self.people[id].age > 12 * 30 {
+                self.people.remove(id);
             }
             steps += 1;
         }
         steps
     }
-
-    pub fn print_people() {
+    pub fn print_people(&self) {
         println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
-        for id in 0..unsafe { PEOPLE.len() } {
+        for id in 0..self.people.len() {
             println!("------------------------------------------");
-            unsafe {
-                println!("[ID: {:?}]\n\
+            println!(
+                "[ID: {:?}]\n\
                   Name: {:?}\n\
                   Age: {:?}\n\
                   Gender: {:?}\n\
-                  Lover: {:?}", PEOPLE[id].id, PEOPLE[id].name, PEOPLE[id].age,
-                         PEOPLE[id].gender, PEOPLE[id].love_vec)
-            }
+                  Lover: {:?}",
+                self.people[id].id,
+                self.people[id].name,
+                self.people[id].age,
+                self.people[id].gender,
+                self.people[id].love_vec
+            )
         }
     }
+}
+fn main() {
+    let mut sim = Sim {
+        people: vec![],
+        population: 0,
+    };
 
     let start = Instant::now();
 
-    let people_temp = unsafe { &mut PEOPLE };
+    let john: Person = sim.create_person();
 
-    let john: Person = create_person();
-    people_temp.push(john);
-
-    let john2: Person = create_person();
-    people_temp.push(john2);
-
-    // Graphing variables
-    // let mp: Vec<i32> = Vec::new();
-    // let pop: Vec<i32> = Vec::new();
-    // let tp: i32 = -1;
-
-    print_people();
+    let john2: Person = sim.create_person();
+    sim.people.push(john);
+    sim.people.push(john2);
+    sim.print_people();
     let mut steps = 0;
 
-    for _ in 0..12 * 100 {
-        steps = update_sim(steps);
+    for _ in 0..12 * 50 {
+        steps = sim.update_sim(steps);
     }
 
     let duration = start.elapsed();
 
-    println!("\nPeople: {:?} | Steps: {}", people_temp.len(), steps);
+    println!("\nPeople: {:?} | Steps: {}", sim.people.len(), steps);
+    println!(
+        "The memory size of POPULATION is {}",
+        sim.people.len() * std::mem::size_of::<Person>()
+    );
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);
