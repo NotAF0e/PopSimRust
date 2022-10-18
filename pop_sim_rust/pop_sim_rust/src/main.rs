@@ -3,15 +3,22 @@ use std::str;
 use std::time::Instant;
 // use plotters;
 
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+
 // Person data struct
 #[derive(Debug)]
 pub struct Person {
     id: u64,
     name: &'static str,
     gender: u8,
-    age: u32,
+    age: i16,
     love_vec: Vec<i64>,
 }
+
 struct Sim {
     population: u64,
     people: Vec<Person>,
@@ -32,35 +39,37 @@ impl Sim {
     }
     pub fn update_sim(&mut self, mut steps: i32) -> i32 {
         for id in 0..self.people.len() {
-            // Ages all people by 1 month
-            // println!("{:?}", people_temp);
-            self.people[id].age += 1;
+            if self.people[id].age != -1 {
+                // Ages all people by 1 month
+                // println!("{:?}", people_temp);
+                self.people[id].age += 1;
 
-            if self.people[id].love_vec[0] == -1 {
-                // Creates a random number to chose a lover for person
-                let lover = rand::thread_rng().gen_range(0..=self.people.len()) as i64;
+                if self.people[id].love_vec[0] == -1 {
+                    // Creates a random number to chose a lover for person
+                    let lover = rand::thread_rng().gen_range(0..=self.people.len()) as i64;
 
-                // If the person is not the lover and if the person does not have a lover one is given
-                if lover != id as i64 && self.people[id].love_vec[0] == -1 {
-                    self.people[id].love_vec[0] = lover;
+                    // If the person is not the lover and if the person does not have a lover one is given
+                    if lover != id as i64 && self.people[id].love_vec[0] == -1 {
+                        self.people[id].love_vec[0] = lover;
+                        steps += 1;
+                    }
                     steps += 1;
                 }
-                steps += 1;
-            }
 
-            if self.people[id].love_vec[1] as i32 != -1 {
-                let baby_chance = rand::thread_rng().gen_range(0..100) as u32;
-                if baby_chance < 2 {
-                    // Creates a baby!!!
-                    let john: Person = self.create_person();
-                    self.people.push(john);
-                    steps += 1;
+                if self.people[id].love_vec[1] as i32 != -1 {
+                    let baby_chance = rand::thread_rng().gen_range(0..100) as u32;
+                    if baby_chance < 2 {
+                        // Creates a baby!!!
+                        let john: Person = self.create_person();
+                        self.people.push(john);
+                        steps += 1;
+                    }
                 }
-            }
-
             if self.people[id].age > 12 * 30 {
-                self.people.remove(id);
+                self.people[id].age = -1;
             }
+            }
+
             steps += 1;
         }
         steps
@@ -84,6 +93,7 @@ impl Sim {
         }
     }
 }
+
 fn main() {
     let mut sim = Sim {
         people: vec![],
@@ -100,7 +110,7 @@ fn main() {
     sim.print_people();
     let mut steps = 0;
 
-    for _ in 0..12 * 50 {
+    for _ in 0..12 * 60 {
         steps = sim.update_sim(steps);
     }
 
