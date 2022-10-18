@@ -25,12 +25,12 @@ struct Sim {
 }
 
 impl Sim {
-    pub fn create_person(&mut self) -> Person {
+    pub fn create_person(&mut self, gender: u8) -> Person {
         self.population += 1;
         let temp_person: Person = Person {
             id: self.population,
             name: "John",
-            gender: 0,
+            gender,
             age: 0,
             love_vec: vec![-1, 100],
         };
@@ -49,7 +49,8 @@ impl Sim {
                     let lover = rand::thread_rng().gen_range(0..self.people.len()) as i64;
 
                     // If the person is not the lover and if the person does not have a lover one is given
-                    if lover != id as i64 && self.people[id].love_vec[0] == -1 {
+                    if lover != id as i64 && self.people[id].love_vec[0] == -1
+                        && self.people[lover as usize].gender != self.people[id].gender {
                         self.people[id].love_vec[0] = lover;
                         steps += 1;
                     }
@@ -57,10 +58,11 @@ impl Sim {
                 }
 
                 if self.people[id].love_vec[1] as i32 != -1 {
-                    let baby_chance = rand::thread_rng().gen_range(0..1000) as u32;
+                    let baby_chance = rand::thread_rng().gen_range(0..1000);
                     if baby_chance < 6 {
                         // Creates a baby!!!
-                        let john: Person = self.create_person();
+                        let gender = rand::thread_rng().gen_range(0..1);
+                        let john: Person = self.create_person(gender);
                         self.people.push(john);
                         steps += 1;
                     }
@@ -100,9 +102,9 @@ fn main() {
 
     let start = Instant::now();
 
-    let john: Person = sim.create_person();
+    let john: Person = sim.create_person(0);
 
-    let john2: Person = sim.create_person();
+    let john2: Person = sim.create_person(1);
     sim.people.push(john);
     sim.people.push(john2);
     sim.print_people();
