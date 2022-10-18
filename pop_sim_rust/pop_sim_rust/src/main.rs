@@ -44,9 +44,9 @@ impl Sim {
                 // println!("{:?}", people_temp);
                 self.people[id].age += 1;
 
-                if self.people[id].love_vec[0] == -1 {
+                if self.people[id].love_vec[0] == -1 && self.people[id].age > 12 {
                     // Creates a random number to chose a lover for person
-                    let lover = rand::thread_rng().gen_range(0..=self.people.len()) as i64;
+                    let lover = rand::thread_rng().gen_range(0..self.people.len()) as i64;
 
                     // If the person is not the lover and if the person does not have a lover one is given
                     if lover != id as i64 && self.people[id].love_vec[0] == -1 {
@@ -57,17 +57,15 @@ impl Sim {
                 }
 
                 if self.people[id].love_vec[1] as i32 != -1 {
-                    let baby_chance = rand::thread_rng().gen_range(0..100) as u32;
-                    if baby_chance < 2 {
+                    let baby_chance = rand::thread_rng().gen_range(0..1000) as u32;
+                    if baby_chance < 6 {
                         // Creates a baby!!!
                         let john: Person = self.create_person();
                         self.people.push(john);
                         steps += 1;
                     }
                 }
-            if self.people[id].age > 12 * 30 {
-                self.people[id].age = -1;
-            }
+                if self.people[id].age > 12 * 30 { self.people[id].age = -1; }
             }
 
             steps += 1;
@@ -110,7 +108,7 @@ fn main() {
     sim.print_people();
     let mut steps = 0;
 
-    for _ in 0..12 * 60 {
+    for _ in 0..12 * 75 {
         steps = sim.update_sim(steps);
     }
 
