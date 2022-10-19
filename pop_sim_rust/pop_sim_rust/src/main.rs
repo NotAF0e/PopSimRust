@@ -12,7 +12,7 @@ pub trait Iterator {
 // Person data struct
 #[derive(Debug)]
 pub struct Person {
-    id: u64,
+    id: i64,
     name: &'static str,
     gender: u8,
     age: i16,
@@ -20,59 +20,54 @@ pub struct Person {
 }
 
 struct Sim {
-    population: u64,
+    population: i64,
     people: Vec<Person>,
 }
 
 impl Sim {
-    pub fn create_person(&mut self, gender: u8) -> Person {
+    pub fn create_person(&mut self, gender_: u8) -> Person {
         self.population += 1;
         let temp_person: Person = Person {
             id: self.population,
             name: "John",
-            gender,
+            gender: gender_,
             age: 0,
             love_vec: vec![-1, 100],
         };
 
         temp_person
     }
-    pub fn update_sim(&mut self, mut steps: i32) -> i32 {
+    pub fn update_sim(&mut self) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
                 // Ages all people by 1 month
                 // println!("{:?}", people_temp);
                 self.people[id].age += 1;
 
-                if self.people[id].love_vec[0] == -1 && self.people[id].age > 12 {
+                if self.people[id].love_vec[0] == -1 && self.people[id].age > 12 * 12 {
                     // Creates a random number to chose a lover for person
-                    let lover = rand::thread_rng().gen_range(0..self.people.len()) as i64;
+                    let lover = rand::thread_rng().gen_range(0..self.people.len());
+                    // println!("{}", lover);
 
                     // If the person is not the lover and if the person does not have a lover one is given
-                    if lover != id as i64 && self.people[id].love_vec[0] == -1
-                        && self.people[lover as usize].gender != self.people[id].gender {
-                        self.people[id].love_vec[0] = lover;
-                        steps += 1;
+                    if lover != id && self.people[lover].love_vec[0] == -1 && self.people[id].gender != self.people[lover].gender {
+                        self.people[id].love_vec[0] = lover as i64;
+                        self.people[lover].love_vec[0] = id as i64;
                     }
-                    steps += 1;
                 }
 
-                if self.people[id].love_vec[1] as i32 != -1 {
+                if self.people[id].love_vec[1] != -1 {
                     let baby_chance = rand::thread_rng().gen_range(0..1000);
                     if baby_chance < 6 {
                         // Creates a baby!!!
-                        let gender = rand::thread_rng().gen_range(0..1);
+                        let gender = rand::thread_rng().gen_range(0..2);
                         let john: Person = self.create_person(gender);
                         self.people.push(john);
-                        steps += 1;
                     }
                 }
                 if self.people[id].age > 12 * 30 { self.people[id].age = -1; }
             }
-
-            steps += 1;
         }
-        steps
     }
     pub fn print_people(&self) {
         println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
@@ -86,7 +81,7 @@ impl Sim {
                   Lover: {:?}",
                 self.people[id].id,
                 self.people[id].name,
-                self.people[id].age,
+                self.people[id].age as f32 / 12.0,
                 self.people[id].gender,
                 self.people[id].love_vec
             )
@@ -97,7 +92,7 @@ impl Sim {
 fn main() {
     let mut sim = Sim {
         people: vec![],
-        population: 0,
+        population: -1,
     };
 
     let start = Instant::now();
@@ -108,15 +103,16 @@ fn main() {
     sim.people.push(john);
     sim.people.push(john2);
     sim.print_people();
-    let mut steps = 0;
 
     for _ in 0..12 * 75 {
-        steps = sim.update_sim(steps);
+        sim.update_sim();
     }
 
     let duration = start.elapsed();
 
-    println!("\nPeople: {:?} | Steps: {}", sim.people.len(), steps);
+    sim.print_people();
+
+    println!("\nPeople: {:?}", sim.people.len());
     println!(
         "The memory size of POPULATION is {}",
         sim.people.len() * std::mem::size_of::<Person>()
@@ -124,5 +120,4 @@ fn main() {
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);
-    // print_people();
 }
