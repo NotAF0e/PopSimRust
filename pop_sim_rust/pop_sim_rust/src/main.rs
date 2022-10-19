@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::str;
 use std::time::Instant;
+use indicatif::ProgressBar;
 // use plotters;
 
 pub trait Iterator {
@@ -104,19 +105,20 @@ fn main() {
     sim.people.push(john2);
     sim.print_people();
 
-    for _ in 0..12 * 75 {
+
+    let years = 250;
+    let total_progress_bar = ProgressBar::new(12 * years);
+    for _ in 0..12 * years {
+        total_progress_bar.inc(1);
         sim.update_sim();
     }
+    total_progress_bar.finish();
 
     let duration = start.elapsed();
 
-    sim.print_people();
+    // sim.print_people();
 
     println!("\nPeople: {:?}", sim.people.len());
-    println!(
-        "The memory size of POPULATION is {}",
-        sim.people.len() * std::mem::size_of::<Person>()
-    );
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);
