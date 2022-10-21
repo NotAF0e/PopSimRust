@@ -1,7 +1,7 @@
 use rand::Rng;
 use std::str;
 use std::time::Instant;
-use indicatif::ProgressBar;
+use indicatif::*;
 // use plotters;
 
 pub trait Iterator {
@@ -25,19 +25,21 @@ struct Sim {
     people: Vec<Person>,
 }
 
+
 impl Sim {
-    pub fn create_person(&mut self, gender_: u8) -> Person {
+    pub fn create_person(&mut self, gender: u8) -> Person {
         self.population += 1;
         let temp_person: Person = Person {
             id: self.population,
             name: "John",
-            gender: gender_,
+            gender,
             age: 0,
             love_vec: vec![-1, 100],
         };
 
         temp_person
     }
+
     pub fn update_sim(&mut self) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
@@ -67,6 +69,9 @@ impl Sim {
                     }
                 }
                 if self.people[id].age > 12 * 30 { self.people[id].age = -1; }
+                if self.people[id].love_vec[0] != -1 && self.people[self.people[id].love_vec[0] as usize].age == -1
+                { self.people[id].love_vec[0] = -1; }
+
             }
         }
     }
@@ -90,6 +95,7 @@ impl Sim {
     }
 }
 
+
 fn main() {
     let mut sim = Sim {
         people: vec![],
@@ -104,21 +110,22 @@ fn main() {
     sim.people.push(john);
     sim.people.push(john2);
     sim.print_people();
+    println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
-
-    let years = 250;
-    let total_progress_bar = ProgressBar::new(12 * years);
+    let years = 200;
+    let bar = ProgressBar::new(12 * years);
+    bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     for _ in 0..12 * years {
-        total_progress_bar.inc(1);
         sim.update_sim();
+        bar.inc(1);
     }
-    total_progress_bar.finish();
+    bar.finish_and_clear();
 
     let duration = start.elapsed();
 
     // sim.print_people();
 
-    println!("\nPeople: {:?}", sim.people.len());
+    println!("People: {:?}", sim.people.len());
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);

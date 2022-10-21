@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8"
-plotters = "0.3.1"
+# plotters = "0.3.1"
+indicatif = { version = "*", features = ["rayon"] }
