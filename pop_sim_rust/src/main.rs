@@ -43,46 +43,44 @@ impl Sim {
 
     pub fn update_sim(&mut self) {
         for i in 0..self.people.len() {
-            if self.people[i].age != -1 {
-                // Ages all people by 1 month
-                // println!("{:?}", people_temp);
-                self.people[i].age += 1;
 
-                if self.people[i].love_vec[0] == -1 && self.people[i].age > 12 * 12 {
-                    // Creates a random number to chose a lover for person
-                    let lover = rand::thread_rng().gen_range(0..self.people.len());
-                    // println!("{}", lover);
+            // Ages all people by 1 month
+            // println!("{:?}", people_temp);
+            self.people[i].age += 1;
 
-                    // If the person is not the lover and if the person does not have a lover one is given
-                    if lover != i && self.people[lover].love_vec[0] == -1 && self.people[i].gender != self.people[lover].gender {
-                        self.people[i].love_vec[0] = lover as i64;
-                        self.people[lover].love_vec[0] = i as i64;
-                    }
+            if self.people[i].love_vec[0] == -1 && self.people[i].age > 12 * 12 {
+                // Creates a random number to chose a lover for person
+                let lover = rand::thread_rng().gen_range(0..self.people.len());
+                // println!("{}", lover);
+
+                // If the person is not the lover and if the person does not have a lover one is given
+                if lover != i && self.people[lover].love_vec[0] == -1 && self.people[i].gender != self.people[lover].gender {
+                    self.people[i].love_vec[0] = lover as i64;
+                    self.people[lover].love_vec[0] = i as i64;
                 }
-
-                if self.people[i].age > 12 * 30 { self.people[i].age = -1; }
-                if i < self.people.len() && self.people[i].love_vec[0] != -1 && self.people[self.people[i].love_vec[0] as usize].age == -1
-                { self.people[i].love_vec[0] = -1; }
             }
+
+
+            // println!("{i}, {}", self.people.len());
+            if i < self.people.len() && self.people[i].love_vec[0] != -1
+                && self.people[self.people[i].love_vec[0] as usize].age == -1
+            { self.people[i].love_vec[0] = -1; }
         }
 
 
-        for i in 0..self.people.len() {
-            if self.people[i].love_vec[1] != -1 {
-                let baby_chance = rand::thread_rng().gen_range(0..1000);
-                if baby_chance < 6 {
-                    // Creates a baby!!!
-                    let gender = rand::thread_rng().gen_range(0..2);
-                    let john: Person = self.create_person(gender);
-                    self.people.push(john);
-                }
+        for _ in 0..self.people.len() {
+            let baby_chance = rand::thread_rng().gen_range(0..1000);
+            if baby_chance < 6 {
+                // Creates a baby!!!
+                let gender = rand::thread_rng().gen_range(0..2);
+                let john: Person = self.create_person(gender);
+                self.people.push(john);
             }
+
+            self.people.retain(|person| person.age != -1);
         }
     }
 
-    pub fn remove_dead(&mut self) {
-        self.people.retain(|person| person.age != -1);
-    }
 
     pub fn print_people(&self) {
         println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
@@ -120,11 +118,11 @@ fn main() {
     sim.print_people();
     println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
-    let years = 200;
+    let years = 50;
     let bar = ProgressBar::new(12 * years);
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     for _ in 0..12 * years {
-        sim.remove_dead();
+        // sim.remove_dead();
         sim.update_sim();
         bar.inc(1);
     }

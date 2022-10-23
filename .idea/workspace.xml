@@ -7,9 +7,75 @@
     <cargoProject FILE="$PROJECT_DIR$/pop_sim_rust/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="This dir is just for my pycharm config so no need to download">
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="now waits 20 sec after completion">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/deps/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/deps/pop_sim_rust.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/deps/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/deps/pop_sim_rust.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqe04udw4-a447cc-200i7yl1revh4/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqe04udw4-a447cc-200i7yl1revh4/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqe04udw4-a447cc-200i7yl1revh4/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqe04udw4-a447cc.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqe04uo8b-1877noo-1dbrz75rrhco4/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqe04uo8b-1877noo-1dbrz75rrhco4/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqe04uo8b-1877noo-1dbrz75rrhco4/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqe04uo8b-1877noo.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/10rhi7s0drmr5qyg.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/12hz4vfseij7gpxt.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/156flqkbwls1hu2q.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/15wueurbrugoa5h.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/16eb1727ps6xgbrz.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/1leyvnqlkwo2ptr6.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/1mc4chr73jng27wn.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/1mp5yv4poanqygr8.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/1nyd0omkobcbxcr1.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/1pz0w49rpieag8sj.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/28rtmc6y9tjs0g31.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/2j8tu7746omgfnp3.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/2o59z8bh3uh6k44b.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/2qp626p55w5zxuh1.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/2vfnhpkzw6127g0d.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/2x9umkxn4o1o82d5.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/30jn0fdk9lm8631k.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/325h38vgw1yg9pnm.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3430zksiq7dsydb2.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/36oapuoaquknd6ee.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/38lnqj7mg1nwmhr3.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/39itivl16seyspog.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3amve9yzggj5gasn.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3cfjtqq9b8th2ioe.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3i1xoo41qc6gb0tf.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3n2io36tb7ucqwo3.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3qno9ltpl7ubrivc.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3uyjle7f4lzslesa.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3yqyyxf951akmf0.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/3zidlwix16icp84b.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/4avg7uywrvzf6vj3.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/4kxdphrzfits0z3s.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/4q8xs9ixhnkl0x9c.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/4u1aees0h0tvw985.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/4wfq1gghvgrh83sm.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/505fha0e8qckxnpe.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/53lusil8ivavlzz8.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/559trmievilzb8zq.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/5bp6thm8uik46cg6.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/5doznpqje7mvjpph.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/5fez6iaw6dzov1x9.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/5gis1oxytuy3b3p8.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/a32lvjil6gcg6jt.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/lyz5o0sv880ts8u.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/q1y2wr9tlendcv0.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45-una8khk9973p/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-3t9wq8xaso28f/s-gepejxyqcc-oeda45.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/pop_sim_rust.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/pop_sim_rust.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,14 +135,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ToolWindowRun.ShowToolbar": "false",
-    "last_opened_file_path": "Z:/.PYTHON_PROJECTS/SIMULATIONS",
-    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
-    "settings.editor.selected.configurable": "vcs.Git"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ToolWindowRun.ShowToolbar&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;Z:/.PYTHON_PROJECTS/SIMULATIONS&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="Z:\.PYTHON_PROJECTS\SIMULATIONS" />
@@ -233,20 +299,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00094" summary="changed file locations">
-      <created>1663698161457</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1663698161457</updated>
-    </task>
-    <task id="LOCAL-00095" summary="cos">
-      <created>1664298559643</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
-      <option name="project" value="LOCAL" />
-      <updated>1664298559644</updated>
     </task>
     <task id="LOCAL-00096" summary="renamed cos">
       <created>1664298580085</created>
@@ -577,7 +629,21 @@
       <option name="project" value="LOCAL" />
       <updated>1666522296413</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="now waits 20 sec after completion">
+      <created>1666522815240</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1666522815240</updated>
+    </task>
+    <task id="LOCAL-00144" summary="now waits 20 sec after completion">
+      <created>1666522939419</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1666522939419</updated>
+    </task>
+    <option name="localTasksCounter" value="145" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -615,7 +681,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="began rust rewrite(I don't know what im doing lol)" />
     <MESSAGE value="more rust rewrite stuff(I don't know what im doing lol)" />
     <MESSAGE value="formatting(no actual new feature as im working on rewrite to rust)" />
     <MESSAGE value="more rewrite stuff for rust" />
@@ -640,6 +705,7 @@
     <MESSAGE value="moved some files around" />
     <MESSAGE value="Mixed another major bug" />
     <MESSAGE value="This dir is just for my pycharm config so no need to download" />
-    <option name="LAST_COMMIT_MESSAGE" value="This dir is just for my pycharm config so no need to download" />
+    <MESSAGE value="now waits 20 sec after completion" />
+    <option name="LAST_COMMIT_MESSAGE" value="now waits 20 sec after completion" />
   </component>
 </project>
