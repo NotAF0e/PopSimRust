@@ -2,7 +2,7 @@ use rand::Rng;
 use std::str;
 use std::time::Instant;
 use indicatif::*;
-// use std::thread;
+use std::{thread, time};
 // use plotters;
 
 pub trait Iterator {
@@ -132,10 +132,11 @@ fn main() {
 
     let duration = start.elapsed();
 
-    sim.print_people();
+    // sim.print_people();
 
     println!("People: {:?}", sim.people.len());
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);
+    thread::sleep(time::Duration::from_secs(20));
 }
