@@ -118,7 +118,7 @@ fn main() {
     sim.print_people();
     println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
-    let years = 50;
+    let years = 200;
     let bar = ProgressBar::new(12 * years);
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     for _ in 0..12 * years {
