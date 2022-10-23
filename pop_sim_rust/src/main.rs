@@ -70,7 +70,7 @@ impl Sim {
                     }
                 }
                 if person.age > 12 * 30 { person.age = -1; }
-                if person.love_vec[0] != -1 && self.people[usize::from(person.love_vec[0])].age == -1
+                if person.love_vec[0] != -1 && self.people[usize::from(people.love_vec[0])].age == -1
                 { person.love_vec[0] = -1; }
 
             }
