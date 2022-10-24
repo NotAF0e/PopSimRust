@@ -71,14 +71,13 @@ impl Sim {
 
         // Creating babies
         for _ in 0..self.people.len() {
-            let baby_chance = rand::thread_rng().gen_range(0..1000);
-            if baby_chance < 6 {
+            let baby_chance = rand::thread_rng().gen_range(0..10000);
+            if baby_chance < 40 {
                 // Creates a baby!!!
                 let gender = rand::thread_rng().gen_range(0..2);
                 let john: Person = self.create_person(gender);
                 self.people.push(john);
             }
-
         }
     }
 
@@ -119,14 +118,15 @@ fn main() {
     sim.print_people();
     println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
-    let years = 200;
+    let years = 200; // Change this if you want more simulation time
     let bar = ProgressBar::new(12 * years);
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
+    // Simulate 'years' amount of years
     for _ in 0..12 * years {
         sim.update_sim();
-        sim.people.retain(|person| person.age != -1);
         bar.inc(1);
     }
+    sim.people.retain(|person| person.age != -1);
     bar.finish_and_clear();
 
     let duration = start.elapsed();
@@ -137,5 +137,6 @@ fn main() {
 
     // Time took to complete code
     println!("Time taken to calculate: {:?}", duration);
-    thread::sleep(time::Duration::from_secs(20));
+
+    // thread::sleep(time::Duration::from_secs(20));
 }
