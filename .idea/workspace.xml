@@ -5,23 +5,30 @@
   </component>
   <component name="CargoProjects">
     <cargoProject FILE="$PROJECT_DIR$/pop_sim_rust/Cargo.toml" />
-    <cargoProject FILE="$PROJECT_DIR$/World/Cargo.toml" />
+    <cargoProject FILE="$PROJECT_DIR$/world/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="sped up some more">
-      <change afterPath="$PROJECT_DIR$/pop_sim_rust/src/world.rs" afterDir="false" />
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="not much, just playin around with realistic values for birth">
+      <change afterPath="$PROJECT_DIR$/world/Cargo.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/world/Cargo.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/world/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/SIMULATIONS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/SIMULATIONS.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/src/world.rs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqkgtxcuy-6na6ux-1ovopxhpugybc/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqkgtxcuy-6na6ux-1ovopxhpugybc/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqkgtxcuy-6na6ux-1ovopxhpugybc/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-geqkgtxcuy-6na6ux.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqkgtxcu0-1h756vj-3eo8h77trya9i/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqkgtxcu0-1h756vj-3eo8h77trya9i/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqkgtxcu0-1h756vj-3eo8h77trya9i/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-geqkgtxcu0-1h756vj.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-a9b2d8905d133b46/output-test-bin-pop_sim_rust" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-deeccfb29eae3047/output-bin-pop_sim_rust" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-gerosh0vuw-xjnlc7-107iywtau28vn/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-gerosh0vuw-xjnlc7-107iywtau28vn/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-gerosh0vuw-xjnlc7-107iywtau28vn/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-gerosh0vuw-xjnlc7.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-gerosh0m2h-1auj10b-29jprhspxkchq/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-gerosh0m2h-1auj10b-29jprhspxkchq/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-gerosh0m2h-1auj10b-29jprhspxkchq/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-gerosh0m2h-1auj10b.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/output-bin-pop_sim_rust" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" afterDir="false" />
@@ -88,9 +95,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
     "ToolWindowRun.ShowToolbar": "false",
-    "last_opened_file_path": "Z:/.PYTHON_PROJECTS/SIMULATIONS/World",
+    "last_opened_file_path": "Z:/.PYTHON_PROJECTS/SIMULATIONS/world",
     "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "org.rust.hideNoCargoProjectNotificationsZ:/.PYTHON_PROJECTS/SIMULATIONS/threading/Cargo.toml": "true",
     "settings.editor.selected.configurable": "vcs.Git"
   }
 }]]></component>
@@ -107,7 +117,7 @@
       <recent name="Z:\.PYTHON_PROJECTS\SIMULATIONS\popsimspeed" />
     </key>
   </component>
-  <component name="RunManager" selected="Cargo.Run pop_sim_rust">
+  <component name="RunManager" selected="Cargo.Run world">
     <configuration name="Run pop_sim_rust" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="command" value="run -r" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$/pop_sim_rust" />
@@ -115,6 +125,23 @@
       <option name="requiredFeatures" value="true" />
       <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="true" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <envs />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Run world" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="command" value="run" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$/world" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
       <option name="withSudo" value="false" />
       <option name="buildTarget" value="REMOTE" />
       <option name="backtrace" value="SHORT" />
@@ -228,6 +255,7 @@
     </configuration>
     <list>
       <item itemvalue="Cargo.Run pop_sim_rust" />
+      <item itemvalue="Cargo.Run world" />
       <item itemvalue="Python.main" />
       <item itemvalue="Python.pop-sim" />
       <item itemvalue="Python.pop_sim_numpy" />
@@ -250,13 +278,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00099" summary="full rewrite to rust???">
-      <created>1664298684843</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1664298684843</updated>
     </task>
     <task id="LOCAL-00100" summary="cython rewrite, prob not, lets try tho">
       <created>1664298726175</created>
@@ -594,7 +615,14 @@
       <option name="project" value="LOCAL" />
       <updated>1666536971688</updated>
     </task>
-    <option name="localTasksCounter" value="148" />
+    <task id="LOCAL-00148" summary="not much, just playin around with realistic values for birth">
+      <created>1666624698299</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1666624698315</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -632,7 +660,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="formatting of rust code and added id into print" />
     <MESSAGE value="so much unsafe blocks, ahhhhh, but now the people vec can be updated" />
     <MESSAGE value="added a print people function, condensed code" />
     <MESSAGE value="added a realistic date crate" />
@@ -657,6 +684,7 @@
     <MESSAGE value="Fixed???" />
     <MESSAGE value="More years to benchmark" />
     <MESSAGE value="sped up some more" />
-    <option name="LAST_COMMIT_MESSAGE" value="sped up some more" />
+    <MESSAGE value="not much, just playin around with realistic values for birth" />
+    <option name="LAST_COMMIT_MESSAGE" value="not much, just playin around with realistic values for birth" />
   </component>
 </project>
