@@ -40,8 +40,8 @@ fn main() {
     for tile in tiles {
         println!("{:?}", tile);
     }
-    let test = vec![4, 13];
-    let available_tiles = available_tiles(tiles, test);
+    let test_pointer = vec![4, 13];
+    let available_tiles = available_tiles(tiles, test_pointer);
 
     for tile in &available_tiles {
         tiles[tile[0]][tile[1]] = 1;
