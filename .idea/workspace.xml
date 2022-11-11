@@ -8,81 +8,26 @@
     <cargoProject FILE="$PROJECT_DIR$/world/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="tile pointer can now look up, down, left and right!!! YAAAA">
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="bruh">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/world/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-45ffde8903defec6/test-bin-world" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-45ffde8903defec6/test-bin-world" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-4e63e555f7729a1e/bin-world" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-4e63e555f7729a1e/bin-world" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-4e63e555f7729a1e/output-bin-world" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-4e63e555f7729a1e/output-bin-world" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-c628853ea153c202/bin-world" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/.fingerprint/world-c628853ea153c202/bin-world" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/deps/world.exe" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/deps/world.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/deps/world.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/deps/world.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-1avji1rzcp3ip/s-gf0nmmuz8o-12g960e-1he45xgdsrc4r/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-1avji1rzcp3ip/s-gf0nmmuz8o-12g960e-1he45xgdsrc4r/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-1avji1rzcp3ip/s-gf0nmmuz8o-12g960e-1he45xgdsrc4r/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-1avji1rzcp3ip/s-gf0nmmuz8o-12g960e.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/111gktf6qp4upcgg.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/17efj18aur80y2.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/17hwvv7gacakzrns.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1e7vpve54j3h1uin.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1e8m11r6l4cxaw71.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1igrum89667g2vxw.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1iotpr7vaunew7aw.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1isuh9fxoqfz8pq4.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1kqdg5n3pe9ws1u3.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1mcy2vg0a15sejp4.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1pnnmk136zorh89m.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1srsq9fos5gzd0vy.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1w0p99ztj2yddgu6.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/1y1y6y0c9kkwzhe1.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2darjwv7j1vtrzb6.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2ejvcqxl8xtefe6o.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2fisnthhngirwbk1.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2mtbwue3ct2rvvdp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2uyrlsy19qw9ct55.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2w47dfye2ttrk2yt.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/2zqgwjb3w1hmlttz.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/331vzpsghneufroj.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/33cs6aihrilwfvap.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/37tl3fsbqcrr6ysc.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3bp3mk6mhm4epw8f.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3hdn1n9swm72vtey.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3lhsrretpsdn95x.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3nih8kb36dtakiwx.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3q4u7f3oh452jv23.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3u6eorin3bzbeveq.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/3yztmwq0zmresrxn.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/40c5nrbgiy2xpwfm.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4eh2scaiee8g8hum.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4f65lrbaug27hiw4.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4glvc1k9viky0lor.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4vbl5d5uziqz5a4r.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4x3pxil87oyn4orv.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4xs5eljrnzizrulu.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4yr94dtx5awuqr1p.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/4zohovnii4b47gus.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/59ov80rmg11gjpb0.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/5a7dyi76rtxcr0gu.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/5bhikg7sznu4kgck.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/5c43cudjofzsa2ev.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/6txvtbc5ibbba4n.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/cyywa377n65n163.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/fxo5iff84vvx3oq.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/l5civqjk4zt7j07.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/qd4c7hegxxexdj8.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya-gz2qkor4lzt/wtrsmkvfjvfr08d.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2r0nrtapn4fey/s-gf0nkiqib0-1247xya.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2zypxw9et32uq/s-gf0nmmuz7o-1c5fak6-29mx59t66l1ph/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2zypxw9et32uq/s-gf0nmmuz7o-1c5fak6-29mx59t66l1ph/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2zypxw9et32uq/s-gf0nmmuz7o-1c5fak6-29mx59t66l1ph/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/incremental/world-2zypxw9et32uq/s-gf0nmmuz7o-1c5fak6.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/world.exe" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/world.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/debug/world.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/debug/world.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsczupoh-10rhm5c-working/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsczupoh-10rhm5c-working/dep-graph.part.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsczupoh-10rhm5c-working/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsczupoh-10rhm5c-working/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsczupoh-10rhm5c.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsd20hbe-r0xgdg-21nd1l56zj6rf/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsd20hbe-r0xgdg-21nd1l56zj6rf/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsd20hbe-r0xgdg-21nd1l56zj6rf/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1obrq8966zr5x/s-getsd20hbe-r0xgdg.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsczuftf-17iczgq-working/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsczuftf-17iczgq-working/dep-graph.part.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsczuftf-17iczgq-working/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsczuftf-17iczgq-working/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsczuftf-17iczgq.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsd20rx4-krzrgm-19c3yf1uqxaf7/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsd20rx4-krzrgm-19c3yf1uqxaf7/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsd20rx4-krzrgm-19c3yf1uqxaf7/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-1sxe0dmgwidek/s-getsd20rx4-krzrgm.lock" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -328,13 +273,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00105" summary="bye bye amazon, lol">
-      <created>1664299020084</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1664299020084</updated>
     </task>
     <task id="LOCAL-00106" summary="no need for this">
       <created>1664299071630</created>
@@ -672,7 +610,14 @@
       <option name="project" value="LOCAL" />
       <updated>1667327399004</updated>
     </task>
-    <option name="localTasksCounter" value="154" />
+    <task id="LOCAL-00154" summary="bruh">
+      <created>1668105950427</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1668105950427</updated>
+    </task>
+    <option name="localTasksCounter" value="155" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -710,7 +655,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="removed realistic date for parity with python ver(Also i didn't get it, lol), Some formatting too" />
     <MESSAGE value="people can now love each over" />
     <MESSAGE value="people can now reproduce" />
     <MESSAGE value="Testing speed" />
@@ -735,6 +679,7 @@
     <MESSAGE value="worlds???" />
     <MESSAGE value="tiles work, kinda(crash when out of bounds of arr)" />
     <MESSAGE value="tile pointer can now look up, down, left and right!!! YAAAA" />
-    <option name="LAST_COMMIT_MESSAGE" value="tile pointer can now look up, down, left and right!!! YAAAA" />
+    <MESSAGE value="bruh" />
+    <option name="LAST_COMMIT_MESSAGE" value="bruh" />
   </component>
 </project>
