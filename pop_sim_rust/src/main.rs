@@ -22,7 +22,7 @@ pub struct World {
     name: &'static str,
     age: i64,
     food: f32,
-    healthcare_death_val: f32,
+    healthcare_death_range: Vec<f32>,
 }
 
 struct Sim {
@@ -47,7 +47,7 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, healthcare_death_val: f32) {
+    pub fn update_sim(&mut self, healthcare_death_val: &Vec<f32>) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
 
@@ -72,15 +72,17 @@ impl Sim {
                 }
 
                 // Randomly removes health from a person
-                self.people[id].stats[0] -= rand::thread_rng().gen_range(0.0..healthcare_death_val);
+                self.people[id].stats[0] -= rand::thread_rng().gen_range(healthcare_death_val[0]..healthcare_death_val[1]);
 
                 // println!("{i}, {}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
                 if id < self.people.len() && self.people[id].love_vec[0] != -1
                     && self.people[self.people[id].love_vec[0] as usize].age == -1
-                    && self.people[id].stats[0] >= 0.0 {
+                    && self.people[id].age > 30
+                    || self.people[id].stats[0] <= 0.0 {
                     self.people[id].love_vec[0] = -1;
+                    self.people[id].age = -1;
                 }
             }
         }
@@ -126,7 +128,7 @@ fn main() {
         name: "Earth",
         age: 4_543_000_000,
         food: 100.0,
-        healthcare_death_val: 1.0,
+        healthcare_death_range: vec![0.0, 1.0],
     };
 
     let mut sim = Sim {
@@ -144,13 +146,13 @@ fn main() {
     sim.print_people();
     println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
-    let years = 300; // Change this if you want more simulation time
+    let years = 250; // Change this if you want more simulation time
 
     let bar = ProgressBar::new(12 * years);
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     // Simulate 'years' amount of years
     for _ in 0..12 * years {
-        sim.update_sim(world.healthcare_death_val);
+        sim.update_sim(&world.healthcare_death_range);
         bar.inc(1);
     }
     sim.people.retain(|person| person.age != -1);
