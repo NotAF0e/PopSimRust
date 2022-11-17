@@ -8,26 +8,7 @@
     <cargoProject FILE="$PROJECT_DIR$/world/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-5db829ab723c006b/output-test-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-5db829ab723c006b/output-test-bin-pop_sim_rust" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-87d207522457895e/output-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-87d207522457895e/output-bin-pop_sim_rust" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/dep-graph.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/query-cache.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/work-products.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/output-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/output-bin-pop_sim_rust" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" afterDir="false" />
-    </list>
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="added a healthcare system which is dependent on food and fixed bugs" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -272,27 +253,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00111" summary="formatting(no actual new feature as im working on rewrite to rust)">
-      <created>1664561512995</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1664561512995</updated>
-    </task>
-    <task id="LOCAL-00112" summary="more rewrite stuff for rust">
-      <created>1664614244906</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1664614244907</updated>
-    </task>
-    <task id="LOCAL-00113" summary="more rewrite stuff for rust">
-      <created>1664614300828</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
-      <option name="project" value="LOCAL" />
-      <updated>1664614300828</updated>
     </task>
     <task id="LOCAL-00114" summary="formatting of rust code and added id into print">
       <created>1664736095348</created>
@@ -616,7 +576,28 @@
       <option name="project" value="LOCAL" />
       <updated>1668618400332</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="added a healthcare system which is dependent on food and fixed bugs">
+      <created>1668713740517</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1668713740517</updated>
+    </task>
+    <task id="LOCAL-00161" summary="added a healthcare system which is dependent on food and fixed bugs">
+      <created>1668713794838</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1668713794839</updated>
+    </task>
+    <task id="LOCAL-00162" summary="added a healthcare system which is dependent on food and fixed bugs">
+      <created>1668713805280</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1668713805280</updated>
+    </task>
+    <option name="localTasksCounter" value="163" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -654,7 +635,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Testing speed" />
     <MESSAGE value="added steps counter" />
     <MESSAGE value="optimisations" />
     <MESSAGE value="Some restructuring of the code thanks Aiden2207 from https://users.rust-lang.org/t/population-sim-with-exponentially-bad-performance/82934/7" />
@@ -679,6 +659,7 @@
     <MESSAGE value="bruh" />
     <MESSAGE value="added world struct" />
     <MESSAGE value="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future" />
+    <MESSAGE value="added a healthcare system which is dependent on food and fixed bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="added a healthcare system which is dependent on food and fixed bugs" />
   </component>
 </project>
