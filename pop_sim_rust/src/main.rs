@@ -15,6 +15,7 @@ pub struct Person {
     age: i16,
     stats: Vec<f32>,
     love_vec: Vec<i64>,
+    seed: f32,
 }
 
 #[derive(Debug)]
@@ -39,20 +40,25 @@ impl Sim {
             name: "John",
             gender,
             age: 0,
-            //         Health, Happiness
+
+            // Health, Happiness
             stats: vec![100.0, 100.0],
             love_vec: vec![-1, 100],
+
+            // Seed is for random values which will stay consistent
+            seed: rand::thread_rng().gen_range(0.0..2.0),
         };
 
         temp_person
     }
 
-    pub fn update_sim(&mut self, healthcare_death_val: &Vec<f32>) {
+    pub fn update_sim(&mut self, world: &World) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
 
                 // Ages all people by 1 month
                 self.people[id].age += 1;
+
                 // println!("{:?}", people_temp);
 
                 // Chooses people what will have babies
@@ -71,17 +77,39 @@ impl Sim {
                     }
                 }
 
-                // Randomly removes health from a person
-                self.people[id].stats[0] -= rand::thread_rng().gen_range(healthcare_death_val[0]..healthcare_death_val[1]);
+                // Randomly removes health from a person depending on healthcare range values
+                // self.people[id].stats[0] -= rand::thread_rng().gen_range(
+                //     world.healthcare_death_range[0]..world.healthcare_death_range[1]);
+
+                // println!("{}", (self.people[id].seed * world.food) + self.people[id].seed);
+
+                // Removes or adds health and happiness using seed and global food amount
+                if (self.people[id].seed * world.food) + self.people[id].seed >= 0.5 {
+                    self.people[id].stats[0] -= rand::thread_rng().gen_range(
+                        0.0..0.2);
+                    self.people[id].stats[1] -= rand::thread_rng().gen_range(
+                        0.0..0.3);
+                } else {
+                    self.people[id].stats[0] -= rand::thread_rng().gen_range(
+                        0.0..0.7);
+                    self.people[id].stats[1] -= rand::thread_rng().gen_range(
+                        0.0..0.5);
+                }
+
+                // Resets max values
+                if self.people[id].stats[0] > 100.0 {
+                    self.people[id].stats[0] = 100.0
+                }
+                if self.people[id].stats[1] > 100.0 {
+                    self.people[id].stats[1] = 100.0
+                }
 
                 // println!("{i}, {}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
                 if id < self.people.len() && self.people[id].love_vec[0] != -1
-                    && self.people[self.people[id].love_vec[0] as usize].age == -1
-                    && self.people[id].age > 30
+                    && self.people[id].age > 30 * 12
                     || self.people[id].stats[0] <= 0.0 {
-                    self.people[id].love_vec[0] = -1;
                     self.people[id].age = -1;
                 }
             }
@@ -111,13 +139,15 @@ impl Sim {
                   Age: {:?}\n\
                   Gender: {:?}\n\
                   Lover(Lover's id, Affection): {:?}\n\
-                  Stats(Health, Happiness): {:?}",
+                  Stats(Health, Happiness): {:?}\n\
+                  Seed: {:?}",
                 self.people[id].id,
                 self.people[id].name,
                 self.people[id].age as f32 / 12.0,
                 self.people[id].gender,
                 self.people[id].love_vec,
-                self.people[id].stats
+                self.people[id].stats,
+                self.people[id].seed
             )
         }
     }
@@ -127,8 +157,12 @@ fn main() {
     let mut world = World {
         name: "Earth",
         age: 4_543_000_000,
-        food: 100.0,
-        healthcare_death_range: vec![0.0, 1.0],
+
+        // Available globally on average for each person.
+        // 100 would be the exact amount so 75 would be too little
+        // The randomness will be consistent using person.seed
+        food: 0.0,
+        healthcare_death_range: vec![0.0, 0.2], // Per month
     };
 
     let mut sim = Sim {
@@ -143,7 +177,6 @@ fn main() {
     let john2: Person = sim.create_person(1);
     sim.people.push(john);
     sim.people.push(john2);
-    sim.print_people();
     println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
 
     let years = 250; // Change this if you want more simulation time
@@ -152,7 +185,7 @@ fn main() {
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     // Simulate 'years' amount of years
     for _ in 0..12 * years {
-        sim.update_sim(&world.healthcare_death_range);
+        sim.update_sim(&world);
         bar.inc(1);
     }
     sim.people.retain(|person| person.age != -1);
@@ -160,7 +193,7 @@ fn main() {
 
     let duration = start.elapsed();
 
-    // sim.print_people();
+    sim.print_people();
 
     println!("People: {:?}", sim.people.len());
 

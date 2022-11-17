@@ -8,16 +8,25 @@
     <cargoProject FILE="$PROJECT_DIR$/world/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="added world struct">
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/bin-pop_sim_rust" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-5db829ab723c006b/output-test-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-5db829ab723c006b/output-test-bin-pop_sim_rust" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-87d207522457895e/output-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/debug/.fingerprint/pop_sim_rust-87d207522457895e/output-bin-pop_sim_rust" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru-1lpnb3gzkwxfv/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-2ov75i3zdnhra/s-gfh4n2zfu4-1vtrzru.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/dep-graph.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/query-cache.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m-1wthgdaalcfc0/work-products.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/debug/incremental/pop_sim_rust-msuey0ya7pmr/s-gfh4n2ylow-qnog7m.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/output-bin-pop_sim_rust" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/.fingerprint/pop_sim_rust-466ca11c2d7a5986/output-bin-pop_sim_rust" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/deps/pop_sim_rust.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/release/pop_sim_rust.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/world/target/.rustc_info.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -263,20 +272,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00109" summary="more rust rewrite stuff(I don't know what im doing lol)">
-      <created>1664459426142</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1664459426143</updated>
-    </task>
-    <task id="LOCAL-00110" summary="more rust rewrite stuff(I don't know what im doing lol)">
-      <created>1664459448826</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1664459448826</updated>
     </task>
     <task id="LOCAL-00111" summary="formatting(no actual new feature as im working on rewrite to rust)">
       <created>1664561512995</created>
@@ -607,7 +602,21 @@
       <option name="project" value="LOCAL" />
       <updated>1668539538591</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <task id="LOCAL-00158" summary="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future">
+      <created>1668618277553</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1668618277554</updated>
+    </task>
+    <task id="LOCAL-00159" summary="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future">
+      <created>1668618400332</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1668618400332</updated>
+    </task>
+    <option name="localTasksCounter" value="160" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -645,7 +654,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="people can now reproduce" />
     <MESSAGE value="Testing speed" />
     <MESSAGE value="added steps counter" />
     <MESSAGE value="optimisations" />
@@ -670,6 +678,7 @@
     <MESSAGE value="tile pointer can now look up, down, left and right!!! YAAAA" />
     <MESSAGE value="bruh" />
     <MESSAGE value="added world struct" />
-    <option name="LAST_COMMIT_MESSAGE" value="added world struct" />
+    <MESSAGE value="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future" />
   </component>
 </project>
