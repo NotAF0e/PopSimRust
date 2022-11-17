@@ -6,6 +6,8 @@ use std::{thread, time};
 // use plotters;
 
 
+// TODO: random health events
+
 // Person data struct
 #[derive(Debug)]
 pub struct Person {
