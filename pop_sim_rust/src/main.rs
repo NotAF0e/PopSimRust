@@ -179,11 +179,12 @@ fn main() {
     let john2: Person = sim.create_person(1);
     sim.people.push(john);
     sim.people.push(john2);
-    println!("**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**\n");
+
 
     let years = 250; // Change this if you want more simulation time
 
     let bar = ProgressBar::new(12 * years);
+
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     // Simulate 'years' amount of years
     for _ in 0..12 * years {
