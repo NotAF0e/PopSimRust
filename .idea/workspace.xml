@@ -8,7 +8,10 @@
     <cargoProject FILE="$PROJECT_DIR$/world/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="added a healthcare system which is dependent on food and fixed bugs" />
+    <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="ready for v0.2">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -253,20 +256,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00114" summary="formatting of rust code and added id into print">
-      <created>1664736095348</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1664736095348</updated>
-    </task>
-    <task id="LOCAL-00115" summary="so much unsafe blocks, ahhhhh, but now the people vec can be updated">
-      <created>1665235435796</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1665235435797</updated>
     </task>
     <task id="LOCAL-00116" summary="added a print people function, condensed code">
       <created>1665235799889</created>
@@ -597,7 +586,21 @@
       <option name="project" value="LOCAL" />
       <updated>1668713805280</updated>
     </task>
-    <option name="localTasksCounter" value="163" />
+    <task id="LOCAL-00163" summary="removed debug line">
+      <created>1668713973469</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1668713973470</updated>
+    </task>
+    <task id="LOCAL-00164" summary="ready for v0.2">
+      <created>1668714129288</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1668714129288</updated>
+    </task>
+    <option name="localTasksCounter" value="165" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -635,8 +638,6 @@
       <path value="$PROJECT_DIR$/github" />
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="added steps counter" />
-    <MESSAGE value="optimisations" />
     <MESSAGE value="Some restructuring of the code thanks Aiden2207 from https://users.rust-lang.org/t/population-sim-with-exponentially-bad-performance/82934/7" />
     <MESSAGE value="trying to speed it up more" />
     <MESSAGE value="realism changes" />
@@ -660,6 +661,8 @@
     <MESSAGE value="added world struct" />
     <MESSAGE value="fixed critical bug and added global healthcare that will cause some people to die from disease faster than others. Also there is now a World struct that will be used for other things in the near future" />
     <MESSAGE value="added a healthcare system which is dependent on food and fixed bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="added a healthcare system which is dependent on food and fixed bugs" />
+    <MESSAGE value="removed debug line" />
+    <MESSAGE value="ready for v0.2" />
+    <option name="LAST_COMMIT_MESSAGE" value="ready for v0.2" />
   </component>
 </project>
