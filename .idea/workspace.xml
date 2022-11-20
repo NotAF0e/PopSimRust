@@ -10,7 +10,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a500a44b-4e83-41cd-85a3-da06d914c094" name="Changes" comment="ready for v0.2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/pop_sim_rust/target/.rustc_info.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -256,27 +255,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1644432962844</updated>
-    </task>
-    <task id="LOCAL-00116" summary="added a print people function, condensed code">
-      <created>1665235799889</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1665235799889</updated>
-    </task>
-    <task id="LOCAL-00117" summary="added a realistic date crate">
-      <created>1665241713944</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1665241713944</updated>
-    </task>
-    <task id="LOCAL-00118" summary="removed realistic date for parity with python ver(Also i didn't get it, lol), Some formatting too">
-      <created>1665414124150</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1665414124151</updated>
     </task>
     <task id="LOCAL-00119" summary="people can now love each over">
       <created>1665424149198</created>
@@ -600,7 +578,28 @@
       <option name="project" value="LOCAL" />
       <updated>1668714129288</updated>
     </task>
-    <option name="localTasksCounter" value="165" />
+    <task id="LOCAL-00165" summary="ready for v0.2">
+      <created>1668943061060</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1668943061061</updated>
+    </task>
+    <task id="LOCAL-00166" summary="ready for v0.2">
+      <created>1668943082095</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1668943082095</updated>
+    </task>
+    <task id="LOCAL-00167" summary="ready for v0.2">
+      <created>1668943254298</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1668943254298</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
