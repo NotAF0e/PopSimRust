@@ -48,7 +48,7 @@ impl Sim {
             love_vec: vec![-1, 100],
 
             // Seed is for random values which will stay consistent
-            seed: rand::thread_rng().gen_range(0.0..2.0),
+            seed: rand::thread_rng().gen_range(1.0..100.0),
         };
 
         temp_person
@@ -73,7 +73,8 @@ impl Sim {
 
                     // If the person is not the lover and if the person does not have a lover one is given
                     if lover != id && self.people[lover].love_vec[0] == -1 &&
-                        self.people[id].gender != self.people[lover].gender {
+                        self.people[id].gender != self.people[lover].gender && rand::thread_rng().gen_range(
+                        0.0..100.0) >= 95.0 {
                         self.people[id].love_vec[0] = lover as i64;
                         self.people[lover].love_vec[0] = id as i64;
                     }
@@ -83,18 +84,18 @@ impl Sim {
                 // self.people[id].stats[0] -= rand::thread_rng().gen_range(
                 //     world.healthcare_death_range[0]..world.healthcare_death_range[1]);
 
-                // println!("{}", (self.people[id].seed * world.food) + self.people[id].seed);
+                // println!("{}", self.people[id].seed + world.food);
 
                 // Removes or adds health and happiness using seed and global food amount
-                if (self.people[id].seed * world.food) + self.people[id].seed >= 0.5 {
+                if self.people[id].seed + world.food <= 120.0 {
                     self.people[id].stats[0] -= rand::thread_rng().gen_range(
-                        0.0..0.2);
+                        0.0..5.0);
                     self.people[id].stats[1] -= rand::thread_rng().gen_range(
-                        0.0..0.3);
+                        0.0..1.5);
                 } else {
-                    self.people[id].stats[0] -= rand::thread_rng().gen_range(
+                    self.people[id].stats[0] += rand::thread_rng().gen_range(
                         0.0..0.7);
-                    self.people[id].stats[1] -= rand::thread_rng().gen_range(
+                    self.people[id].stats[1] += rand::thread_rng().gen_range(
                         0.0..0.5);
                 }
 
@@ -106,12 +107,13 @@ impl Sim {
                     self.people[id].stats[1] = 100.0
                 }
 
-                // println!("{i}, {}", self.people.len());
+                // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
                 if id < self.people.len() && self.people[id].love_vec[0] != -1
                     && self.people[id].age > 30 * 12
-                    || self.people[id].stats[0] <= 0.0 {
+                    || self.people[id].stats[0] <= 0.0
+                    || (self.people[id].age == 0 && world.food < 30.0) {
                     self.people[id].age = -1;
                 }
             }
@@ -163,7 +165,7 @@ fn main() {
         // Available globally on average for each person.
         // 100 would be the exact amount so 75 would be too little
         // The randomness will be consistent using person.seed
-        food: 0.0,
+        food: 75.0,
         healthcare_death_range: vec![0.0, 0.2], // Per month
     };
 
@@ -181,22 +183,32 @@ fn main() {
     sim.people.push(john2);
 
 
-    let years = 250; // Change this if you want more simulation time
+    let years = 200; // Change this if you want more simulation time
 
     let bar = ProgressBar::new(12 * years);
 
     bar.set_style(ProgressStyle::with_template("[{spinner}] {bar:40.cyan/blue} {pos:>7}/{len:7} {msg}").unwrap());
     // Simulate 'years' amount of years
-    for _ in 0..12 * years {
+    for _ in 0..12 * &years {
         sim.update_sim(&world);
         bar.inc(1);
     }
+
+    for id in 0..sim.people.len() {
+        if id < sim.people.len() && sim.people[id].love_vec[0] != -1
+            && sim.people[id].age > 30 * 12
+            || sim.people[id].stats[0] <= 0.0
+            || (sim.people[id].age <= 5 * 12 && world.food < 30.0) {
+            sim.people[id].age = -1;
+        }
+    }
+
     sim.people.retain(|person| person.age != -1);
     bar.finish_and_clear();
 
     let duration = start.elapsed();
 
-    // sim.print_people();
+    sim.print_people();
 
     println!("People: {:?}", sim.people.len());
 
