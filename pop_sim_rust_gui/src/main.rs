@@ -3,10 +3,10 @@
 use rand::Rng;
 use std::str;
 use std::time::Instant;
-use indicatif::*;
 use std::{thread, time};
+use std::sync::Arc;
 use eframe::egui;
-// use plotters;
+use egui::plot::{Plot, Line};
 
 
 // Person data struct
@@ -179,21 +179,56 @@ fn main() {
 
     pub struct Application {
         test1: f32,
-        people_amount: u32
+        sim_data: Sim,
+        world_data: World,
+        checks: Vec<i32>,
+    }
+
+    pub enum TextStyle {
+        Small,
+        Body,
+        Monospace,
+        Button,
+        Heading,
+        Name(Arc<str>),
     }
 
     impl eframe::App for Application {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             egui::CentralPanel::default().show(ctx, |ui| {
-                ui.heading("Testing, 123, testing...");
+                ctx.set_pixels_per_point(5.0);
+                if self.checks[0] == 0 {
+                    let john: Person = self.sim_data.create_person(0);
+                    let john2: Person = self.sim_data.create_person(1);
+                    self.sim_data.people.push(john);
+                    self.sim_data.people.push(john2);
+                    self.checks[0] = 1;
+                }
+
                 ui.horizontal(|ui| {
-                    ui.label(format!("Num: {}", self.test1));
+                    ui.heading(format!("Population: {}", self.sim_data.people.len()));
                 });
 
-                ui.add(egui::Slider::new(&mut self.test1, 0.0..=120.0).text("age"));
-                if ui.button("+ 1").clicked() {
-                    self.test1 += 1.0;
+                if self.checks[1] != 0 {
+                    self.sim_data.update_sim(&self.world_data);
+                    self.checks[1] -= 1
                 }
+
+
+                ui.label(egui::RichText::new(
+                    format!("Months Passed: {}", self.checks[1])).size(7.5));
+
+
+                ui.label(egui::RichText::new(
+                    format!("Months left: {}", 2400 - self.checks[1])).size(2.5));
+
+
+                // ui.add(egui::Slider::new(&mut self.test1, 0.0..=120.0).text("age"));
+                // if ui.button("+ 1").clicked() {
+                //     self.test1 += 1.0;
+                // }
+
+                ctx.request_repaint();
             });
         }
     }
@@ -202,7 +237,18 @@ fn main() {
         fn default() -> Self {
             Self {
                 test1: 0.0,
-                people_amount: 0
+                sim_data: Sim {
+                    people: vec![],
+                    population: -1,
+                },
+                world_data: World {
+                    name: "Earth",
+                    age: 4_543_000_000,
+                    food: 75.0,
+                    healthcare_death_range: vec![0.0, 0.2], // Per month
+                },
+                // check for spawning Adam and Eve, months
+                checks: vec![0, 2400],
             }
         }
     }
