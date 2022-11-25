@@ -90,7 +90,7 @@ impl Sim {
                 // Removes or adds health and happiness using seed and global food amount
                 if self.people[id].seed + world.food <= 120.0 {
                     self.people[id].stats[0] -= rand::thread_rng().gen_range(
-                        0.0..5.0);
+                        0.0..2.0);
                     self.people[id].stats[1] -= rand::thread_rng().gen_range(
                         0.0..1.5);
                 } else {
@@ -178,25 +178,17 @@ fn main() {
     let start = Instant::now();
 
     pub struct Application {
-        test1: f32,
         sim_data: Sim,
         world_data: World,
         checks: Vec<i32>,
     }
 
-    pub enum TextStyle {
-        Small,
-        Body,
-        Monospace,
-        Button,
-        Heading,
-        Name(Arc<str>),
-    }
+    const MONTHS_OF_POPULATING: i32 = 2400;
 
     impl eframe::App for Application {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             egui::CentralPanel::default().show(ctx, |ui| {
-                ctx.set_pixels_per_point(5.0);
+                ctx.set_pixels_per_point(7.5);
                 if self.checks[0] == 0 {
                     let john: Person = self.sim_data.create_person(0);
                     let john2: Person = self.sim_data.create_person(1);
@@ -211,12 +203,23 @@ fn main() {
 
                 if self.checks[1] != 0 {
                     self.sim_data.update_sim(&self.world_data);
-                    self.checks[1] -= 1
+
+                    for id in 0..self.sim_data.people.len() {
+                        if id < self.sim_data.people.len() && self.sim_data.people[id].love_vec[0] != -1
+                            && self.sim_data.people[id].age > 30 * 12
+                            || self.sim_data.people[id].stats[0] <= 0.0
+                        {
+                            self.sim_data.people[id].age = -1;
+                        }
+                    }
+
+                    self.sim_data.people.retain(|person| person.age != -1);
+                    self.checks[1] -= 1;
                 }
 
 
                 ui.label(egui::RichText::new(
-                    format!("Months Passed: {}", 2400 - self.checks[1])).size(7.5));
+                    format!("Months Passed: {}", MONTHS_OF_POPULATING - self.checks[1])).size(7.5));
 
 
                 ui.label(egui::RichText::new(
@@ -236,7 +239,6 @@ fn main() {
     impl Default for Application {
         fn default() -> Self {
             Self {
-                test1: 0.0,
                 sim_data: Sim {
                     people: vec![],
                     population: -1,
@@ -244,11 +246,11 @@ fn main() {
                 world_data: World {
                     name: "Earth",
                     age: 4_543_000_000,
-                    food: 75.0,
+                    food: 100.0,
                     healthcare_death_range: vec![0.0, 0.2], // Per month
                 },
                 // check for spawning Adam and Eve, months
-                checks: vec![0, 2400],
+                checks: vec![0, MONTHS_OF_POPULATING],
             }
         }
     }
@@ -259,41 +261,4 @@ fn main() {
         options,
         Box::new(|_cc| Box::new(Application::default())),
     );
-
-
-    let john: Person = sim.create_person(0);
-
-    let john2: Person = sim.create_person(1);
-    sim.people.push(john);
-    sim.people.push(john2);
-
-
-    let years = 200; // Change this if you want more simulation time
-
-    // Simulate 'years' amount of years
-    for _ in 0..12 * &years {
-        sim.update_sim(&world);
-    }
-
-    for id in 0..sim.people.len() {
-        if id < sim.people.len() && sim.people[id].love_vec[0] != -1
-            && sim.people[id].age > 30 * 12
-            || sim.people[id].stats[0] <= 0.0
-            || (sim.people[id].age <= 5 * 12 && world.food < 30.0) {
-            sim.people[id].age = -1;
-        }
-    }
-
-    sim.people.retain(|person| person.age != -1);
-
-    let duration = start.elapsed();
-
-    sim.print_people();
-
-    println!("People: {:?}", sim.people.len());
-
-    // Time took to complete code
-    println!("Time taken to calculate: {:#?}", duration);
-
-    thread::sleep(time::Duration::from_secs(20));
 }
