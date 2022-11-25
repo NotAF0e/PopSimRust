@@ -216,11 +216,11 @@ fn main() {
 
 
                 ui.label(egui::RichText::new(
-                    format!("Months Passed: {}", self.checks[1])).size(7.5));
+                    format!("Months Passed: {}", 2400 - self.checks[1])).size(7.5));
 
 
                 ui.label(egui::RichText::new(
-                    format!("Months left: {}", 2400 - self.checks[1])).size(2.5));
+                    format!("Months left: {}", self.checks[1])).size(2.5));
 
 
                 // ui.add(egui::Slider::new(&mut self.test1, 0.0..=120.0).text("age"));
