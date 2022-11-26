@@ -262,8 +262,7 @@ fn main() {
         follow_system_theme: true,
         default_theme: eframe::Theme::Dark,
         run_and_return: false,
-    }
-        ;
+    };
 
     eframe::run_native(
         "PopSim",
