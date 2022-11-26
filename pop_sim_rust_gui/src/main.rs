@@ -156,9 +156,6 @@ impl Sim {
 }
 
 fn main() {
-    let test = vec![0, 0, 2, 4];
-    println!("{:?}", test.len());
-
     pub struct Application {
         sim_data: Sim,
         world_data: World,
