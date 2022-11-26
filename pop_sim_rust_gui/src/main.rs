@@ -2,11 +2,8 @@
 
 use rand::Rng;
 use std::str;
-use std::time::Instant;
-use std::{thread, time};
-use std::sync::Arc;
 use eframe::egui;
-use egui::plot::{Plot, Line};
+use egui::Vec2;
 
 
 // Person data struct
@@ -90,12 +87,12 @@ impl Sim {
                 // Removes or adds health and happiness using seed and global food amount
                 if self.people[id].seed + world.food <= 120.0 {
                     self.people[id].stats[0] -= rand::thread_rng().gen_range(
-                        0.0..2.0);
+                        0.0..1.0);
                     self.people[id].stats[1] -= rand::thread_rng().gen_range(
-                        0.0..1.5);
+                        0.0..0.7);
                 } else {
                     self.people[id].stats[0] += rand::thread_rng().gen_range(
-                        0.0..0.7);
+                        0.0..1.0);
                     self.people[id].stats[1] += rand::thread_rng().gen_range(
                         0.0..0.5);
                 }
@@ -159,23 +156,8 @@ impl Sim {
 }
 
 fn main() {
-    let mut world = World {
-        name: "Earth",
-        age: 4_543_000_000,
-
-        // Available globally on average for each person.
-        // 100 would be the exact amount so 75 would be too little
-        // The randomness will be consistent using person.seed
-        food: 75.0,
-        healthcare_death_range: vec![0.0, 0.2], // Per month
-    };
-
-    let mut sim = Sim {
-        people: vec![],
-        population: -1,
-    };
-
-    let start = Instant::now();
+    let test = vec![0, 0, 2, 4];
+    println!("{:?}", test.len());
 
     pub struct Application {
         sim_data: Sim,
@@ -188,7 +170,6 @@ fn main() {
     impl eframe::App for Application {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             egui::CentralPanel::default().show(ctx, |ui| {
-                ctx.set_pixels_per_point(7.5);
                 if self.checks[0] == 0 {
                     let john: Person = self.sim_data.create_person(0);
                     let john2: Person = self.sim_data.create_person(1);
@@ -197,14 +178,10 @@ fn main() {
                     self.checks[0] = 1;
                 }
 
-                ui.horizontal(|ui| {
-                    ui.heading(format!("Population: {}", self.sim_data.people.len()));
-                });
-
                 if self.checks[1] != 0 {
                     self.sim_data.update_sim(&self.world_data);
 
-                    for id in 0..self.sim_data.people.len() {
+                    for id in 0..self.sim_data.people.len() - 1 {
                         if id < self.sim_data.people.len() && self.sim_data.people[id].love_vec[0] != -1
                             && self.sim_data.people[id].age > 30 * 12
                             || self.sim_data.people[id].stats[0] <= 0.0
@@ -217,20 +194,28 @@ fn main() {
                     self.checks[1] -= 1;
                 }
 
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.label(egui::RichText::new(
+                        format!("Population: {}", self.sim_data.people.len())).size(125.0));
 
-                ui.label(egui::RichText::new(
-                    format!("Months Passed: {}", MONTHS_OF_POPULATING - self.checks[1])).size(7.5));
+                    ui.label(egui::RichText::new(
+                        format!("Months Passed: {}", MONTHS_OF_POPULATING - self.checks[1])).size(25.0));
 
-
-                ui.label(egui::RichText::new(
-                    format!("Months left: {}", self.checks[1])).size(2.5));
+                    ui.label(egui::RichText::new(
+                        format!("Months left: {}", self.checks[1])).size(15.0));
+                });
 
 
                 // ui.add(egui::Slider::new(&mut self.test1, 0.0..=120.0).text("age"));
                 // if ui.button("+ 1").clicked() {
                 //     self.test1 += 1.0;
                 // }
-
+                egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
+                    egui::CollapsingHeader::new("THEME")
+                        .show(ui, |ui| egui::
+                        widgets::global_dark_light_mode_buttons(ui));
+                });
+                // println!("{:?}", self.sim_data.people);
                 ctx.request_repaint();
             });
         }
@@ -245,7 +230,7 @@ fn main() {
                 },
                 world_data: World {
                     name: "Earth",
-                    age: 4_543_000_000,
+                    age: 4_543_000_000 * 12,
                     food: 100.0,
                     healthcare_death_range: vec![0.0, 0.2], // Per month
                 },
@@ -255,7 +240,31 @@ fn main() {
         }
     }
 
-    let options = eframe::NativeOptions::default();
+    let mut options = eframe::NativeOptions {
+        always_on_top: false,
+        maximized: false,
+        decorated: true,
+        fullscreen: false,
+        drag_and_drop_support: true,
+        icon_data: None,
+        initial_window_pos: None,
+        initial_window_size: Option::from(Vec2::new(925 as f32, 500 as f32)),
+        min_window_size: Option::from(Vec2::new(600 as f32, 400 as f32)),
+        max_window_size: None,
+        resizable: true,
+        transparent: true,
+        vsync: true,
+        multisampling: 0,
+        depth_buffer: 0,
+        stencil_buffer: 0,
+        hardware_acceleration: eframe::HardwareAcceleration::Required,
+        renderer: Default::default(),
+        follow_system_theme: true,
+        default_theme: eframe::Theme::Dark,
+        run_and_return: false,
+    }
+        ;
+
     eframe::run_native(
         "PopSim",
         options,
