@@ -208,7 +208,7 @@ fn main() {
 
     let duration = start.elapsed();
 
-    sim.print_people();
+    // sim.print_people();
 
     println!("People: {:?}", sim.people.len());
 

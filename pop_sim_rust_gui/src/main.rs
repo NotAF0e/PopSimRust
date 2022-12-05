@@ -1,9 +1,10 @@
 // GUI VERSION
 
+use std::ops::RangeInclusive;
 use rand::Rng;
 use std::str;
 use eframe::egui;
-use egui::Vec2;
+use egui::{Color32, Vec2, Visuals};
 
 
 // Person data struct
@@ -31,6 +32,10 @@ struct Sim {
     people: Vec<Person>,
 }
 
+struct Checks {
+    vec: Vec<i32>,
+    start_months: i32,
+}
 
 impl Sim {
     pub fn create_person(&mut self, gender: u8) -> Person {
@@ -78,11 +83,6 @@ impl Sim {
                     }
                 }
 
-                // Randomly removes health from a person depending on healthcare range values
-                // self.people[id].stats[0] -= rand::thread_rng().gen_range(
-                //     world.healthcare_death_range[0]..world.healthcare_death_range[1]);
-
-                // println!("{}", self.people[id].seed + world.food);
 
                 // Removes or adds health and happiness using seed and global food amount
                 if self.people[id].seed + world.food <= 120.0 {
@@ -131,88 +131,108 @@ impl Sim {
     }
 
 
-    pub fn print_people(&self) {
-        println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
-        for id in 0..self.people.len() {
-            println!("------------------------------------------");
-            println!(
-                "[ID: {:?}]\n\
-                  Name: {:?}\n\
-                  Age: {:?}\n\
-                  Gender: {:?}\n\
-                  Lover(Lover's id, Affection): {:?}\n\
-                  Stats(Health, Happiness): {:?}\n\
-                  Seed: {:?}",
-                self.people[id].id,
-                self.people[id].name,
-                self.people[id].age as f32 / 12.0,
-                self.people[id].gender,
-                self.people[id].love_vec,
-                self.people[id].stats,
-                self.people[id].seed
-            )
-        }
-    }
+    // pub fn print_people(&self) {                                   FOR DEBUG!
+    //     println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
+    //     for id in 0..self.people.len() {
+    //         println!("------------------------------------------");
+    //         println!(
+    //             "[ID: {:?}]\n\
+    //               Name: {:?}\n\
+    //               Age: {:?}\n\
+    //               Gender: {:?}\n\
+    //               Lover(Lover's id, Affection): {:?}\n\
+    //               Stats(Health, Happiness): {:?}\n\
+    //               Seed: {:?}",
+    //             self.people[id].id,
+    //             self.people[id].name,
+    //             self.people[id].age as f32 / 12.0,
+    //             self.people[id].gender,
+    //             self.people[id].love_vec,
+    //             self.people[id].stats,
+    //             self.people[id].seed
+    //         )
+    //     }
+    // }
 }
 
 fn main() {
     pub struct Application {
         sim_data: Sim,
         world_data: World,
-        checks: Vec<i32>,
+        checks: Checks,
     }
-
-    const MONTHS_OF_POPULATING: i32 = 2400;
 
     impl eframe::App for Application {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             egui::CentralPanel::default().show(ctx, |ui| {
-                if self.checks[0] == 0 {
+
+                // Setting the start settings
+                if self.checks.vec[2] == 0 {
+                    ui.add(egui::Slider::new(&mut self.checks.vec[1], RangeInclusive::new(0, 1000)));
+                    self.checks.start_months = self.checks.vec[1];
+                    if ui.button("Begin simulation").clicked() {
+                        self.checks.vec[2] = 1;
+                    }
+                }
+
+                // Start settings. Such as amount of people and months of creation
+                if self.checks.vec[0] == 0 {
                     let john: Person = self.sim_data.create_person(0);
                     let john2: Person = self.sim_data.create_person(1);
                     self.sim_data.people.push(john);
                     self.sim_data.people.push(john2);
-                    self.checks[0] = 1;
+                    self.checks.vec[0] = 1;
                 }
 
-                if self.checks[1] != 0 {
-                    self.sim_data.update_sim(&self.world_data);
+                if self.checks.vec[2] == 1 {
+                    if self.checks.vec[1] != 0 {
+                        self.sim_data.update_sim(&self.world_data);
 
-                    for id in 0..self.sim_data.people.len() - 1 {
-                        if id < self.sim_data.people.len() && self.sim_data.people[id].love_vec[0] != -1
-                            && self.sim_data.people[id].age > 30 * 12
-                            || self.sim_data.people[id].stats[0] <= 0.0
-                        {
-                            self.sim_data.people[id].age = -1;
+                        for id in 0..self.sim_data.people.len() - 1 {
+                            if id < self.sim_data.people.len() && self.sim_data.people[id].love_vec[0] != -1
+                                && self.sim_data.people[id].age > 30 * 12
+                                || self.sim_data.people[id].stats[0] <= 0.0
+                            {
+                                self.sim_data.people[id].age = -1;
+                            }
                         }
+
+                        self.sim_data.people.retain(|person| person.age != -1);
+                        self.checks.vec[1] -= 1;
                     }
 
-                    self.sim_data.people.retain(|person| person.age != -1);
-                    self.checks[1] -= 1;
+
+                    egui::CentralPanel::default().show(ctx, |ui| {
+                        ui.label(egui::RichText::new(
+                            format!("Population: {}", self.sim_data.people.len())).size(125.0));
+
+                        ui.label(egui::RichText::new(
+                            format!("Months Passed: {}", self.checks.start_months - self.checks.vec[1])).size(25.0));
+
+                        ui.label(egui::RichText::new(
+                            format!("Months left: {}", self.checks.vec[1])).size(15.0));
+
+
+                        if self.checks.vec[1] == 0 {
+                            ui.add_space(5.0);
+                            if ui.style_mut().visuals == Visuals::light() {
+                                ui.colored_label(Color32::from_rgb(0, 0, 204), "Simulation completed :)");
+                            } else {
+                                ui.colored_label(Color32::from_rgb(128, 255, 0), "Simulation completed :)");
+                            }
+                        }
+                    });
                 }
 
-                egui::CentralPanel::default().show(ctx, |ui| {
-                    ui.label(egui::RichText::new(
-                        format!("Population: {}", self.sim_data.people.len())).size(125.0));
-
-                    ui.label(egui::RichText::new(
-                        format!("Months Passed: {}", MONTHS_OF_POPULATING - self.checks[1])).size(25.0));
-
-                    ui.label(egui::RichText::new(
-                        format!("Months left: {}", self.checks[1])).size(15.0));
-                });
-
-
-                // ui.add(egui::Slider::new(&mut self.test1, 0.0..=120.0).text("age"));
-                // if ui.button("+ 1").clicked() {
-                //     self.test1 += 1.0;
-                // }
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
                     egui::CollapsingHeader::new("THEME")
                         .show(ui, |ui| egui::
                         widgets::global_dark_light_mode_buttons(ui));
                 });
+
                 // println!("{:?}", self.sim_data.people);
+
+
                 ctx.request_repaint();
             });
         }
@@ -231,8 +251,11 @@ fn main() {
                     food: 100.0,
                     healthcare_death_range: vec![0.0, 0.2], // Per month
                 },
-                // check for spawning Adam and Eve, months
-                checks: vec![0, MONTHS_OF_POPULATING],
+                // check for spawning Adam and Eve, months, start button
+                checks: Checks {
+                    vec: vec![0, 100, 0],
+                    start_months: 100,
+                },
             }
         }
     }
