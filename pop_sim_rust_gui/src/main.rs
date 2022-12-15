@@ -4,8 +4,13 @@ use std::ops::RangeInclusive;
 use rand::Rng;
 use std::str;
 use eframe::egui;
+use eframe::emath::Align;
 use egui::{Color32, Vec2, Visuals};
 
+
+pub struct AppData {
+    app_scale: f32,
+}
 
 // Person data struct
 #[derive(Debug)]
@@ -33,7 +38,7 @@ struct Sim {
 }
 
 struct Checks {
-    vec: Vec<i32>,
+    data: Vec<i32>,
     start_months: i32,
 }
 
@@ -157,6 +162,7 @@ impl Sim {
 
 fn main() {
     pub struct Application {
+        app_data: AppData,
         sim_data: Sim,
         world_data: World,
         checks: Checks,
@@ -164,28 +170,35 @@ fn main() {
 
     impl eframe::App for Application {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+            ctx.set_pixels_per_point(self.app_data.app_scale);
             egui::CentralPanel::default().show(ctx, |ui| {
 
                 // Setting the start settings
-                if self.checks.vec[2] == 0 {
-                    ui.add(egui::Slider::new(&mut self.checks.vec[1], RangeInclusive::new(0, 1000)));
-                    self.checks.start_months = self.checks.vec[1];
+                if self.checks.data[2] == 0 {
+                    self.checks.start_months = self.checks.data[1];
+                    ui.add(egui::Label::new("Amount of months to generate(0 - 4800):"));
+                    ui.add(egui::DragValue::new(&mut self.checks.data[1])
+                        .clamp_range(RangeInclusive::new(0, 4800)));
+
+                    ui.label(egui::RichText::new(format!("Years: {}", self.checks.start_months / 12)));
+                    ui.add_space(10.0);
+
                     if ui.button("Begin simulation").clicked() {
-                        self.checks.vec[2] = 1;
+                        self.checks.data[2] = 1;
                     }
                 }
 
-                // Start settings. Such as amount of people and months of creation
-                if self.checks.vec[0] == 0 {
+                // Creates Adam and Eve
+                if self.checks.data[0] == 0 {
                     let john: Person = self.sim_data.create_person(0);
                     let john2: Person = self.sim_data.create_person(1);
                     self.sim_data.people.push(john);
                     self.sim_data.people.push(john2);
-                    self.checks.vec[0] = 1;
+                    self.checks.data[0] = 1;
                 }
 
-                if self.checks.vec[2] == 1 {
-                    if self.checks.vec[1] != 0 {
+                if self.checks.data[2] == 1 {
+                    if self.checks.data[1] != 0 {
                         self.sim_data.update_sim(&self.world_data);
 
                         for id in 0..self.sim_data.people.len() - 1 {
@@ -198,40 +211,45 @@ fn main() {
                         }
 
                         self.sim_data.people.retain(|person| person.age != -1);
-                        self.checks.vec[1] -= 1;
+                        self.checks.data[1] -= 1;
                     }
 
+                    ui.label(egui::RichText::new(
+                        format!("Population: {}", self.sim_data.people.len())).size(125.0));
 
-                    egui::CentralPanel::default().show(ctx, |ui| {
-                        ui.label(egui::RichText::new(
-                            format!("Population: {}", self.sim_data.people.len())).size(125.0));
+                    ui.label(egui::RichText::new(
+                        format!("Months Passed: {}", self.checks.start_months - self.checks.data[1])).size(25.0));
 
-                        ui.label(egui::RichText::new(
-                            format!("Months Passed: {}", self.checks.start_months - self.checks.vec[1])).size(25.0));
-
-                        ui.label(egui::RichText::new(
-                            format!("Months left: {}", self.checks.vec[1])).size(15.0));
+                    ui.label(egui::RichText::new(
+                        format!("Months left: {}", self.checks.data[1])).size(15.0));
 
 
-                        if self.checks.vec[1] == 0 {
-                            ui.add_space(5.0);
-                            if ui.style_mut().visuals == Visuals::light() {
-                                ui.colored_label(Color32::from_rgb(0, 0, 204), "Simulation completed :)");
-                            } else {
-                                ui.colored_label(Color32::from_rgb(128, 255, 0), "Simulation completed :)");
-                            }
+                    if self.checks.data[1] == 0 {
+                        ui.add_space(5.0);
+                        if ui.style_mut().visuals == Visuals::light() {
+                            ui.colored_label(Color32::from_rgb(0, 0, 204),
+                                             "Simulation completed :)");
+                        } else {
+                            ui.colored_label(Color32::from_rgb(128, 255, 0),
+                                             "Simulation completed :)");
                         }
-                    });
+                    }
                 }
 
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
-                    egui::CollapsingHeader::new("THEME")
-                        .show(ui, |ui| egui::
-                        widgets::global_dark_light_mode_buttons(ui));
+                    ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
+                        egui::CollapsingHeader::new("THEME")
+                            .show(ui, |ui| egui::
+                            widgets::global_dark_light_mode_buttons(ui));
+
+                        egui::CollapsingHeader::new("APPLICATION SIZE")
+                            .show(ui, |ui|
+                                ui.add(egui::Slider::new(&mut self.app_data.app_scale,
+                                                         RangeInclusive::new(0.5, 2.0))));
+                    });
                 });
 
                 // println!("{:?}", self.sim_data.people);
-
 
                 ctx.request_repaint();
             });
@@ -241,6 +259,9 @@ fn main() {
     impl Default for Application {
         fn default() -> Self {
             Self {
+                app_data: AppData {
+                    app_scale: 1.1,
+                },
                 sim_data: Sim {
                     people: vec![],
                     population: -1,
@@ -251,16 +272,16 @@ fn main() {
                     food: 100.0,
                     healthcare_death_range: vec![0.0, 0.2], // Per month
                 },
-                // check for spawning Adam and Eve, months, start button
+                // Check for spawning Adam and Eve, months, start button
                 checks: Checks {
-                    vec: vec![0, 100, 0],
-                    start_months: 100,
+                    data: vec![0, 480, 0],
+                    start_months: 0, // To change this val just change Checks::data[1]
                 },
             }
         }
     }
 
-    let mut options = eframe::NativeOptions {
+    let options = eframe::NativeOptions {
         always_on_top: false,
         maximized: false,
         decorated: true,
