@@ -19,7 +19,6 @@ pub struct Person {
     name: &'static str,
     gender: u8,
     age: i16,
-    stats: Vec<f32>,
     love_vec: Vec<i64>,
     seed: f32,
 }
@@ -51,8 +50,6 @@ impl Sim {
             gender,
             age: 0,
 
-            // Health, Happiness
-            stats: vec![100.0, 100.0],
             love_vec: vec![-1, 100],
 
             // Seed is for random values which will stay consistent
@@ -89,33 +86,10 @@ impl Sim {
                 }
 
 
-                // Removes or adds health and happiness using seed and global food amount
-                if self.people[id].seed + world.food <= 120.0 {
-                    self.people[id].stats[0] -= rand::thread_rng().gen_range(
-                        0.0..1.0);
-                    self.people[id].stats[1] -= rand::thread_rng().gen_range(
-                        0.0..0.7);
-                } else {
-                    self.people[id].stats[0] += rand::thread_rng().gen_range(
-                        0.0..1.0);
-                    self.people[id].stats[1] += rand::thread_rng().gen_range(
-                        0.0..0.5);
-                }
-
-                // Resets max values
-                if self.people[id].stats[0] > 100.0 {
-                    self.people[id].stats[0] = 100.0
-                }
-                if self.people[id].stats[1] > 100.0 {
-                    self.people[id].stats[1] = 100.0
-                }
-
                 // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
-                if id < self.people.len() && self.people[id].love_vec[0] != -1
-                    && self.people[id].age > 30 * 12
-                    || self.people[id].stats[0] <= 0.0
+                if self.people[id].age > 70 * 12 // Age of death in months
                     || (self.people[id].age == 0 && world.food < 30.0) {
                     self.people[id].age = -1;
                 }
@@ -123,41 +97,19 @@ impl Sim {
         }
 
         // Creating babies
-        for _ in 0..self.people.len() {
-            let baby_chance = rand::thread_rng().gen_range(0..10000);
-            if baby_chance < 40 {
-                // Creates a baby!!!
-                let gender = rand::thread_rng().gen_range(0..2);
-                let john: Person = self.create_person(gender);
+        for id in 0..self.people.len() {
+            if self.people[id].age > 12 * 12 && self.people[id].love_vec[0] != -1 {
+                let baby_chance = rand::thread_rng().gen_range(0..10000);
+                if baby_chance < 40 {
+                    // Creates a baby!!!
+                    let gender = rand::thread_rng().gen_range(0..2);
+                    let john: Person = self.create_person(gender);
 
-                self.people.push(john);
+                    self.people.push(john);
+                }
             }
         }
     }
-
-
-    // pub fn print_people(&self) {                                   FOR DEBUG!
-    //     println!("\n**~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~**");
-    //     for id in 0..self.people.len() {
-    //         println!("------------------------------------------");
-    //         println!(
-    //             "[ID: {:?}]\n\
-    //               Name: {:?}\n\
-    //               Age: {:?}\n\
-    //               Gender: {:?}\n\
-    //               Lover(Lover's id, Affection): {:?}\n\
-    //               Stats(Health, Happiness): {:?}\n\
-    //               Seed: {:?}",
-    //             self.people[id].id,
-    //             self.people[id].name,
-    //             self.people[id].age as f32 / 12.0,
-    //             self.people[id].gender,
-    //             self.people[id].love_vec,
-    //             self.people[id].stats,
-    //             self.people[id].seed
-    //         )
-    //     }
-    // }
 }
 
 fn main() {
@@ -172,13 +124,30 @@ fn main() {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
             egui::CentralPanel::default().show(ctx, |ui| {
+                // Bottom settings panel
+                egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
+                    ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
+                        egui::CollapsingHeader::new("THEME")
+                            .show(ui, |ui| egui::
+                            widgets::global_dark_light_mode_buttons(ui));
+
+                        egui::CollapsingHeader::new("APPLICATION SIZE")
+                            .show(ui, |ui|
+                                ui.add(egui::Slider::new(&mut self.app_data.app_scale,
+                                                         RangeInclusive::new(0.5, 2.0))));
+                    });
+                });
 
                 // Setting the start settings
                 if self.checks.data[2] == 0 {
                     self.checks.start_months = self.checks.data[1];
-                    ui.add(egui::Label::new("Amount of months to generate(0 - 4800):"));
-                    ui.add(egui::DragValue::new(&mut self.checks.data[1])
-                        .clamp_range(RangeInclusive::new(0, 4800)));
+
+                    egui::Grid::new("start_settings").show(ui, |ui| {
+                        ui.add(egui::Label::new("Amount of months to generate(0 - 4800):"));
+                        ui.add(egui::DragValue::new(&mut self.checks.data[1])
+                            .clamp_range(RangeInclusive::new(0, 4800)));
+                        ui.end_row();
+                    });
 
                     ui.label(egui::RichText::new(format!("Years: {}", self.checks.start_months / 12)));
                     ui.add_space(10.0);
@@ -201,15 +170,6 @@ fn main() {
                     if self.checks.data[1] != 0 {
                         self.sim_data.update_sim(&self.world_data);
 
-                        for id in 0..self.sim_data.people.len() - 1 {
-                            if id < self.sim_data.people.len() && self.sim_data.people[id].love_vec[0] != -1
-                                && self.sim_data.people[id].age > 30 * 12
-                                || self.sim_data.people[id].stats[0] <= 0.0
-                            {
-                                self.sim_data.people[id].age = -1;
-                            }
-                        }
-
                         self.sim_data.people.retain(|person| person.age != -1);
                         self.checks.data[1] -= 1;
                     }
@@ -223,7 +183,32 @@ fn main() {
                     ui.label(egui::RichText::new(
                         format!("Months left: {}", self.checks.data[1])).size(15.0));
 
+                    // Testing
+                    egui::SidePanel::right("Table").show(ctx, |ui| {
+                        let text_style = egui::TextStyle::Body;
+                        let row_height = ui.text_style_height(&text_style);
 
+                        egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false; 2]).show_rows(
+                            ui,
+                            row_height,
+                            self.sim_data.people.len(),
+                            |ui, row_range| {
+                                for id in row_range {
+                                    let text = format!("[ID: {:?}] Name: {:?} |  Age: {:?} | Gender: {:?} | \
+                                    Lover(Lover's id, Affection): {:?} | Seed: {:?}",
+                                                       self.sim_data.people[id].id,
+                                                       self.sim_data.people[id].name,
+                                                       (self.sim_data.people[id].age as f32 / 12.0) as i32,
+                                                       self.sim_data.people[id].gender,
+                                                       self.sim_data.people[id].love_vec,
+                                                       self.sim_data.people[id].seed);
+                                    ui.label(text);
+                                }
+                            },
+                        );
+                    });
+
+                    // Simulation completion text
                     if self.checks.data[1] == 0 {
                         ui.add_space(5.0);
                         if ui.style_mut().visuals == Visuals::light() {
@@ -236,18 +221,6 @@ fn main() {
                     }
                 }
 
-                egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
-                    ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
-                        egui::CollapsingHeader::new("THEME")
-                            .show(ui, |ui| egui::
-                            widgets::global_dark_light_mode_buttons(ui));
-
-                        egui::CollapsingHeader::new("APPLICATION SIZE")
-                            .show(ui, |ui|
-                                ui.add(egui::Slider::new(&mut self.app_data.app_scale,
-                                                         RangeInclusive::new(0.5, 2.0))));
-                    });
-                });
 
                 // println!("{:?}", self.sim_data.people);
 
