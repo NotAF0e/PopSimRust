@@ -1,5 +1,7 @@
 // GUI VERSION
 
+#![windows_subsystem = "windows"]
+
 use std::ops::RangeInclusive;
 use rand::Rng;
 use std::str;
