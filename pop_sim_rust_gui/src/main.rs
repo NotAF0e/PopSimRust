@@ -5,6 +5,8 @@
 use std::ops::RangeInclusive;
 use rand::Rng;
 use std::str;
+use std::convert::From;
+
 use eframe::egui;
 use eframe::emath::Align;
 use egui::{Color32, Vec2, Visuals};
@@ -19,10 +21,22 @@ pub struct AppData {
 pub struct Person {
     id: i64,
     name: &'static str,
-    gender: u8,
+    sex: Sex,
     age: i16,
     love_vec: Vec<i64>,
     seed: f32,
+}
+
+#[derive(Debug)]
+#[derive(PartialEq)]
+pub enum Sex {
+    Male,
+    Female,
+}
+
+struct Sim {
+    population: i64,
+    people: Vec<Person>,
 }
 
 #[derive(Debug)]
@@ -33,29 +47,26 @@ pub struct World {
     healthcare_death_range: Vec<f32>,
 }
 
-struct Sim {
-    population: i64,
-    people: Vec<Person>,
-}
-
 struct Checks {
     data: Vec<i32>,
     start_months: i32,
 }
 
+
 impl Sim {
-    pub fn create_person(&mut self, gender: u8) -> Person {
+    pub fn create_person(&mut self, sex: Sex) -> Person {
         self.population += 1;
+
         let temp_person: Person = Person {
             id: self.population,
             name: "John",
-            gender,
+            sex,
             age: 0,
 
             love_vec: vec![-1, 100],
 
             // Seed is for random values which will stay consistent
-            seed: rand::thread_rng().gen_range(1.0..100.0),
+            seed: rand::thread_rng().gen_range(0.1..100.0),
         };
 
         temp_person
@@ -80,7 +91,7 @@ impl Sim {
 
                     // If the person is not the lover and if the person does not have a lover one is given
                     if lover != id && self.people[lover].love_vec[0] == -1 &&
-                        self.people[id].gender != self.people[lover].gender && rand::thread_rng().gen_range(
+                        self.people[id].sex != self.people[lover].sex && rand::thread_rng().gen_range(
                         0.0..100.0) >= 95.0 {
                         self.people[id].love_vec[0] = lover as i64;
                         self.people[lover].love_vec[0] = id as i64;
@@ -91,8 +102,7 @@ impl Sim {
                 // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
-                if self.people[id].age > 70 * 12 // Age of death in months
-                    || (self.people[id].age == 0 && world.food < 30.0) {
+                if self.people[id].age > 70 * 12 { // Age of death in months
                     self.people[id].age = -1;
                 }
             }
@@ -104,8 +114,14 @@ impl Sim {
                 let baby_chance = rand::thread_rng().gen_range(0..10000);
                 if baby_chance < 40 {
                     // Creates a baby!!!
-                    let gender = rand::thread_rng().gen_range(0..2);
-                    let john: Person = self.create_person(gender);
+
+                    let sex: Sex = if rand::random::<f32>() < 0.5 {
+                        Sex::Male
+                    } else {
+                        Sex::Female
+                    };
+
+                    let john: Person = self.create_person(sex);
 
                     self.people.push(john);
                 }
@@ -161,8 +177,8 @@ fn main() {
 
                 // Creates Adam and Eve
                 if self.checks.data[0] == 0 {
-                    let john: Person = self.sim_data.create_person(0);
-                    let john2: Person = self.sim_data.create_person(1);
+                    let john: Person = self.sim_data.create_person(Sex::Male);
+                    let john2: Person = self.sim_data.create_person(Sex::Female);
                     self.sim_data.people.push(john);
                     self.sim_data.people.push(john2);
                     self.checks.data[0] = 1;
@@ -185,7 +201,19 @@ fn main() {
                     ui.label(egui::RichText::new(
                         format!("Months left: {}", self.checks.data[1])).size(15.0));
 
-                    // Testing
+                    // Simulation completion text
+                    if self.checks.data[1] == 0 {
+                        ui.add_space(5.0);
+                        if ui.style_mut().visuals == Visuals::light() {
+                            ui.colored_label(Color32::from_rgb(0, 0, 204),
+                                             "Simulation completed :)");
+                        } else {
+                            ui.colored_label(Color32::from_rgb(128, 255, 0),
+                                             "Simulation completed :)");
+                        }
+                    }
+
+                    // A table with all the people in the simulation
                     egui::SidePanel::right("Table").show(ctx, |ui| {
                         let text_style = egui::TextStyle::Body;
                         let row_height = ui.text_style_height(&text_style);
@@ -201,7 +229,7 @@ fn main() {
                                                        self.sim_data.people[id].id,
                                                        self.sim_data.people[id].name,
                                                        (self.sim_data.people[id].age as f32 / 12.0) as i32,
-                                                       self.sim_data.people[id].gender,
+                                                       self.sim_data.people[id].sex,
                                                        self.sim_data.people[id].love_vec,
                                                        self.sim_data.people[id].seed);
                                     ui.label(text);
@@ -209,18 +237,6 @@ fn main() {
                             },
                         );
                     });
-
-                    // Simulation completion text
-                    if self.checks.data[1] == 0 {
-                        ui.add_space(5.0);
-                        if ui.style_mut().visuals == Visuals::light() {
-                            ui.colored_label(Color32::from_rgb(0, 0, 204),
-                                             "Simulation completed :)");
-                        } else {
-                            ui.colored_label(Color32::from_rgb(128, 255, 0),
-                                             "Simulation completed :)");
-                        }
-                    }
                 }
 
 
