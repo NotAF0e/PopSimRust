@@ -18,11 +18,15 @@ pub struct AppData {
 
 // Person data struct
 #[derive(Debug)]
+#[derive(PartialEq)]
 pub struct Person {
     id: i64,
     name: &'static str,
-    sex: Sex,
+    // In months
     age: i16,
+    sex: Sex,
+    // Details refers to simulation detail like fertility CHANGE WITH MORTALITY SOON
+    details: Vec<f32>,
     love_vec: Vec<i64>,
     seed: f32,
 }
@@ -60,10 +64,10 @@ impl Sim {
         let temp_person: Person = Person {
             id: self.population,
             name: "John",
-            sex,
             age: 0,
-
-            love_vec: vec![-1, 100],
+            sex,
+            details: vec![0.0],
+            love_vec: vec![-1],
 
             // Seed is for random values which will stay consistent
             seed: rand::thread_rng().gen_range(0.1..100.0),
@@ -99,6 +103,17 @@ impl Sim {
                 }
 
 
+                // Remove the lover from love_vec if they are dead
+                match self.people.get(self.people[id].love_vec[0] as usize) {
+                    Some(_loved_one) => {}
+                    None => {
+                        if self.people[id].love_vec[0] != -1 {
+                            self.people[id].love_vec[0] = -1
+                        }
+                    }
+                }
+
+
                 // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
@@ -111,10 +126,9 @@ impl Sim {
         // Creating babies
         for id in 0..self.people.len() {
             if self.people[id].age > 12 * 12 && self.people[id].love_vec[0] != -1 {
-                let baby_chance = rand::thread_rng().gen_range(0..10000);
-                if baby_chance < 40 {
+                let baby_chance = rand::thread_rng().gen_range(0.0..300.0);
+                if baby_chance <= (self.people[id].details[0] as f32) {
                     // Creates a baby!!!
-
                     let sex: Sex = if rand::random::<f32>() < 0.5 {
                         Sex::Male
                     } else {
@@ -126,6 +140,30 @@ impl Sim {
                     self.people.push(john);
                 }
             }
+        }
+    }
+
+    pub fn update_details(&mut self) {
+        for id in 0..self.people.len() {
+            if self.people[id].age != -1 {
+                let age = self.people[id].age;
+                let fertility = if self.people[id].sex == Sex::Female {
+                    if age < 20 * 12 {
+                        1.8
+                    } else if age < 30 * 12 {
+                        3.5
+                    } else if age < 40 * 12 {
+                        3.0
+                    } else if age < 50 * 12 {
+                        1.9
+                    } else {
+                        0.3
+                    }
+                } else {
+                    0.0
+                };
+                self.people[id].details[0] = fertility;
+            };
         }
     }
 }
@@ -177,16 +215,20 @@ fn main() {
 
                 // Creates Adam and Eve
                 if self.checks.data[0] == 0 {
-                    let john: Person = self.sim_data.create_person(Sex::Male);
-                    let john2: Person = self.sim_data.create_person(Sex::Female);
-                    self.sim_data.people.push(john);
-                    self.sim_data.people.push(john2);
+                    for _ in 0..5 {
+                        let john: Person = self.sim_data.create_person(Sex::Male);
+                        let john2: Person = self.sim_data.create_person(Sex::Female);
+                        self.sim_data.people.push(john);
+                        self.sim_data.people.push(john2);
+                    }
+
                     self.checks.data[0] = 1;
                 }
 
                 if self.checks.data[2] == 1 {
                     if self.checks.data[1] != 0 {
                         self.sim_data.update_sim(&self.world_data);
+                        self.sim_data.update_details();
 
                         self.sim_data.people.retain(|person| person.age != -1);
                         self.checks.data[1] -= 1;
@@ -224,12 +266,13 @@ fn main() {
                             self.sim_data.people.len(),
                             |ui, row_range| {
                                 for id in row_range {
-                                    let text = format!("[ID: {:?}] Name: {:?} |  Age: {:?} | Gender: {:?} | \
-                                    Lover(Lover's id, Affection): {:?} | Seed: {:?}",
+                                    let text = format!("[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
+                                    Details: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
                                                        self.sim_data.people[id].id,
                                                        self.sim_data.people[id].name,
                                                        (self.sim_data.people[id].age as f32 / 12.0) as i32,
                                                        self.sim_data.people[id].sex,
+                                                       self.sim_data.people[id].details,
                                                        self.sim_data.people[id].love_vec,
                                                        self.sim_data.people[id].seed);
                                     ui.label(text);
@@ -285,6 +328,7 @@ fn main() {
         max_window_size: None,
         resizable: true,
         transparent: true,
+        mouse_passthrough: false,
         vsync: true,
         multisampling: 0,
         depth_buffer: 0,
@@ -294,6 +338,9 @@ fn main() {
         follow_system_theme: true,
         default_theme: eframe::Theme::Dark,
         run_and_return: false,
+        event_loop_builder: None,
+        shader_version: None,
+        centered: false,
     };
 
     eframe::run_native(
