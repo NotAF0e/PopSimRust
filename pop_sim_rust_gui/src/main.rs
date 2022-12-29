@@ -48,7 +48,6 @@ pub struct World {
     name: &'static str,
     age: i64,
     food: f32,
-    healthcare_death_range: Vec<f32>,
 }
 
 struct Checks {
@@ -180,6 +179,7 @@ fn main() {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
             egui::CentralPanel::default().show(ctx, |ui| {
+
                 // Bottom settings panel
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
                     ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
@@ -198,15 +198,15 @@ fn main() {
                 if self.checks.data[2] == 0 {
                     self.checks.start_months = self.checks.data[1];
 
-                    egui::Grid::new("start_settings").show(ui, |ui| {
-                        ui.add(egui::Label::new("Amount of months to generate(0 - 4800):"));
+                    egui::Grid::new("start_settings_1").show(ui, |ui| {
+                        ui.add(egui::Label::new("Number of months to simulate(0 - 4800):"));
                         ui.add(egui::DragValue::new(&mut self.checks.data[1])
                             .clamp_range(RangeInclusive::new(0, 4800)));
                         ui.end_row();
+                        ui.label(egui::RichText::new(format!("Years: {}", self.checks.start_months / 12)));
+                        ui.end_row();
                     });
-
-                    ui.label(egui::RichText::new(format!("Years: {}", self.checks.start_months / 12)));
-                    ui.add_space(10.0);
+                    ui.add_space(15.0);
 
                     if ui.button("Begin simulation").clicked() {
                         self.checks.data[2] = 1;
@@ -215,7 +215,7 @@ fn main() {
 
                 // Creates Adam and Eve
                 if self.checks.data[0] == 0 {
-                    for _ in 0..5 {
+                    for _ in 0..1  { // Manually change amount of people at start here
                         let john: Person = self.sim_data.create_person(Sex::Male);
                         let john2: Person = self.sim_data.create_person(Sex::Female);
                         self.sim_data.people.push(john);
@@ -304,7 +304,6 @@ fn main() {
                     name: "Earth",
                     age: 4_543_000_000 * 12,
                     food: 100.0,
-                    healthcare_death_range: vec![0.0, 0.2], // Per month
                 },
                 // Check for spawning Adam and Eve, months, start button
                 checks: Checks {
