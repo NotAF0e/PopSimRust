@@ -125,7 +125,9 @@ impl Sim {
         // Creating babies
         for id in 0..self.people.len() {
             if self.people[id].age > 12 * 12 && self.people[id].love_vec[0] != -1 {
-                let baby_chance = rand::thread_rng().gen_range(0.0..300.0);
+
+                // Divide top range buy 12 to get amount of average days that a woman can reproduce for
+                let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
                 if baby_chance <= (self.people[id].details[0] as f32) {
                     // Creates a baby!!!
                     let sex: Sex = if rand::random::<f32>() < 0.5 {
@@ -147,14 +149,18 @@ impl Sim {
             if self.people[id].age != -1 {
                 let age = self.people[id].age;
                 let fertility = if self.people[id].sex == Sex::Female {
+
+                    // To get the average child/woman add all bellow fertilises and divide by 6
                     if age < 20 * 12 {
-                        1.8
+                        1.1
                     } else if age < 30 * 12 {
-                        3.5
-                    } else if age < 40 * 12 {
                         3.0
+                    } else if age < 40 * 12 {
+                        3.8
                     } else if age < 50 * 12 {
-                        1.9
+                        2.0
+                    } else if age < 60 * 12 {
+                        1.0
                     } else {
                         0.3
                     }
@@ -215,7 +221,7 @@ fn main() {
 
                 // Creates Adam and Eve
                 if self.checks.data[0] == 0 {
-                    for _ in 0..1  { // Manually change amount of people at start here
+                    for _ in 0..1 { // Manually change amount of people at start here
                         let john: Person = self.sim_data.create_person(Sex::Male);
                         let john2: Person = self.sim_data.create_person(Sex::Female);
                         self.sim_data.people.push(john);
