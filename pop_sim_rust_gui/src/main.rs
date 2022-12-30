@@ -32,7 +32,7 @@ pub struct Person {
 }
 
 #[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Sex {
     Male,
     Female,
@@ -75,7 +75,7 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, world: &World) {
+    pub fn update_sim(&mut self, _world: &World) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
 
@@ -184,8 +184,8 @@ fn main() {
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
                     ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
                         egui::CollapsingHeader::new("THEME")
-                            .show(ui, |ui| egui::
-                            widgets::global_dark_light_mode_buttons(ui));
+                            .show(ui, egui::
+                            widgets::global_dark_light_mode_buttons);
 
                         egui::CollapsingHeader::new("APPLICATION SIZE")
                             .show(ui, |ui|
@@ -322,8 +322,8 @@ fn main() {
         drag_and_drop_support: true,
         icon_data: None,
         initial_window_pos: None,
-        initial_window_size: Option::from(Vec2::new(925 as f32, 500 as f32)),
-        min_window_size: Option::from(Vec2::new(600 as f32, 400 as f32)),
+        initial_window_size: Option::from(Vec2::new(925_f32, 500_f32)),
+        min_window_size: Option::from(Vec2::new(600_f32, 400_f32)),
         max_window_size: None,
         resizable: true,
         transparent: true,
