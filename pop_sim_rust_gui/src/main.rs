@@ -272,7 +272,9 @@ fn main() {
                     egui::Window::new("Plot - Population against months").show(ctx, |ui| {
                         let data: PlotPoints = PlotPoints::new(self.checks.graph_data.clone());
                         let line = Line::new(data);
-                        Plot::new("plot").view_aspect(2.0).allow_drag(false).show(ui, |plot_ui| plot_ui.line(line));
+                        Plot::new("plot").view_aspect(2.0).
+                            allow_drag(false).allow_scroll(false).allow_zoom(false).
+                            show(ui, |plot_ui| plot_ui.line(line));
                     });
 
                     // A table with all the people in the simulation
