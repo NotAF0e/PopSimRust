@@ -9,7 +9,8 @@ use std::convert::From;
 
 use eframe::egui;
 use eframe::emath::Align;
-use egui::{Color32, Vec2, Visuals};
+use egui::{Color32, Vec2, Visuals,
+           plot::{Plot, PlotPoints, Line}};
 
 
 pub struct AppData {
@@ -50,9 +51,11 @@ pub struct World {
     food: f32,
 }
 
+
 struct Checks {
     data: Vec<i32>,
     start_months: i32,
+    graph_data: Vec<[f64; 2]>,
 }
 
 
@@ -121,6 +124,7 @@ impl Sim {
                 }
             }
         }
+
 
         // Creating babies
         for id in 0..self.people.len() {
@@ -236,6 +240,9 @@ fn main() {
                         self.sim_data.update_sim(&self.world_data);
                         self.sim_data.update_details();
 
+                        // Graph data pushing
+                        self.checks.graph_data.push([self.checks.start_months as f64 - self.checks.data[1] as f64, self.sim_data.people.len() as f64]);
+
                         self.sim_data.people.retain(|person| person.age != -1);
                         self.checks.data[1] -= 1;
                     }
@@ -260,6 +267,13 @@ fn main() {
                                              "Simulation completed :)");
                         }
                     }
+
+                    // Plot which shows population through time
+                    egui::Window::new("Plot - Population against months").show(ctx, |ui| {
+                        let data: PlotPoints = PlotPoints::new(self.checks.graph_data.clone());
+                        let line = Line::new(data);
+                        Plot::new("plot").view_aspect(2.0).allow_drag(false).show(ui, |plot_ui| plot_ui.line(line));
+                    });
 
                     // A table with all the people in the simulation
                     egui::SidePanel::right("Table").show(ctx, |ui| {
@@ -315,6 +329,7 @@ fn main() {
                 checks: Checks {
                     data: vec![0, 480, 0],
                     start_months: 0, // To change this val just change Checks::data[1]
+                    graph_data: vec![],
                 },
             }
         }
@@ -322,13 +337,13 @@ fn main() {
 
     let options = eframe::NativeOptions {
         always_on_top: false,
-        maximized: false,
+        maximized: true,
         decorated: true,
         fullscreen: false,
         drag_and_drop_support: true,
         icon_data: None,
         initial_window_pos: None,
-        initial_window_size: Option::from(Vec2::new(925_f32, 500_f32)),
+        initial_window_size: Option::from(Vec2::new(1500_f32, 750_f32)),
         min_window_size: Option::from(Vec2::new(600_f32, 400_f32)),
         max_window_size: None,
         resizable: true,
@@ -345,7 +360,7 @@ fn main() {
         run_and_return: false,
         event_loop_builder: None,
         shader_version: None,
-        centered: false,
+        centered: true,
     };
 
     eframe::run_native(
