@@ -42,6 +42,7 @@ pub enum Sex {
 struct Sim {
     population: i64,
     people: Vec<Person>,
+    graph_data: Vec<[f64; 2]>,
 }
 
 #[derive(Debug)]
@@ -55,7 +56,6 @@ pub struct World {
 struct Checks {
     data: Vec<i32>,
     start_months: i32,
-    graph_data: Vec<[f64; 2]>,
 }
 
 
@@ -241,7 +241,7 @@ fn main() {
                         self.sim_data.update_details();
 
                         // Graph data pushing
-                        self.checks.graph_data.push([self.checks.start_months as f64 - self.checks.data[1] as f64, self.sim_data.people.len() as f64]);
+                        self.sim_data.graph_data.push([self.checks.start_months as f64 - self.checks.data[1] as f64, self.sim_data.people.len() as f64]);
 
                         self.sim_data.people.retain(|person| person.age != -1);
                         self.checks.data[1] -= 1;
@@ -270,11 +270,15 @@ fn main() {
 
                     // Plot which shows population through time
                     egui::Window::new("Plot - Population against months").show(ctx, |ui| {
-                        let data: PlotPoints = PlotPoints::new(self.checks.graph_data.clone());
+                        let data: PlotPoints = PlotPoints::new(self.sim_data.graph_data.clone());
                         let line = Line::new(data);
-                        Plot::new("plot").view_aspect(2.0).
-                            allow_drag(false).allow_scroll(false).allow_zoom(false).
-                            show(ui, |plot_ui| plot_ui.line(line));
+                        Plot::new("plot").view_aspect(2.0)
+                            .allow_drag(false)
+                            .allow_scroll(false)
+                            .allow_zoom(false)
+                            .allow_boxed_zoom(false)
+                            .allow_double_click_reset(false)
+                            .show(ui, |plot_ui| plot_ui.line(line));
                     });
 
                     // A table with all the people in the simulation
@@ -321,6 +325,7 @@ fn main() {
                 sim_data: Sim {
                     people: vec![],
                     population: -1,
+                    graph_data: vec![],
                 },
                 world_data: World {
                     name: "Earth",
@@ -331,7 +336,6 @@ fn main() {
                 checks: Checks {
                     data: vec![0, 480, 0],
                     start_months: 0, // To change this val just change Checks::data[1]
-                    graph_data: vec![],
                 },
             }
         }
