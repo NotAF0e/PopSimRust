@@ -1,3 +1,5 @@
 ## An infinitely unfinished population simulator
 
-This is a rewrite of pop_sim(in folder "deprecated") from python to rust for the sake of rust speed
+A gui/non-gui population simulator built in rust for the sake of speed.
+
+The GUI library is EGUI: https://github.com/emilk/egui
