@@ -108,7 +108,7 @@ impl Sim {
                 // Remove the lover from love_vec if they are dead
                 match self.people.get(self.people[id].love_vec[0] as usize) {
                     Some(_loved_one) => {}
-                    None => {
+                    _None => {
                         if self.people[id].love_vec[0] != -1 {
                             self.people[id].love_vec[0] = -1
                         }
