@@ -2,15 +2,15 @@
 
 #![windows_subsystem = "windows"]
 
-use std::ops::RangeInclusive;
 use rand::Rng;
-use std::str;
-use std::convert::From;
+use rand::seq::IteratorRandom;
+use std::{str, convert::From, ops::RangeInclusive, fs::File, 
+    io::{BufRead, BufReader},};
 
 use eframe::egui;
 use eframe::emath::Align;
 use egui::{Color32, Vec2, Visuals,
-           plot::{Plot, PlotPoints, Line}};
+           plot::{Plot, PlotPoints, Line}, Pos2};
 
 
 pub struct AppData {
@@ -22,7 +22,7 @@ pub struct AppData {
 #[derive(PartialEq)]
 pub struct Person {
     id: i64,
-    name: &'static str,
+    name: String,
     // In months
     age: i16,
     sex: Sex,
@@ -47,9 +47,8 @@ struct Sim {
 
 #[derive(Debug)]
 pub struct World {
-    name: &'static str,
+    name: String,
     age: i64,
-    food: f32,
 }
 
 
@@ -62,10 +61,10 @@ struct Checks {
 impl Sim {
     pub fn create_person(&mut self, sex: Sex) -> Person {
         self.population += 1;
-
+        let name: String = self.generate_name(&sex).unwrap();
         let temp_person: Person = Person {
             id: self.population,
-            name: "John",
+            name,
             age: 0,
             sex,
             details: vec![0.0],
@@ -133,6 +132,7 @@ impl Sim {
                 // Divide top range buy 12 to get amount of average days that a woman can reproduce for
                 let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
                 if baby_chance <= (self.people[id].details[0] as f32) {
+
                     // Creates a baby!!!
                     let sex: Sex = if rand::random::<f32>() < 0.5 {
                         Sex::Male
@@ -175,18 +175,36 @@ impl Sim {
             };
         }
     }
+
+    pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
+        if sex == &Sex::Male {
+            let name_f: BufReader<File> = BufReader::new(File::open("names/male_names.txt")
+            .unwrap_or_else(|_e |panic!("male_names.txt not found!")));
+            let name: Option<String> = name_f.lines().map(|l| l.expect("Couldn't read line"))
+            .choose(&mut rand::thread_rng());
+            return name
+        } else {
+            let name_f: BufReader<File> = BufReader::new(File::open("names/female_names.txt")
+            .unwrap_or_else(|_e |panic!("female_names.txt not found!")));
+            let name: Option<String> = name_f.lines().map(|l| l.expect("Couldn't read line"))
+            .choose(&mut rand::thread_rng());
+            return name
+        }
+        
+    }
 }
 
 fn main() {
-    pub struct Application {
+    pub struct App {
         app_data: AppData,
         sim_data: Sim,
         world_data: World,
         checks: Checks,
     }
+    
     // The code which renders the application
-    // This section also handles simulation which will be decoupled to increase performance
-    impl eframe::App for Application {
+    // This section also handles simulation which may be decoupled to increase performance itf
+    impl eframe::App for App {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
             egui::CentralPanel::default().show(ctx, |ui| {
@@ -217,8 +235,15 @@ fn main() {
                         ui.label(egui::RichText::new(format!("Years: {}", self.checks.start_months / 12)));
                         ui.end_row();
                     });
-                    ui.add_space(15.0);
 
+                    egui::Grid::new("start_settings_2").show(ui, |ui| {
+                        ui.add(egui::Label::new("Number of pairs of people to begin with:"));
+                        ui.add(egui::DragValue::new(&mut self.checks.data[3])
+                            .clamp_range(RangeInclusive::new(0, 1000)));
+                        ui.end_row();
+                    });
+
+                    ui.add_space(15.0);
                     if ui.button("Begin simulation").clicked() {
                         self.checks.data[2] = 1;
                     }
@@ -226,11 +251,11 @@ fn main() {
 
                 // Creates Adam and Eve
                 if self.checks.data[0] == 0 {
-                    for _ in 0..1 { // Manually change amount of people at start here
-                        let john: Person = self.sim_data.create_person(Sex::Male);
-                        let john2: Person = self.sim_data.create_person(Sex::Female);
-                        self.sim_data.people.push(john);
-                        self.sim_data.people.push(john2);
+                    for _ in 0..self.checks.data[3] {
+                        let adam: Person = self.sim_data.create_person(Sex::Male);
+                        let eve: Person = self.sim_data.create_person(Sex::Female);
+                        self.sim_data.people.push(adam);
+                        self.sim_data.people.push(eve);
                     }
 
                     self.checks.data[0] = 1;
@@ -238,14 +263,15 @@ fn main() {
 
                 if self.checks.data[2] == 1 {
                     if self.checks.data[1] != 0 {
+
+                        // Updating the sim
                         self.sim_data.update_sim(&self.world_data);
                         self.sim_data.update_details();
+                        self.sim_data.people.retain(|person| person.age != -1);
+                        self.checks.data[1] -= 1;
 
                         // Graph data pushing
                         self.sim_data.graph_data.push([self.checks.start_months as f64 - self.checks.data[1] as f64, self.sim_data.people.len() as f64]);
-
-                        self.sim_data.people.retain(|person| person.age != -1);
-                        self.checks.data[1] -= 1;
                     }
 
                     ui.label(egui::RichText::new(
@@ -270,7 +296,9 @@ fn main() {
                     }
 
                     // Plot which shows population through time
-                    egui::Window::new("Plot - Population against months").show(ctx, |ui| {
+                    egui::Window::new("Plot - Population against months")
+                    .default_pos(Pos2 {x: 7.0, y: 225.0})
+                    .show(ctx, |ui| {
                         let data: PlotPoints = PlotPoints::new(self.sim_data.graph_data.clone());
                         let line = Line::new(data);
                         Plot::new("plot").view_aspect(2.0)
@@ -283,30 +311,33 @@ fn main() {
                     });
 
                     // A table with all the people in the simulation
-                    egui::SidePanel::right("Table").show(ctx, |ui| {
-                        let text_style = egui::TextStyle::Body;
-                        let row_height = ui.text_style_height(&text_style);
-
-                        egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false; 2]).show_rows(
-                            ui,
-                            row_height,
-                            self.sim_data.people.len(),
-                            |ui, row_range| {
-                                for id in row_range {
-                                    let text = format!("[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
-                                    Details: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
-                                                       self.sim_data.people[id].id,
-                                                       self.sim_data.people[id].name,
-                                                       (self.sim_data.people[id].age as f32 / 12.0) as i32,
-                                                       self.sim_data.people[id].sex,
-                                                       self.sim_data.people[id].details,
-                                                       self.sim_data.people[id].love_vec,
-                                                       self.sim_data.people[id].seed);
-                                    ui.label(text);
-                                }
-                            },
-                        );
-                    });
+                    if self.sim_data.people.len() != 0 {
+                        egui::SidePanel::right("Table").show(ctx, |ui| {
+                            let text_style = egui::TextStyle::Body;
+                            let row_height = ui.text_style_height(&text_style);
+    
+                            egui::ScrollArea::vertical().stick_to_bottom(true).auto_shrink([false; 2]).show_rows(
+                                ui,
+                                row_height,
+                                self.sim_data.people.len(),
+                                |ui, row_range| {
+                                    for id in row_range {
+                                        let text = format!("[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
+                                        Details: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
+                                                           self.sim_data.people[id].id,
+                                                           self.sim_data.people[id].name,
+                                                           (self.sim_data.people[id].age as f32 / 12.0) as i32,
+                                                           self.sim_data.people[id].sex,
+                                                           self.sim_data.people[id].details,
+                                                           self.sim_data.people[id].love_vec,
+                                                           self.sim_data.people[id].seed);
+                                        ui.label(text);
+                                        ui.separator();
+                                    }
+                                },
+                            );
+                        });
+                    }
                 }
 
 
@@ -317,7 +348,7 @@ fn main() {
         }
     }
 
-    impl Default for Application {
+    impl Default for App {
         fn default() -> Self {
             Self {
                 app_data: AppData {
@@ -329,13 +360,15 @@ fn main() {
                     graph_data: vec![],
                 },
                 world_data: World {
-                    name: "Earth",
-                    age: 4_543_000_000 * 12,
-                    food: 100.0,
+                    name: "Earth".to_string(),
+                    age: 0 * 12,
                 },
-                // Check for spawning Adam and Eve, months, start button
+
+                // Checks for spawning Adam and Eve, months, start button, amount of pairs
                 checks: Checks {
-                    data: vec![0, 480, 0],
+
+                    // These are defaults
+                    data: vec![0, 2400, 0, 1],
                     start_months: 0, // To change this val just change Checks::data[1]
                 },
             }
@@ -359,6 +392,6 @@ fn main() {
     eframe::run_native(
         "PopSim",
         options,
-        Box::new(|_cc| Box::new(Application::default())),
+        Box::new(|_cc| Box::new(App::default())),
     );
 }
