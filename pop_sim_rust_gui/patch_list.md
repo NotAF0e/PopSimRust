@@ -17,4 +17,4 @@
 - **F** [07/11/23] Added spacers into the person table
 - **F** [07/11/23] Fixed a bug with adding values to graph before removing dead people
 - **O** [07/11/23] Added *male_names.txt* and *female_names.txt* to *pop_sim_rust_gui*
-- **F** [07/11/23] People are now given a random name from either *male_names.txt* or *female_names.txt* on birth dependent on their sex
+- **F** [08/11/23] People are now given a random name from either *male_names.txt* or *female_names.txt* on birth dependent on their sex
