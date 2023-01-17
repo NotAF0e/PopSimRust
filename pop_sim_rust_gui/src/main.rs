@@ -8,7 +8,7 @@
 // -[] Outside world influence(Migrant/Emigrant v2, plagues, things occuring outside of sim_region)
 // -[] More settings
 // -[] Notices(News of important info)
-// -[] Quality of life(Pausing, better table, better app sizing)
+// -[] Quality of life(Pausing [], better table [], better app sizing [])
 
 #![windows_subsystem = "windows"]
 
@@ -76,6 +76,7 @@ fn main() {
     impl eframe::App for App {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
+
             egui::CentralPanel::default().show(ctx, |ui| {
                 // Bottom settings panel
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
@@ -245,7 +246,20 @@ fn main() {
                                                 self.sim_data.people[id].love_vec,
                                                 self.sim_data.people[id].seed
                                             );
-                                            ui.label(text);
+                                            let collap_header_text =
+                                                self.sim_data.people[id].name.to_string() +
+                                                &" | Age: ".to_string() +
+                                                &(
+                                                    ((self.sim_data.people[id].age as f32) /
+                                                        12.0) as i32
+                                                ).to_string();
+
+                                            egui::CollapsingHeader
+                                                ::new(collap_header_text)
+                                                .open(Some(true))
+                                                .show(ui, |ui| {
+                                                    ui.label(text);
+                                                });
                                             ui.separator();
                                         }
                                     }
