@@ -8,7 +8,7 @@
 // -[] Outside world influence(Migrant/Emigrant v2, plagues, things occuring outside of sim_region)
 // -[] More settings
 // -[] Notices(News of important info)
-// -[] Quality of life(Pausing [], better table [x], better app sizing [])
+// -[] Quality of life(Pausing [], better table (table v2) [x], better app sizing [])
 
 #![windows_subsystem = "windows"]
 
