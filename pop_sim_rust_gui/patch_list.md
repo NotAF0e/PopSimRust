@@ -20,3 +20,8 @@
 - **F** [07/11/23] People are now given a random name from either *male_names.txt* or *female_names.txt* on birth dependent on their sex
 - **O** [10/11/23] Formatted all of *pop_sim_rust_gui/main.rs*
 - **O** [17/01/23] Added todo to *pop_sim_rust_gui/main.rs*
+- **B** [18/01/23] Fixed people not spawning in set pairs
+- **O** [18/01/23] Changed code structure for easier programming
+- **F** [18/01/23] Added temporary close table button as it was causing performance issues
+- **F** [18/01/23] Table v2 is out! Table looks nicer, and info is easier to read
+- **F** [18/01/23] Added a time between frames counter to show simulation performance
