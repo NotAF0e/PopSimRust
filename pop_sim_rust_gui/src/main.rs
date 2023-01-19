@@ -112,7 +112,7 @@ fn main() {
                 });
 
                 // Setting the start settings
-                if self.checks.start_settings_set != true {
+                if !self.checks.start_settings_set {
                     self.checks.start_months = self.checks.months_to_sim;
 
                     egui::Grid::new("start_settings_1").show(ui, |ui| {
@@ -141,7 +141,7 @@ fn main() {
 
                     ui.add_space(15.0);
                     if ui.button("Begin simulation").clicked() {
-                        if self.checks.start_people_created != true {
+                        if !self.checks.start_people_created {
                             // Creates Adam and Eve
                             for _ in 0..self.checks.start_pairs_of_people {
                                 let adam: Person = self.sim_data.create_person(Sex::Male);
@@ -244,7 +244,7 @@ fn main() {
                         });
 
                     // A table with all the people in the simulation
-                    if self.sim_data.people.len() != 0 && self.checks.table_shown {
+                    if !self.sim_data.people.is_empty() && self.checks.table_shown {
                         egui::SidePanel::right("Table").show(ctx, |ui| {
                             let text_style = egui::TextStyle::Body;
                             let row_height = ui.text_style_height(&text_style);
@@ -274,7 +274,7 @@ fn main() {
                                             );
                                             let collap_header_text =
                                                 self.sim_data.people[id].name.to_string() +
-                                                &" | Age: ".to_string() +
+                                                " | Age: " +
                                                 &(
                                                     ((self.sim_data.people[id].age as f32) /
                                                         12.0) as i32
@@ -315,7 +315,7 @@ fn main() {
                 },
                 world_data: World {
                     name: "Earth".to_string(),
-                    age: 0 * 12,
+                    age: 0,
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
@@ -475,22 +475,20 @@ impl Sim {
                     panic!("male_names.txt not found!")
                 )
             );
-            let name: Option<String> = name_f
+            name_f
                 .lines()
                 .map(|l| l.expect("Couldn't read line"))
-                .choose(&mut rand::thread_rng());
-            return name;
+                .choose(&mut rand::thread_rng())
         } else {
             let name_f: BufReader<File> = BufReader::new(
                 File::open("names/female_names.txt").unwrap_or_else(|_e|
                     panic!("female_names.txt not found!")
                 )
             );
-            let name: Option<String> = name_f
+            name_f
                 .lines()
                 .map(|l| l.expect("Couldn't read line"))
-                .choose(&mut rand::thread_rng());
-            return name;
+                .choose(&mut rand::thread_rng())
         }
     }
 }
