@@ -26,3 +26,4 @@
 - **F** [18/01/23] Added temporary close table button as it was causing performance issues
 - **F** [18/01/23] Table v2 is out! Table looks nicer, and info is easier to read
 - **F** [18/01/23] Added a time between frames counter to show simulation performance
+- **B** [20/01/23] Fixed a strange table id problem

@@ -2,7 +2,6 @@
 
 // TODO:
 // -[] Migrant/Emigrant system
-// -[] Mortality
 // -[] Differing death causes(random old age death)
 // -[] Epidemics
 // -[] Outside world influence(Migrant/Emigrant v2, plagues, things occuring outside of sim_region)
@@ -279,14 +278,15 @@ fn main() {
                                                     ((self.sim_data.people[id].age as f32) /
                                                         12.0) as i32
                                                 ).to_string();
-
-                                            egui::CollapsingHeader
-                                                ::new(collap_header_text)
-                                                .open(Some(true))
-                                                .show(ui, |ui| {
-                                                    ui.label(text);
-                                                });
-                                            ui.separator();
+                                            ui.push_id(self.sim_data.people[id].id, |ui| {
+                                                egui::CollapsingHeader
+                                                    ::new(collap_header_text)
+                                                    .open(Some(true))
+                                                    .show(ui, |ui| {
+                                                        ui.label(text);
+                                                    });
+                                                ui.separator();
+                                            });
                                         }
                                     }
                                 );
