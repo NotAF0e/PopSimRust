@@ -19,7 +19,7 @@ use std::{
     ops::RangeInclusive,
     fs::File,
     io::{ BufRead, BufReader },
-    time::{ Instant },
+    time::{ Instant, Duration },
 };
 
 use eframe::egui;
@@ -28,6 +28,7 @@ use egui::{ Color32, Vec2, Visuals, plot::{ Plot, PlotPoints, Line }, Pos2 };
 
 pub struct AppData {
     app_scale: f32,
+    frame_time: Duration,
 }
 
 // Person data struct
@@ -67,9 +68,9 @@ pub struct World {
 struct Checks {
     sim_running: bool,
     months_to_sim: i32,
-    start_months: i32,
-
     table_shown: bool,
+
+    start_months: i32,
     start_settings_set: bool,
     start_people_created: bool,
     start_pairs_of_people: i32,
@@ -88,17 +89,19 @@ fn main() {
     impl eframe::App for App {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
-            let fps_start = Instant::now();
+            let frame_start = Instant::now();
+
             egui::CentralPanel::default().show(ctx, |ui| {
                 // Bottom settings panel
                 egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
-                    ui.with_layout(egui::Layout::left_to_right(Align::Center), |ui| {
+                    // Left to right side ui elements
+                    ui.with_layout(egui::Layout::left_to_right(Align::TOP), |ui| {
                         egui::CollapsingHeader
-                            ::new("THEME")
+                            ::new(egui::RichText::new(format!("THEME")).size(15.0))
                             .show(ui, egui::widgets::global_dark_light_mode_buttons);
 
                         egui::CollapsingHeader
-                            ::new("APPLICATION SIZE")
+                            ::new(egui::RichText::new(format!("APPLICATION SIZE")).size(15.0))
                             .show(ui, |ui|
                                 ui.add(
                                     egui::Slider::new(
@@ -107,6 +110,15 @@ fn main() {
                                     )
                                 )
                             );
+
+                        // Right to left side ui elements
+                        ui.with_layout(egui::Layout::right_to_left(Align::TOP), |ui| {
+                            ui.add(
+                                egui::Label::new(
+                                    egui::RichText::new(format!("{:?}", self.app_data.frame_time)).size(15.0)
+                                )
+                            );
+                        });
                     });
                 });
 
@@ -226,7 +238,7 @@ fn main() {
                     // Plot which shows population through time
                     egui::Window
                         ::new("Plot - Population against months")
-                        .default_pos(Pos2 { x: 7.0, y: 225.0 })
+                        .default_pos(Pos2 { x: 7.0, y: 250.0 })
                         .show(ctx, |ui| {
                             let data: PlotPoints = PlotPoints::new(
                                 self.sim_data.graph_data.clone()
@@ -293,10 +305,9 @@ fn main() {
                         });
                     }
                 }
-
+                self.app_data.frame_time = frame_start.elapsed();
                 // println!("{:?}", self.sim_data.people);
-                let fps_end = fps_start.elapsed();
-                ui.label(format!("Time between frames:{:?}", fps_end));
+
                 ctx.request_repaint();
             });
         }
@@ -307,6 +318,7 @@ fn main() {
             Self {
                 app_data: AppData {
                     app_scale: 0.9,
+                    frame_time: Duration::new(0, 0),
                 },
                 sim_data: Sim {
                     people: vec![],
@@ -320,12 +332,14 @@ fn main() {
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
                 checks: Checks {
+                    // Can be changed after start settings are set
                     sim_running: true,
                     months_to_sim: 2400,
-
                     table_shown: false,
-                    start_settings_set: false,
+
+                    // Opposite of previous comment
                     start_months: 0,
+                    start_settings_set: false,
                     start_people_created: false,
                     start_pairs_of_people: 5,
                 },

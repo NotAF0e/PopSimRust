@@ -25,5 +25,7 @@
 - **O** [18/01/23] Changed code structure for easier programming
 - **F** [18/01/23] Added temporary close table button as it was causing performance issues
 - **F** [18/01/23] Table v2 is out! Table looks nicer, and info is easier to read
-- **F** [18/01/23] Added a time between frames counter to show simulation performance
+- **F** [18/01/23] Added a frame time counter to show simulation performance
 - **B** [20/01/23] Fixed a strange table id problem
+- **F** [21/01/23] Optimised the app a ton. It is now up to 1500x faster.
+- **F** [21/01/23] Improved the frame time counter: it is now on the bottom bar. Also adjust the bottom bar text size to accommodate the frame counter
