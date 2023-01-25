@@ -29,3 +29,6 @@
 - **B** [20/01/23] Fixed a strange table id problem
 - **F** [21/01/23] Optimised the app a ton. It is now up to 1500x faster.
 - **F** [21/01/23] Improved the frame time counter: it is now on the bottom bar. Also adjust the bottom bar text size to accommodate the frame counter
+
+- **F** [25/01/23] Began the immigration/emigration system
+- **B** [25/01/23] Fixed id issues

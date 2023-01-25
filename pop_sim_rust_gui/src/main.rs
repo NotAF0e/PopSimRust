@@ -9,7 +9,7 @@
 // -[] More start settings
 // -[] Quality of life(Pausing [x], better table (table v2) [x])
 
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 
 use rand::Rng;
 
@@ -60,8 +60,9 @@ struct Sim {
 pub struct World {
     name: String,
     age: i32,
-    migration_chance: i32,
-    emigration_chance: i32
+    // Values from 0.0 -> 100.0
+    immigration_chance: f32,
+    emigration_chance: f32,
 }
 
 struct Checks {
@@ -172,17 +173,22 @@ fn main() {
                 if self.checks.start_settings_set {
                     if self.checks.months_to_sim != 0 && self.checks.sim_running {
                         // Updating the sim
-                        self.sim_data.migrate_emigrate_people(&self.world_data);
-                        self.sim_data.update_sim(&self.world_data);
-                        self.sim_data.update_fertility();
-                        self.sim_data.people.retain(|person| person.age != -1);
-                        self.checks.months_to_sim -= 1;
+                        if self.sim_data.people.len() != 0 {
+                            self.sim_data.update_sim(&self.world_data);
+                            // self.sim_data.immigrate_emigrate_people(&self.world_data);
+                            self.sim_data.update_fertility();
+                            self.sim_data.people.retain(|person| person.age != -1);
+                            self.checks.months_to_sim -= 1;
 
-                        // Graph data pushing
-                        self.sim_data.graph_data.push([
-                            (self.checks.start_months as f64) - (self.checks.months_to_sim as f64),
-                            self.sim_data.people.len() as f64,
-                        ]);
+                            // Graph data pushing
+                            self.sim_data.graph_data.push([
+                                (self.checks.start_months as f64) -
+                                    (self.checks.months_to_sim as f64),
+                                self.sim_data.people.len() as f64,
+                            ]);
+                        } else {
+                            ui.colored_label(Color32::from_rgb(222, 0, 0), "Simulation died :(");
+                        }
                     }
 
                     ui.label(
@@ -330,8 +336,8 @@ fn main() {
                 world_data: World {
                     name: "Earth".to_string(),
                     age: 0,
-                    migration_chance: 0,
-                    emigration_chance: 0
+                    immigration_chance: 1.5,
+                    emigration_chance: 0.5,
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
@@ -418,7 +424,7 @@ impl Sim {
                     }
                 }
 
-                // Remove the lover from love_vec if they are dead
+                // Set the lover as -1 in the love_vec if they are dead
                 match self.people.get(self.people[id].love_vec[0] as usize) {
                     Some(_loved_one) => {}
                     None => {
@@ -485,8 +491,32 @@ impl Sim {
             }
         }
     }
-    pub fn migrate_emigrate_people(&mut self, world_info: &World) {
-        todo!()
+    pub fn immigrate_emigrate_people(&mut self, world_info: &World) {
+        if world_info.immigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
+            let sex: Sex = if rand::random::<f32>() < 0.5 { Sex::Male } else { Sex::Female };
+            self.population += 1;
+
+            let immigrator = Person {
+                id: self.population,
+                name: self.generate_name(&sex).unwrap(),
+                age: rand::thread_rng().gen_range(25..100),
+                sex,
+                fertility: 0.0,
+                love_vec: vec![-1],
+
+                // Seed is for random values which will stay consistent
+                seed: rand::thread_rng().gen_range(0.1..100.0),
+            };
+
+            self.people.push(immigrator);
+            println!("Immigrated");
+        }
+        if world_info.emigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
+            let people_len = self.people.len();
+            self.people[rand::thread_rng().gen_range(0..people_len)].age = -1;
+
+            println!("Emigrated");
+        }
     }
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
         if sex == &Sex::Male {
