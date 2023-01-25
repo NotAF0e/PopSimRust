@@ -3,11 +3,11 @@
 // TODO:
 // -[] Migrant/Emigrant system
 // -[] Differing death causes(random old age death)
+// -[] Simulation info window for end of simulation
 // -[] Epidemics
 // -[] Outside world influence(Migrant/Emigrant v2, plagues, things occuring outside of sim_region)
 // -[] More start settings
-// -[] Notices(News of important info)
-// -[] Quality of life(Pausing [x], better table (table v2) [x], better app sizing [])
+// -[] Quality of life(Pausing [x], better table (table v2) [x])
 
 #![windows_subsystem = "windows"]
 
@@ -16,15 +16,15 @@ use rand::Rng;
 use rand::seq::IteratorRandom;
 use std::{
     convert::From,
-    ops::RangeInclusive,
     fs::File,
     io::{ BufRead, BufReader },
-    time::{ Instant, Duration },
+    ops::RangeInclusive,
+    time::{ Duration, Instant },
 };
 
 use eframe::egui;
 use eframe::emath::Align;
-use egui::{ Color32, Vec2, Visuals, plot::{ Plot, PlotPoints, Line }, Pos2 };
+use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
 
 pub struct AppData {
     app_scale: f32,
@@ -32,22 +32,19 @@ pub struct AppData {
 }
 
 // Person data struct
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Person {
     id: i64,
     name: String,
     // In months
     age: i16,
     sex: Sex,
-    // Details refers to simulation detail like fertility CHANGE WITH MORTALITY SOON
-    details: Vec<f32>,
+    fertility: f32,
     love_vec: Vec<i64>,
     seed: f32,
 }
 
-#[derive(Debug)]
-#[derive(PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Sex {
     Male,
     Female,
@@ -62,7 +59,9 @@ struct Sim {
 #[derive(Debug)]
 pub struct World {
     name: String,
-    age: i64,
+    age: i32,
+    migration_chance: i32,
+    emigration_chance: i32
 }
 
 struct Checks {
@@ -115,7 +114,9 @@ fn main() {
                         ui.with_layout(egui::Layout::right_to_left(Align::TOP), |ui| {
                             ui.add(
                                 egui::Label::new(
-                                    egui::RichText::new(format!("{:?}", self.app_data.frame_time)).size(15.0)
+                                    egui::RichText
+                                        ::new(format!("{:?}", self.app_data.frame_time))
+                                        .size(15.0)
                                 )
                             );
                         });
@@ -171,8 +172,9 @@ fn main() {
                 if self.checks.start_settings_set {
                     if self.checks.months_to_sim != 0 && self.checks.sim_running {
                         // Updating the sim
+                        self.sim_data.migrate_emigrate_people(&self.world_data);
                         self.sim_data.update_sim(&self.world_data);
-                        self.sim_data.update_details();
+                        self.sim_data.update_fertility();
                         self.sim_data.people.retain(|person| person.age != -1);
                         self.checks.months_to_sim -= 1;
 
@@ -272,14 +274,14 @@ fn main() {
                                         for id in row_range {
                                             let text = format!(
                                                 "[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
-                                        Details: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
+                                        Fertility: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
 
                                                 self.sim_data.people[id].id,
                                                 self.sim_data.people[id].name,
                                                 ((self.sim_data.people[id].age as f32) /
                                                     12.0) as i32,
                                                 self.sim_data.people[id].sex,
-                                                self.sim_data.people[id].details,
+                                                self.sim_data.people[id].fertility,
                                                 self.sim_data.people[id].love_vec,
                                                 self.sim_data.people[id].seed
                                             );
@@ -328,6 +330,8 @@ fn main() {
                 world_data: World {
                     name: "Earth".to_string(),
                     age: 0,
+                    migration_chance: 0,
+                    emigration_chance: 0
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
@@ -377,7 +381,7 @@ impl Sim {
             name,
             age: 0,
             sex,
-            details: vec![0.0],
+            fertility: 0.0,
             love_vec: vec![-1],
 
             // Seed is for random values which will stay consistent
@@ -439,7 +443,7 @@ impl Sim {
             if self.people[id].age > 12 * 12 && self.people[id].love_vec[0] != -1 {
                 // Divide top range buy 12 to get amount of average days that a woman can reproduce for
                 let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
-                if baby_chance <= (self.people[id].details[0] as f32) {
+                if baby_chance <= self.people[id].fertility {
                     // Creates a baby!!!
                     let sex: Sex = if rand::random::<f32>() < 0.5 {
                         Sex::Male
@@ -455,7 +459,7 @@ impl Sim {
         }
     }
 
-    pub fn update_details(&mut self) {
+    pub fn update_fertility(&mut self) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
                 let age = self.people[id].age;
@@ -477,11 +481,13 @@ impl Sim {
                 } else {
                     0.0
                 };
-                self.people[id].details[0] = fertility;
+                self.people[id].fertility = fertility;
             }
         }
     }
-
+    pub fn migrate_emigrate_people(&mut self, world_info: &World) {
+        todo!()
+    }
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
         if sex == &Sex::Male {
             let name_f: BufReader<File> = BufReader::new(
