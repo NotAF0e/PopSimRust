@@ -1,11 +1,11 @@
 // GUI VERSION
 
 // TODO:
-// -[] Migrant/Emigrant system
+// -[] Migrant system
 // -[] Differing death causes(random old age death)
 // -[] Simulation info window for end of simulation
 // -[] Epidemics
-// -[] Outside world influence(Migrant/Emigrant v2, plagues, things occuring outside of sim_region)
+// -[] Outside world influence(Plagues, things occuring outside of sim_region)
 // -[] More start settings
 // -[] Quality of life(Pausing [x], better table (table v2) [x])
 
@@ -22,7 +22,7 @@ use std::{
     time::{ Duration, Instant },
 };
 
-use eframe::egui;
+use eframe::{ egui, IconData };
 use eframe::emath::Align;
 use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
 
@@ -64,7 +64,6 @@ pub struct World {
 
     // Values from 0.0 -> 100.0
     immigration_chance: f32,
-    emigration_chance: f32,
 }
 
 struct Checks {
@@ -76,6 +75,21 @@ struct Checks {
     start_settings_set: bool,
     start_people_created: bool,
     start_pairs_of_people: i32,
+}
+
+fn load_icon(path: &str) -> eframe::IconData {
+    let (icon_rgba, icon_width, icon_height) = {
+        let image = image::open(path).expect("Failed to open icon path").into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        (rgba, width, height)
+    };
+
+    eframe::IconData {
+        rgba: icon_rgba,
+        width: icon_width,
+        height: icon_height,
+    }
 }
 
 fn main() {
@@ -337,8 +351,7 @@ fn main() {
                 world_data: World {
                     name: "Earth".to_string(),
                     age: 0,
-                    immigration_chance: 1.5,
-                    emigration_chance: 0.5,
+                    immigration_chance: 0.5,
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
@@ -368,6 +381,7 @@ fn main() {
         follow_system_theme: true,
         default_theme: eframe::Theme::Dark,
         centered: true,
+        icon_data: Some(load_icon("./PopSimLogo.png")),
         ..Default::default()
     };
 
@@ -466,7 +480,7 @@ impl Sim {
                 }
             }
         }
-        self.immigrate_emigrate_people(world)
+        self.immigrate_people(world)
     }
 
     pub fn update_fertility(&mut self) {
@@ -495,7 +509,7 @@ impl Sim {
             }
         }
     }
-    pub fn immigrate_emigrate_people(&mut self, world_info: &World) {
+    pub fn immigrate_people(&mut self, world_info: &World) {
         if world_info.immigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
             self.population += 1;
             let male_immigrator = Person {
@@ -528,12 +542,6 @@ impl Sim {
             self.people.push(female_immigrator);
 
             println!("Immigrated");
-        }
-        if world_info.emigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
-            let people_len = self.people.len();
-            // self.people[rand::thread_rng().gen_range(0..people_len)].age = -1;
-
-            // println!("Emigrated");
         }
     }
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
