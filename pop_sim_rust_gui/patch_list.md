@@ -32,3 +32,4 @@
 
 - **F** [25/01/23] Began the immigration/emigration system
 - **B** [25/01/23] Fixed id issues
+- **F** [27/01/23] Finished the immigration system

@@ -41,6 +41,7 @@ pub struct Person {
     sex: Sex,
     fertility: f32,
     love_vec: Vec<i64>,
+    has_disease: bool,
     seed: f32,
 }
 
@@ -60,6 +61,7 @@ struct Sim {
 pub struct World {
     name: String,
     age: i32,
+
     // Values from 0.0 -> 100.0
     immigration_chance: f32,
     emigration_chance: f32,
@@ -175,7 +177,6 @@ fn main() {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
                             self.sim_data.update_sim(&self.world_data);
-                            // self.sim_data.immigrate_emigrate_people(&self.world_data);
                             self.sim_data.update_fertility();
                             self.sim_data.people.retain(|person| person.age != -1);
                             self.checks.months_to_sim -= 1;
@@ -388,6 +389,7 @@ impl Sim {
             age: 0,
             sex,
             fertility: 0.0,
+            has_disease: false,
             love_vec: vec![-1],
 
             // Seed is for random values which will stay consistent
@@ -397,7 +399,8 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, _world: &World) {
+    pub fn update_sim(&mut self, world: &World) {
+        // self.immigrate_emigrate_people(world);
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
                 // Ages all people by 1 month
@@ -426,7 +429,7 @@ impl Sim {
 
                 // Set the lover as -1 in the love_vec if they are dead
                 match self.people.get(self.people[id].love_vec[0] as usize) {
-                    Some(_loved_one) => {}
+                    Some(_err) => {}
                     None => {
                         if self.people[id].love_vec[0] != -1 {
                             self.people[id].love_vec[0] = -1;
@@ -463,6 +466,7 @@ impl Sim {
                 }
             }
         }
+        self.immigrate_emigrate_people(world)
     }
 
     pub fn update_fertility(&mut self) {
@@ -493,29 +497,43 @@ impl Sim {
     }
     pub fn immigrate_emigrate_people(&mut self, world_info: &World) {
         if world_info.immigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
-            let sex: Sex = if rand::random::<f32>() < 0.5 { Sex::Male } else { Sex::Female };
             self.population += 1;
-
-            let immigrator = Person {
+            let male_immigrator = Person {
                 id: self.population,
-                name: self.generate_name(&sex).unwrap(),
-                age: rand::thread_rng().gen_range(25..100),
-                sex,
+                name: self.generate_name(&Sex::Male).unwrap(),
+                age: rand::thread_rng().gen_range(25..40) * 12,
+                sex: Sex::Male,
                 fertility: 0.0,
-                love_vec: vec![-1],
+                has_disease: false,
+                love_vec: vec![self.population + 1],
 
                 // Seed is for random values which will stay consistent
                 seed: rand::thread_rng().gen_range(0.1..100.0),
             };
+            self.people.push(male_immigrator);
 
-            self.people.push(immigrator);
+            self.population += 1;
+            let female_immigrator = Person {
+                id: self.population,
+                name: self.generate_name(&Sex::Female).unwrap(),
+                age: rand::thread_rng().gen_range(25..40) * 12,
+                sex: Sex::Female,
+                fertility: 0.0,
+                has_disease: false,
+                love_vec: vec![self.population - 1],
+
+                // Seed is for random values which will stay consistent
+                seed: rand::thread_rng().gen_range(0.1..100.0),
+            };
+            self.people.push(female_immigrator);
+
             println!("Immigrated");
         }
         if world_info.emigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
             let people_len = self.people.len();
-            self.people[rand::thread_rng().gen_range(0..people_len)].age = -1;
+            // self.people[rand::thread_rng().gen_range(0..people_len)].age = -1;
 
-            println!("Emigrated");
+            // println!("Emigrated");
         }
     }
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
