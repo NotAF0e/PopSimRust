@@ -1,0 +1,13 @@
+[package]
+name = "pop_sim_gui_threaded"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8"
+egui = "0.20.1"
+eframe = "0.20.1"
+indicatif = { version = "*", features = ["rayon"] }
+image = "0.24.4"
