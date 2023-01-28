@@ -1,3 +1,4 @@
 /.idea/
 /pop_sim_rust/target/
+/pop_sim_gui_threaded/target/
 /pop_sim_rust_gui/target/
