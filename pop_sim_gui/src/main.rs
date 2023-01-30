@@ -22,7 +22,7 @@ use std::{
     time::{ Duration, Instant },
 };
 
-use eframe::{ egui, IconData };
+use eframe::egui;
 use eframe::emath::Align;
 use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
 

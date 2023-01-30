@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"] // Hide console window on Windows
+// #![windows_subsystem = "windows"] // Hide console window on Windows
 
 use std::{ sync::{ Arc, Mutex }, thread, time::Duration };
 
@@ -279,7 +279,7 @@ impl Default for App {
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        ctx.set_pixels_per_point(self.app_data.app_scale);
+        // ctx.set_pixels_per_point(self.app_data.app_scale);
         egui::CentralPanel::default().show(ctx, |ui| {
             // Bottom settings panel
             egui::TopBottomPanel::bottom("settings").show(ctx, |ui| {
@@ -300,10 +300,11 @@ impl eframe::App for App {
                         );
                 });
             });
-
+            
             // Setting the start settings
             if self.checks.lock().unwrap().data[2] == 0 {
                 self.checks.lock().unwrap().start_months = self.checks.lock().unwrap().data[1];
+                println!("Hi");
 
                 egui::Grid::new("start_settings_1").show(ui, |ui| {
                     ui.add(egui::Label::new("Number of months to simulate(0 - 4800):"));
