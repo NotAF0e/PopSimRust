@@ -3,7 +3,7 @@
 // TODO:
 // -[x] Migrant system
 // -[] Differing death causes(random old age death)
-// -[] Simulation info window for end of simulation
+// -[x] Simulation info window for end of simulation
 // -[] Epidemics
 // -[] Outside world influence(Plagues, things occuring outside of sim_region)
 // -[] More start settings
@@ -62,9 +62,6 @@ struct Sim {
 
 #[derive(Debug)]
 pub struct World {
-    name: String,
-    age: i32,
-
     // Values from 0.0 -> 100.0
     immigration_chance: f32,
 }
@@ -312,31 +309,52 @@ fn main() {
                     }
                 }
 
-                // Simulation completion window
+                // Simulation completion screen
                 if self.sim_data.months_to_sim == 0 {
                     ui.add_space(5.0);
                     if ui.style_mut().visuals == Visuals::light() {
                         ui.label(
                             egui::RichText
                                 ::new(format!("Simulation completed :)"))
-                                .size(30.0)
+                                .size(60.0)
                                 .color(Color32::from_rgb(0, 0, 204))
                         );
                     } else {
                         ui.label(
                             egui::RichText
                                 ::new(format!("Simulation completed :)"))
-                                .size(30.0)
+                                .size(60.0)
                                 .color(Color32::from_rgb(128, 255, 0))
                         );
                     }
-
+                    ui.separator();
+                    ui.label(
+                        egui::RichText
+                            ::new(format!("Simulation stats:"))
+                            .size(50.0)
+                            .text_style(egui::TextStyle::Heading)
+                    );
+                    ui.label(
+                        egui::RichText
+                            ::new(format!("-Population: {}", self.sim_data.people.len()))
+                            .size(30.0)
+                    );
                     ui.label(
                         egui::RichText
                             ::new(
                                 format!(
-                                    "Total people ever that ever existed: {}",
+                                    "-Total people that ever existed: {}",
                                     self.sim_data.people.last().unwrap().id + 1
+                                )
+                            )
+                            .size(30.0)
+                    );
+                    ui.label(
+                        egui::RichText
+                            ::new(
+                                format!(
+                                    "-Months Passed: {}",
+                                    self.sim_data.start_months - self.sim_data.months_to_sim
                                 )
                             )
                             .size(30.0)
@@ -368,8 +386,6 @@ fn main() {
                     start_pairs_of_people: 5,
                 },
                 world_data: World {
-                    name: "Earth".to_string(),
-                    age: 0,
                     immigration_chance: 0.5,
                 },
 
