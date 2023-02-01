@@ -36,4 +36,3 @@
 - **F** [28/01/23] Added an icon
 - **O** [01/02/23] Streamiled the code a bit
 - **F** [01/02/23] Added simulation end window
-
