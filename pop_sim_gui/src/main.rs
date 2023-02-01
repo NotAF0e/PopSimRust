@@ -26,11 +26,6 @@ use eframe::egui;
 use eframe::emath::Align;
 use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
 
-pub struct AppData {
-    app_scale: f32,
-    frame_time: Duration,
-}
-
 // Person data struct
 #[derive(Debug, PartialEq)]
 pub struct Person {
@@ -54,7 +49,15 @@ pub enum Sex {
 struct Sim {
     population: i64,
     people: Vec<Person>,
+
     graph_data: Vec<[f64; 2]>,
+
+    months_to_sim: i32,
+    sim_running: bool,
+    start_months: i32,
+    start_settings_set: bool,
+    start_people_created: bool,
+    start_pairs_of_people: i32,
 }
 
 #[derive(Debug)]
@@ -66,15 +69,10 @@ pub struct World {
     immigration_chance: f32,
 }
 
-struct Checks {
-    sim_running: bool,
-    months_to_sim: i32,
+struct AppData {
+    frame_time: Duration,
+    app_scale: f32,
     table_shown: bool,
-
-    start_months: i32,
-    start_settings_set: bool,
-    start_people_created: bool,
-    start_pairs_of_people: i32,
 }
 
 fn load_icon(path: &str) -> eframe::IconData {
@@ -97,7 +95,6 @@ fn main() {
         app_data: AppData,
         sim_data: Sim,
         world_data: World,
-        checks: Checks,
     }
 
     // The code which renders the application
@@ -141,19 +138,21 @@ fn main() {
                 });
 
                 // Setting the start settings
-                if !self.checks.start_settings_set {
-                    self.checks.start_months = self.checks.months_to_sim;
+                if !self.sim_data.start_settings_set {
+                    self.sim_data.start_months = self.sim_data.months_to_sim;
 
                     egui::Grid::new("start_settings_1").show(ui, |ui| {
                         ui.add(egui::Label::new("Number of months to simulate(0 - 4800):"));
                         ui.add(
                             egui::DragValue
-                                ::new(&mut self.checks.months_to_sim)
+                                ::new(&mut self.sim_data.months_to_sim)
                                 .clamp_range(RangeInclusive::new(0, 4800))
                         );
                         ui.end_row();
                         ui.label(
-                            egui::RichText::new(format!("Years: {}", self.checks.start_months / 12))
+                            egui::RichText::new(
+                                format!("Years: {}", self.sim_data.start_months / 12)
+                            )
                         );
                         ui.end_row();
                     });
@@ -162,7 +161,7 @@ fn main() {
                         ui.add(egui::Label::new("Number of pairs of people to begin with:"));
                         ui.add(
                             egui::DragValue
-                                ::new(&mut self.checks.start_pairs_of_people)
+                                ::new(&mut self.sim_data.start_pairs_of_people)
                                 .clamp_range(RangeInclusive::new(0, 1000))
                         );
                         ui.end_row();
@@ -170,35 +169,35 @@ fn main() {
 
                     ui.add_space(15.0);
                     if ui.button("Begin simulation").clicked() {
-                        if !self.checks.start_people_created {
+                        if !self.sim_data.start_people_created {
                             // Creates Adam and Eve
-                            for _ in 0..self.checks.start_pairs_of_people {
+                            for _ in 0..self.sim_data.start_pairs_of_people {
                                 let adam: Person = self.sim_data.create_person(Sex::Male);
                                 let eve: Person = self.sim_data.create_person(Sex::Female);
                                 self.sim_data.people.push(adam);
                                 self.sim_data.people.push(eve);
                             }
 
-                            self.checks.start_people_created = true;
+                            self.sim_data.start_people_created = true;
                         }
-                        self.checks.start_settings_set = true;
+                        self.sim_data.start_settings_set = true;
                     }
                 }
 
                 // Main sim update loop screen
-                if self.checks.start_settings_set {
-                    if self.checks.months_to_sim != 0 && self.checks.sim_running {
+                if self.sim_data.start_settings_set {
+                    if self.sim_data.months_to_sim != 0 && self.sim_data.sim_running {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
                             self.sim_data.update_sim(&self.world_data);
                             self.sim_data.update_fertility();
                             self.sim_data.people.retain(|person| person.age != -1);
-                            self.checks.months_to_sim -= 1;
+                            self.sim_data.months_to_sim -= 1;
 
                             // Graph data pushing
                             self.sim_data.graph_data.push([
-                                (self.checks.start_months as f64) -
-                                    (self.checks.months_to_sim as f64),
+                                (self.sim_data.start_months as f64) -
+                                    (self.sim_data.months_to_sim as f64),
                                 self.sim_data.people.len() as f64,
                             ]);
                         } else {
@@ -216,34 +215,34 @@ fn main() {
                             ::new(
                                 format!(
                                     "Months Passed: {}",
-                                    self.checks.start_months - self.checks.months_to_sim
+                                    self.sim_data.start_months - self.sim_data.months_to_sim
                                 )
                             )
                             .size(25.0)
                     );
                     ui.label(
                         egui::RichText
-                            ::new(format!("Months left: {}", self.checks.months_to_sim))
+                            ::new(format!("Months left: {}", self.sim_data.months_to_sim))
                             .size(15.0)
                     );
 
                     if ui.button("Play/Pause").clicked() {
-                        if self.checks.sim_running {
-                            self.checks.sim_running = false;
+                        if self.sim_data.sim_running {
+                            self.sim_data.sim_running = false;
                         } else {
-                            self.checks.sim_running = true;
+                            self.sim_data.sim_running = true;
                         }
                     }
                     if ui.button("Enable/Disable table").clicked() {
-                        if self.checks.table_shown {
-                            self.checks.table_shown = false;
+                        if self.app_data.table_shown {
+                            self.app_data.table_shown = false;
                         } else {
-                            self.checks.table_shown = true;
+                            self.app_data.table_shown = true;
                         }
                     }
 
                     // Simulation completion text
-                    if self.checks.months_to_sim == 0 {
+                    if self.sim_data.months_to_sim == 0 {
                         ui.add_space(5.0);
                         if ui.style_mut().visuals == Visuals::light() {
                             ui.colored_label(
@@ -278,7 +277,7 @@ fn main() {
                         });
 
                     // A table with all the people in the simulation
-                    if !self.sim_data.people.is_empty() && self.checks.table_shown {
+                    if !self.sim_data.people.is_empty() && self.app_data.table_shown {
                         egui::SidePanel::right("Table").show(ctx, |ui| {
                             let text_style = egui::TextStyle::Body;
                             let row_height = ui.text_style_height(&text_style);
@@ -339,14 +338,18 @@ fn main() {
     impl Default for App {
         fn default() -> Self {
             Self {
-                app_data: AppData {
-                    app_scale: 0.9,
-                    frame_time: Duration::new(0, 0),
-                },
                 sim_data: Sim {
                     people: vec![],
                     population: -1,
+
                     graph_data: vec![],
+
+                    sim_running: true,
+                    months_to_sim: 2400,
+                    start_months: 0,
+                    start_settings_set: false,
+                    start_people_created: false,
+                    start_pairs_of_people: 5,
                 },
                 world_data: World {
                     name: "Earth".to_string(),
@@ -355,17 +358,11 @@ fn main() {
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
-                checks: Checks {
-                    // Can be changed after start settings are set
-                    sim_running: true,
-                    months_to_sim: 2400,
+                app_data: AppData {
                     table_shown: false,
 
-                    // Opposite of previous comment
-                    start_months: 0,
-                    start_settings_set: false,
-                    start_people_created: false,
-                    start_pairs_of_people: 5,
+                    app_scale: 0.9,
+                    frame_time: Duration::new(0, 0),
                 },
             }
         }
