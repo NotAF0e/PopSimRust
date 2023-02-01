@@ -1,13 +1,13 @@
 // GUI VERSION
 
 // TODO:
-// -[] Migrant system
+// -[x] Migrant system
 // -[] Differing death causes(random old age death)
 // -[] Simulation info window for end of simulation
 // -[] Epidemics
 // -[] Outside world influence(Plagues, things occuring outside of sim_region)
 // -[] More start settings
-// -[] Quality of life(Pausing [x], better table (table v2) [x])
+// -[x] Quality of life(Pausing [x], better table (table v2) [x])
 
 // #![windows_subsystem = "windows"]
 
