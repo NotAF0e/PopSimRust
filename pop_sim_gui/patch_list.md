@@ -34,3 +34,4 @@
 - **B** [25/01/23] Fixed id issues
 - **F** [27/01/23] Finished the immigration system
 - **F** [28/01/23] Added an icon
+- **O** [01/02/23] Streamiled the code a bit and began adding simulation end window
