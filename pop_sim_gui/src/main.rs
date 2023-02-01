@@ -185,7 +185,7 @@ fn main() {
                 }
 
                 // Main sim update loop screen
-                if self.sim_data.start_settings_set {
+                if self.sim_data.start_settings_set && self.sim_data.months_to_sim != 0 {
                     if self.sim_data.months_to_sim != 0 && self.sim_data.sim_running {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
@@ -238,22 +238,6 @@ fn main() {
                             self.app_data.table_shown = false;
                         } else {
                             self.app_data.table_shown = true;
-                        }
-                    }
-
-                    // Simulation completion text
-                    if self.sim_data.months_to_sim == 0 {
-                        ui.add_space(5.0);
-                        if ui.style_mut().visuals == Visuals::light() {
-                            ui.colored_label(
-                                Color32::from_rgb(0, 0, 204),
-                                "Simulation completed :)"
-                            );
-                        } else {
-                            ui.colored_label(
-                                Color32::from_rgb(128, 255, 0),
-                                "Simulation completed :)"
-                            );
                         }
                     }
 
@@ -327,6 +311,38 @@ fn main() {
                         });
                     }
                 }
+
+                // Simulation completion window
+                if self.sim_data.months_to_sim == 0 {
+                    ui.add_space(5.0);
+                    if ui.style_mut().visuals == Visuals::light() {
+                        ui.label(
+                            egui::RichText
+                                ::new(format!("Simulation completed :)"))
+                                .size(30.0)
+                                .color(Color32::from_rgb(0, 0, 204))
+                        );
+                    } else {
+                        ui.label(
+                            egui::RichText
+                                ::new(format!("Simulation completed :)"))
+                                .size(30.0)
+                                .color(Color32::from_rgb(128, 255, 0))
+                        );
+                    }
+
+                    ui.label(
+                        egui::RichText
+                            ::new(
+                                format!(
+                                    "Total people ever that ever existed: {}",
+                                    self.sim_data.people.last().unwrap().id + 1
+                                )
+                            )
+                            .size(30.0)
+                    );
+                }
+
                 self.app_data.frame_time = frame_start.elapsed();
                 // println!("{:?}", self.sim_data.people);
 
