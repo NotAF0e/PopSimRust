@@ -30,9 +30,10 @@
 - **F** [21/01/23] Optimised the app a ton. It is now up to 1500x faster.
 - **F** [21/01/23] Improved the frame time counter: it is now on the bottom bar. Also adjust the bottom bar text size to accommodate the frame counter
 
-- **F** [25/01/23] Began the immigration system
+- **F** [25/01/23] Began adding the immigration system
 - **B** [25/01/23] Fixed id issues
 - **F** [27/01/23] Finished the immigration system
 - **F** [28/01/23] Added an icon
 - **O** [01/02/23] Streamiled the code a bit
 - **F** [01/02/23] Added simulation end window
+- **F** [07/02/23] Began adding the random death causes system
