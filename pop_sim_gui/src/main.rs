@@ -5,15 +5,16 @@
 // -[] Differing death causes(random old age death)
 // -[x] Simulation info window for end of simulation
 // -[] Epidemics
-// -[] Outside world influence(Plagues, things occuring outside of sim_region)
 // -[] More start settings
 // -[x] Quality of life(Pausing [x], better table (table v2) [x])
 
 // #![windows_subsystem = "windows"]
 
 use rand::Rng;
-
 use rand::seq::IteratorRandom;
+use rand::prelude::*;
+use rand::distributions::WeightedIndex;
+
 use std::{
     convert::From,
     fs::File,
@@ -60,11 +61,6 @@ struct Sim {
     start_pairs_of_people: i32,
 }
 
-#[derive(Debug)]
-pub struct World {
-    // Values from 0.0 -> 100.0
-    immigration_chance: f32,
-}
 
 struct AppData {
     frame_time: Duration,
@@ -91,7 +87,6 @@ fn main() {
     pub struct App {
         app_data: AppData,
         sim_data: Sim,
-        world_data: World,
     }
 
     // The code which renders the application
@@ -186,7 +181,7 @@ fn main() {
                     if self.sim_data.months_to_sim != 0 && self.sim_data.sim_running {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
-                            self.sim_data.update_sim(&self.world_data);
+                            self.sim_data.update_sim();
                             self.sim_data.update_fertility();
                             self.sim_data.people.retain(|person| person.age != -1);
                             self.sim_data.months_to_sim -= 1;
@@ -385,9 +380,6 @@ fn main() {
                     start_people_created: false,
                     start_pairs_of_people: 5,
                 },
-                world_data: World {
-                    immigration_chance: 0.5,
-                },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
                 app_data: AppData {
@@ -442,8 +434,7 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, world: &World) {
-        // self.immigrate_emigrate_people(world);
+    pub fn update_sim(&mut self) {
         for id in 0..self.people.len() {
             if self.people[id].age != -1 {
                 // Ages all people by 1 month
@@ -483,7 +474,14 @@ impl Sim {
                 // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
-                if self.people[id].age > 70 * 12 {
+                let ages =    [2, 5,  10, 25, 35, 45,  60,  70,  80,  90];
+                let weights = [5, 5, 25, 55, 75, 105, 135, 1050, 350, 150];
+                let dist = WeightedIndex::new(&weights).unwrap();
+                // println!("{}", ages[dist.sample(&mut rng)]);
+                if
+                    self.people[id].age > ages[dist.sample(&mut thread_rng())] * 12 &&
+                    rand::thread_rng().gen_range(0.00..1.00) > 0.98
+                {
                     // Age of death in months
                     self.people[id].age = -1;
                 }
@@ -509,7 +507,7 @@ impl Sim {
                 }
             }
         }
-        self.immigrate_people(world)
+
     }
 
     pub fn update_fertility(&mut self) {
@@ -536,41 +534,6 @@ impl Sim {
                 };
                 self.people[id].fertility = fertility;
             }
-        }
-    }
-    pub fn immigrate_people(&mut self, world_info: &World) {
-        if world_info.immigration_chance > rand::thread_rng().gen_range(0.0..100.0) {
-            self.population += 1;
-            let male_immigrator = Person {
-                id: self.population,
-                name: self.generate_name(&Sex::Male).unwrap(),
-                age: rand::thread_rng().gen_range(25..40) * 12,
-                sex: Sex::Male,
-                fertility: 0.0,
-                has_disease: false,
-                love_vec: vec![self.population + 1],
-
-                // Seed is for random values which will stay consistent
-                seed: rand::thread_rng().gen_range(0.1..100.0),
-            };
-            self.people.push(male_immigrator);
-
-            self.population += 1;
-            let female_immigrator = Person {
-                id: self.population,
-                name: self.generate_name(&Sex::Female).unwrap(),
-                age: rand::thread_rng().gen_range(25..40) * 12,
-                sex: Sex::Female,
-                fertility: 0.0,
-                has_disease: false,
-                love_vec: vec![self.population - 1],
-
-                // Seed is for random values which will stay consistent
-                seed: rand::thread_rng().gen_range(0.1..100.0),
-            };
-            self.people.push(female_immigrator);
-
-            println!("Immigrated");
         }
     }
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
