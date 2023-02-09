@@ -37,4 +37,5 @@
 - **O** [01/02/23] Streamiled the code a bit
 - **F** [01/02/23] Added simulation end window
 - **F** [07/02/23] Began adding the random death causes system
+- **O** [07/02/23] Removed imigration system as it was causing many issues
 - **B** [25/01/23] Finally fixed a lover check and remove bug which has been plaguing the project for a month
