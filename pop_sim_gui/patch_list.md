@@ -34,7 +34,7 @@
 - **B** [25/01/23] Fixed id issues
 - **F** [27/01/23] Finished the immigration system
 - **F** [28/01/23] Added an icon
-- **O** [01/02/23] Streamiled the code a bit
+- **O** [01/02/23] Streamlined the code a bit
 - **F** [01/02/23] Added simulation end window
 - **F** [07/02/23] Began adding the random death causes system
 - **O** [07/02/23] Removed imigration system as it was causing many issues
