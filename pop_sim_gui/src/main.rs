@@ -28,20 +28,20 @@ use eframe::emath::Align;
 use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
 
 // Person data struct
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Person {
     id: i64,
     name: String,
     // In months
-    age: i16,
+    age: Option<i16>,
     sex: Sex,
     fertility: f32,
-    love_vec: Vec<i64>,
+    lover: Option<i64>,
     has_disease: bool,
     seed: f32,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Sex {
     Male,
     Female,
@@ -60,7 +60,6 @@ struct Sim {
     start_people_created: bool,
     start_pairs_of_people: i32,
 }
-
 
 struct AppData {
     frame_time: Duration,
@@ -183,7 +182,8 @@ fn main() {
                         if self.sim_data.people.len() != 0 {
                             self.sim_data.update_sim();
                             self.sim_data.update_fertility();
-                            self.sim_data.people.retain(|person| person.age != -1);
+                            self.sim_data.people.retain(|person| person.age.is_some());
+
                             self.sim_data.months_to_sim -= 1;
 
                             // Graph data pushing
@@ -270,23 +270,29 @@ fn main() {
                                         for id in row_range {
                                             let text = format!(
                                                 "[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
-                                        Fertility: {:?} | Lover(Lover's id, Affection): {:?} | Seed: {:?}",
+                                        Fertility: {:?} | Lover: {:?} | Random seed: {:?}",
 
                                                 self.sim_data.people[id].id,
                                                 self.sim_data.people[id].name,
-                                                ((self.sim_data.people[id].age as f32) /
-                                                    12.0) as i32,
+                                                ((if self.sim_data.people[id].age.is_some() {
+                                                    self.sim_data.people[id].age.unwrap() as f32
+                                                } else {
+                                                    0.0
+                                                }) / 12.0) as i32,
                                                 self.sim_data.people[id].sex,
                                                 self.sim_data.people[id].fertility,
-                                                self.sim_data.people[id].love_vec,
+                                                self.sim_data.people[id].lover,
                                                 self.sim_data.people[id].seed
                                             );
                                             let collap_header_text =
                                                 self.sim_data.people[id].name.to_string() +
                                                 " | Age: " +
                                                 &(
-                                                    ((self.sim_data.people[id].age as f32) /
-                                                        12.0) as i32
+                                                    ((if self.sim_data.people[id].age.is_some() {
+                                                        self.sim_data.people[id].age.unwrap() as f32
+                                                    } else {
+                                                        0.0
+                                                    }) / 12.0) as i32
                                                 ).to_string();
                                             ui.push_id(self.sim_data.people[id].id, |ui| {
                                                 egui::CollapsingHeader
@@ -421,11 +427,11 @@ impl Sim {
         let temp_person: Person = Person {
             id: self.population,
             name,
-            age: 0,
+            age: Some(0),
             sex,
             fertility: 0.0,
             has_disease: false,
-            love_vec: vec![-1],
+            lover: None,
 
             // Seed is for random values which will stay consistent
             seed: rand::thread_rng().gen_range(0.1..100.0),
@@ -436,14 +442,32 @@ impl Sim {
 
     pub fn update_sim(&mut self) {
         for id in 0..self.people.len() {
-            if self.people[id].age != -1 {
+            if self.people[id].age != None {
+                // Set the lover as None in person.lover if they are dead
+                // THIS IS A VERY INEFFICIENT CHECK
+                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
+                    let mut found_lover = None;
+                    for person in self.people.clone().into_iter() {
+                        if
+                            self.people[id].lover.is_some() &&
+                            Some(person.id) == self.people[id].lover
+                        {
+                            found_lover = Some(person.id);
+                            break;
+                        }
+                    }
+                    if found_lover.is_none() {
+                        self.people[id].lover = None;
+                    }
+                }
+
                 // Ages all people by 1 month
-                self.people[id].age += 1;
+                self.people[id].age = Some(self.people[id].age.unwrap_or(0) + 1);
 
                 // println!("{:?}", people_temp);
 
                 // Chooses people what will have babies
-                if self.people[id].love_vec[0] == -1 && self.people[id].age > 12 * 12 {
+                if self.people[id].lover == None && self.people[id].age > Some(12 * 12) {
                     // Creates a random number to chose a lover for person
                     let lover = rand::thread_rng().gen_range(0..self.people.len());
 
@@ -452,45 +476,35 @@ impl Sim {
                     // If the person is not the lover and if the person does not have a lover one is given
                     if
                         lover != id &&
-                        self.people[lover].love_vec[0] == -1 &&
+                        self.people[lover].lover == None &&
                         self.people[id].sex != self.people[lover].sex &&
                         rand::thread_rng().gen_range(0.0..100.0) >= 95.0
                     {
-                        self.people[id].love_vec[0] = lover as i64;
-                        self.people[lover].love_vec[0] = id as i64;
+                        self.people[id].lover = Some(self.people[lover].id);
+                        self.people[lover].lover = Some(self.people[id].id);
                     }
                 }
-
-                // Set the lover as -1 in the love_vec if they are dead
-                match self.people.get(self.people[id].love_vec[0] as usize) {
-                    Some(_err) => {}
-                    None => {
-                        if self.people[id].love_vec[0] != -1 {
-                            self.people[id].love_vec[0] = -1;
-                        }
-                    }
-                }
-
-                // println!("{}", self.people.len());
 
                 // Changes id to -1 for people who will be killed/removed from vec
-                let ages =    [2, 5,  10, 25, 35, 45,  60,  70,  80,  90];
+                let ages = [2, 5, 10, 25, 35, 45, 60, 70, 80, 90];
                 let weights = [5, 5, 25, 55, 75, 105, 135, 1050, 350, 150];
                 let dist = WeightedIndex::new(&weights).unwrap();
                 // println!("{}", ages[dist.sample(&mut rng)]);
                 if
-                    self.people[id].age > ages[dist.sample(&mut thread_rng())] * 12 &&
-                    rand::thread_rng().gen_range(0.00..1.00) > 0.98
+                    self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12) &&
+                    rand::thread_rng().gen_range(0.0..1.0) > 0.98
                 {
                     // Age of death in months
-                    self.people[id].age = -1;
+                    self.people[id].age = None;
                 }
+
+                // println!("{}", self.people.len());
             }
         }
 
         // Creating babies
         for id in 0..self.people.len() {
-            if self.people[id].age > 12 * 12 && self.people[id].love_vec[0] != -1 {
+            if self.people[id].age > Some(12 * 12) && self.people[id].lover != None {
                 // Divide top range buy 12 to get amount of average days that a woman can reproduce for
                 let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
                 if baby_chance <= self.people[id].fertility {
@@ -507,24 +521,23 @@ impl Sim {
                 }
             }
         }
-
     }
 
     pub fn update_fertility(&mut self) {
         for id in 0..self.people.len() {
-            if self.people[id].age != -1 {
+            if self.people[id].age != None {
                 let age = self.people[id].age;
                 let fertility = if self.people[id].sex == Sex::Female {
                     // To get the average child/woman add all bellow fertilises and divide by 6
-                    if age < 20 * 12 {
+                    if age < Some(20 * 12) {
                         1.1
-                    } else if age < 30 * 12 {
+                    } else if age < Some(30 * 12) {
                         3.0
-                    } else if age < 40 * 12 {
+                    } else if age < Some(40 * 12) {
                         3.8
-                    } else if age < 50 * 12 {
+                    } else if age < Some(50 * 12) {
                         2.0
-                    } else if age < 60 * 12 {
+                    } else if age < Some(60 * 12) {
                         1.0
                     } else {
                         0.3
