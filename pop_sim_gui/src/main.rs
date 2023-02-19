@@ -8,7 +8,7 @@
 // -[] More start settings
 // -[x] Quality of life(Pausing [x], better table (table v2) [x])
 
-// #![windows_subsystem = "windows"]
+#![windows_subsystem = "windows"]
 
 use rand::Rng;
 use rand::seq::IteratorRandom;
@@ -55,6 +55,7 @@ struct Sim {
 
     months_to_sim: i32,
     sim_running: bool,
+    lover_fix: bool,
     start_months: i32,
     start_settings_set: bool,
     start_people_created: bool,
@@ -114,6 +115,17 @@ fn main() {
                                     )
                                 )
                             );
+                        egui::CollapsingHeader
+                            ::new(egui::RichText::new(format!("DEV SETTINGS")).size(15.0))
+                            .show(ui, |ui| {
+                                if ui.add(egui::Button::new("Enable/Disable lover fix")).clicked() {
+                                    if self.sim_data.lover_fix {
+                                        self.sim_data.lover_fix = false;
+                                    } else {
+                                        self.sim_data.lover_fix = true;
+                                    }
+                                }
+                            });
 
                         // Right to left side ui elements
                         ui.with_layout(egui::Layout::right_to_left(Align::TOP), |ui| {
@@ -180,7 +192,7 @@ fn main() {
                     if self.sim_data.months_to_sim != 0 && self.sim_data.sim_running {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
-                            self.sim_data.update_sim();
+                            self.sim_data.update_sim(self.sim_data.lover_fix);
                             self.sim_data.update_fertility();
                             self.sim_data.people.retain(|person| person.age.is_some());
 
@@ -380,6 +392,7 @@ fn main() {
                     graph_data: vec![],
 
                     sim_running: true,
+                    lover_fix: false,
                     months_to_sim: 2400,
                     start_months: 0,
                     start_settings_set: false,
@@ -440,24 +453,23 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self) {
+    pub fn update_sim(&mut self, lover_fix: bool) {
         for id in 0..self.people.len() {
             if self.people[id].age != None {
-                // Set the lover as None in person.lover if they are dead
-                // THIS IS A VERY INEFFICIENT CHECK
-                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
-                    let mut found_lover = None;
-                    for person in self.people.clone().into_iter() {
-                        if
-                            self.people[id].lover.is_some() &&
-                            Some(person.id) == self.people[id].lover
-                        {
-                            found_lover = Some(person.id);
-                            break;
+                if lover_fix {
+                    // Set the lover as None in person.lover if they are dead
+                    // THIS IS A VERY INEFFICIENT CHECK
+                    if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
+                        for person in self.people.clone().into_iter() {
+                            if
+                                self.people[id].lover.is_some() &&
+                                Some(person.id) == self.people[id].lover
+                            {
+                                if Some(person.id).is_none() {
+                                    self.people[id].lover = None;
+                                }
+                            }
                         }
-                    }
-                    if found_lover.is_none() {
-                        self.people[id].lover = None;
                     }
                 }
 
@@ -549,6 +561,7 @@ impl Sim {
             }
         }
     }
+
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
         if sex == &Sex::Male {
             let name_f: BufReader<File> = BufReader::new(
