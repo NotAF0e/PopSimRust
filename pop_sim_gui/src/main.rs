@@ -2,7 +2,7 @@
 
 // TODO:
 // -[x] Migrant system
-// -[] Differing death causes(random old age death)
+// -[x] Differing death causes(random old age death)
 // -[x] Simulation info window for end of simulation
 // -[] Epidemics
 // -[] More start settings
@@ -430,7 +430,7 @@ fn main() {
         "PopSim",
         options,
         Box::new(|_cc| Box::new(App::default()))
-    );
+    ).expect("OUCH");
 }
 
 impl Sim {
