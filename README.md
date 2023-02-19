@@ -1,4 +1,4 @@
-![alt text](https://github.com/NotAF0e/PopSimRust/blob/master/pop_sim_rust_gui/PopSimLogo.png)
+![alt text](https://github.com/NotAF0e/PopSimRust/blob/master/pop_sim_gui/PopSimLogo.png)
 
 ## An infinitely unfinished population simulator
 
