@@ -1,7 +1,6 @@
 // GUI VERSION
 
 // TODO:
-// -[x] Migrant system
 // -[x] Differing death causes(random old age death)
 // -[x] Simulation info window for end of simulation
 // -[] Epidemics
@@ -21,11 +20,12 @@ use std::{
     io::{ BufRead, BufReader },
     ops::RangeInclusive,
     time::{ Duration, Instant },
+    vec,
 };
 
 use eframe::egui;
 use eframe::emath::Align;
-use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals };
+use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals, Ui };
 
 // Person data struct
 #[derive(Debug, PartialEq, Clone)]
@@ -89,8 +89,20 @@ fn main() {
         sim_data: Sim,
     }
 
+    impl App {
+        fn better_button(&mut self, ui: &mut Ui, bool_data: bool, states: Vec<&str>) -> bool {
+            if bool_data && ui.add(egui::Button::new(states[0])).clicked() {
+                false
+            } else if !bool_data && ui.add(egui::Button::new(states[1])).clicked() {
+                true
+            } else {
+                bool_data
+            }
+        }
+    }
+
     // The code which renders the application
-    // This section also handles simulation which may be decoupled to increase performance itf
+    // This section is a wrapper to simulation which may be decoupled to increase performance itf
     impl eframe::App for App {
         fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
             ctx.set_pixels_per_point(self.app_data.app_scale);
@@ -118,13 +130,11 @@ fn main() {
                         egui::CollapsingHeader
                             ::new(egui::RichText::new(format!("DEV SETTINGS")).size(15.0))
                             .show(ui, |ui| {
-                                if ui.add(egui::Button::new("Enable/Disable lover fix")).clicked() {
-                                    if self.sim_data.lover_fix {
-                                        self.sim_data.lover_fix = false;
-                                    } else {
-                                        self.sim_data.lover_fix = true;
-                                    }
-                                }
+                                self.sim_data.lover_fix = self.better_button(
+                                    ui,
+                                    self.sim_data.lover_fix,
+                                    vec!["Lover fix enabled", "Lover fix disabled"]
+                                );
                             });
 
                         // Right to left side ui elements
@@ -192,8 +202,12 @@ fn main() {
                     if self.sim_data.months_to_sim != 0 && self.sim_data.sim_running {
                         // Updating the sim
                         if self.sim_data.people.len() != 0 {
-                            self.sim_data.update_sim(self.sim_data.lover_fix);
+                            self.sim_data.update_sim();
                             self.sim_data.update_fertility();
+
+                            if self.sim_data.months_to_sim % 100 == 0 {
+                                self.sim_data.fix_lovers();
+                            }
                             self.sim_data.people.retain(|person| person.age.is_some());
 
                             self.sim_data.months_to_sim -= 1;
@@ -230,20 +244,17 @@ fn main() {
                             .size(15.0)
                     );
 
-                    if ui.button("Play/Pause").clicked() {
-                        if self.sim_data.sim_running {
-                            self.sim_data.sim_running = false;
-                        } else {
-                            self.sim_data.sim_running = true;
-                        }
-                    }
-                    if ui.button("Enable/Disable table").clicked() {
-                        if self.app_data.table_shown {
-                            self.app_data.table_shown = false;
-                        } else {
-                            self.app_data.table_shown = true;
-                        }
-                    }
+                    self.sim_data.sim_running = self.better_button(
+                        ui,
+                        self.sim_data.sim_running,
+                        vec!["Playing", "Paused"]
+                    );
+
+                    self.app_data.table_shown = self.better_button(
+                        ui,
+                        self.app_data.table_shown,
+                        vec!["Table enabled", "Table disabled"]
+                    );
 
                     // Plot which shows population through time
                     egui::Window
@@ -265,7 +276,7 @@ fn main() {
                         });
 
                     // A table with all the people in the simulation
-                    if !self.sim_data.people.is_empty() && self.app_data.table_shown {
+                    if self.app_data.table_shown {
                         egui::SidePanel::right("Table").show(ctx, |ui| {
                             let text_style = egui::TextStyle::Body;
                             let row_height = ui.text_style_height(&text_style);
@@ -426,11 +437,13 @@ fn main() {
     };
 
     // Runs the application
-    eframe::run_native(
-        "PopSim",
-        options,
-        Box::new(|_cc| Box::new(App::default()))
-    ).expect("OUCH");
+    eframe
+        ::run_native(
+            "PopSim",
+            options,
+            Box::new(|_cc| Box::new(App::default()))
+        )
+        .expect("OUCH");
 }
 
 impl Sim {
@@ -453,26 +466,9 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, lover_fix: bool) {
+    pub fn update_sim(&mut self) {
         for id in 0..self.people.len() {
             if self.people[id].age != None {
-                if lover_fix {
-                    // Set the lover as None in person.lover if they are dead
-                    // THIS IS A VERY INEFFICIENT CHECK
-                    if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
-                        for person in self.people.clone().into_iter() {
-                            if
-                                self.people[id].lover.is_some() &&
-                                Some(person.id) == self.people[id].lover
-                            {
-                                if Some(person.id).is_none() {
-                                    self.people[id].lover = None;
-                                }
-                            }
-                        }
-                    }
-                }
-
                 // Ages all people by 1 month
                 self.people[id].age = Some(self.people[id].age.unwrap_or(0) + 1);
 
@@ -583,6 +579,27 @@ impl Sim {
                 .lines()
                 .map(|l| l.expect("Couldn't read line"))
                 .choose(&mut rand::thread_rng())
+        }
+    }
+
+    pub fn fix_lovers(&mut self) {
+        for id in 0..self.people.len() {
+            if self.lover_fix && self.people[id].age != None {
+                // Set the lover as None in person.lover if they are dead
+                // THIS IS A VERY INEFFICIENT CHECK
+                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
+                    for person in self.people.clone().into_iter() {
+                        if
+                            self.people[id].lover.is_some() &&
+                            Some(person.id) == self.people[id].lover
+                        {
+                            if Some(person.id).is_none() {
+                                self.people[id].lover = None;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

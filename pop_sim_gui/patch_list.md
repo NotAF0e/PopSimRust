@@ -42,3 +42,5 @@
 
 - **F** [19/02/23] Added a button which disables the lover check fix as it is incredibly badly optimised
 - **O** [19/02/23] Updated some progect dependencies in *Cargo.toml*
+- **F** [20/02/23] Implumented a better way to do the lover fixes - Now each 100 months
+- **F** [20/02/23] Added better buttons which are easier to code with and show 2 different states
