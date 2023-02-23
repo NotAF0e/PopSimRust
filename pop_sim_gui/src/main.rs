@@ -1,11 +1,14 @@
 // GUI VERSION
 
 // TODO:
-// -[x] Differing death causes(random old age death)
-// -[x] Simulation info window for end of simulation
+// ---------------------------------------------------
+// -[] *When these ↓ todos are complete we in beta ver!!!*
+//
+// -[] More start settings and better start screen
+// -[] Better
+// -[] More stat tracking for end screen
 // -[] Epidemics
-// -[] More start settings
-// -[x] Quality of life(Pausing [x], better table (table v2) [x])
+// ---------------------------------------------------
 
 #![windows_subsystem = "windows"]
 
