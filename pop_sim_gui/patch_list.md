@@ -44,3 +44,7 @@
 - **O** [19/02/23] Updated some project dependencies in *Cargo.toml*
 - **F** [20/02/23] Implemented a better way to do the lover fixes - Now each 100 months
 - **F** [20/02/23] Added better buttons which are easier to code with and show 2 different states
+- **F** [23/02/23] Made progress on the new simulation start screen
+- **F** [23/02/23] Improved the frame time calculator and added the average frame time to the end screen
+- **O** [23/02/23] Changed some code structure which improved performance of the simulation a bit
+- **O** [23/02/23] Began adding the code structure more sim stats
