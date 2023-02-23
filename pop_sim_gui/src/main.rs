@@ -5,7 +5,7 @@
 // -[] *When these ↓ todos are complete we in beta ver!!!*
 //
 // -[] More start settings and better start screen
-// -[] Better
+// -[] Better sim screen
 // -[] More stat tracking for end screen
 // -[] Epidemics
 // ---------------------------------------------------
