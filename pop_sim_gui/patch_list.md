@@ -48,3 +48,4 @@
 - **F** [23/02/23] Improved the frame time calculator and added the average frame time to the end screen
 - **O** [23/02/23] Changed some code structure which improved performance of the simulation a bit
 - **O** [23/02/23] Began adding the code structure more sim stats
+- **O** [25/02/23] Changed code structure further: the code is now split into 2 files

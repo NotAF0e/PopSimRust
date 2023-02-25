@@ -12,60 +12,14 @@
 
 #![windows_subsystem = "windows"] // Disables terminal on windows machines
 
-use rand::Rng;
-use rand::seq::IteratorRandom;
-use rand::prelude::*;
-use rand::distributions::WeightedIndex;
+use crate::sim::*;
+mod sim;
 
-use std::{
-    convert::From,
-    fs::File,
-    io::{ BufRead, BufReader },
-    ops::RangeInclusive,
-    time::{ Duration, Instant },
-    vec,
-};
+use std::{ convert::From, ops::RangeInclusive, time::{ Duration, Instant }, vec };
 
 use eframe::egui;
 use eframe::emath::Align;
 use egui::{ plot::{ Line, Plot, PlotPoints }, Color32, Pos2, Vec2, Visuals, Ui };
-
-// Person data struct
-#[derive(Debug, PartialEq, Clone)]
-pub struct Person {
-    id: i64,
-    name: String,
-    // In months
-    age: Option<i16>,
-    sex: Sex,
-    fertility: f32,
-    lover: Option<i64>,
-    has_disease: bool,
-    seed: f32,
-}
-
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub enum Sex {
-    Male,
-    Female,
-}
-
-struct Sim {
-    population: i64,
-    people: Vec<Person>,
-
-    months_to_sim: i32,
-    sim_running: bool,
-    lover_fix: bool,
-    start_months: i32,
-    start_settings_set: bool,
-    start_people_created: bool,
-    start_pairs_of_people: i32,
-}
-
-struct SimStats {
-    graph_data: Vec<[f64; 2]>,
-}
 
 struct AppData {
     app_scale: f32,
@@ -95,8 +49,8 @@ fn load_icon(path: &str) -> eframe::IconData {
 fn main() {
     pub struct App {
         app: AppData,
-        sim: Sim,
-        sim_stats: SimStats,
+        sim: sim::Sim,
+        sim_stats: sim::SimStats,
     }
 
     impl App {
@@ -302,7 +256,9 @@ fn main() {
                         ::new("Plot - Population against months")
                         .default_pos(Pos2 { x: 7.0, y: 250.0 })
                         .show(ctx, |ui| {
-                            let data: PlotPoints = PlotPoints::new(self.sim_stats.graph_data.clone());
+                            let data: PlotPoints = PlotPoints::new(
+                                self.sim_stats.graph_data.clone()
+                            );
                             let line = Line::new(data);
                             Plot::new("plot")
                                 .view_aspect(2.0)
@@ -496,158 +452,4 @@ fn main() {
             Box::new(|_cc| Box::new(App::default()))
         )
         .expect("OUCH");
-}
-
-impl Sim {
-    pub fn create_person(&mut self, sex: Sex) -> Person {
-        self.population += 1;
-        let name: String = self.generate_name(&sex).unwrap();
-        let temp_person: Person = Person {
-            id: self.population,
-            name,
-            age: Some(0),
-            sex,
-            fertility: 0.0,
-            has_disease: false,
-            lover: None,
-
-            // Seed is for random values which will stay consistent
-            seed: rand::thread_rng().gen_range(0.1..100.0),
-        };
-
-        temp_person
-    }
-
-    pub fn update_sim(&mut self) {
-        for id in 0..self.people.len() {
-            if self.people[id].age != None {
-                // Ages all people by 1 month
-                self.people[id].age = Some(self.people[id].age.unwrap_or(0) + 1);
-
-                // println!("{:?}", people_temp);
-
-                // Chooses people what will have babies
-                if self.people[id].lover == None && self.people[id].age > Some(12 * 12) {
-                    // Creates a random number to chose a lover for person
-                    let lover = rand::thread_rng().gen_range(0..self.people.len());
-
-                    // println!("{}", lover);
-
-                    // If the person is not the lover and if the person does not have a lover one is given
-                    if
-                        lover != id &&
-                        self.people[lover].lover == None &&
-                        self.people[id].sex != self.people[lover].sex &&
-                        rand::thread_rng().gen_range(0.0..100.0) >= 95.0
-                    {
-                        self.people[id].lover = Some(self.people[lover].id);
-                        self.people[lover].lover = Some(self.people[id].id);
-                    }
-                }
-
-                // Changes id to -1 for people who will be killed/removed from vec
-                let ages = [2, 5, 10, 25, 35, 45, 60, 70, 80, 90];
-                let weights = [5, 5, 25, 55, 75, 105, 135, 1050, 350, 150];
-                let dist = WeightedIndex::new(&weights).unwrap();
-                // println!("{}", ages[dist.sample(&mut rng)]);
-                if
-                    self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12) &&
-                    rand::thread_rng().gen_range(0.0..1.0) > 0.98
-                {
-                    // Age of death in months
-                    self.people[id].age = None;
-                }
-
-                // println!("{}", self.people.len());
-            }
-            // Creating babies
-            if self.people[id].age > Some(12 * 12) && self.people[id].lover != None {
-                // Divide top range buy 12 to get amount of average days that a woman can reproduce for
-                let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
-                if baby_chance <= self.people[id].fertility {
-                    // Creates a baby!!!
-                    let sex: Sex = if rand::random::<f32>() < 0.5 {
-                        Sex::Male
-                    } else {
-                        Sex::Female
-                    };
-
-                    let john: Person = self.create_person(sex);
-
-                    self.people.push(john);
-                }
-            }
-            self.update_fertility(id);
-        }
-    }
-
-    pub fn update_fertility(&mut self, id: usize) {
-        if self.people[id].age != None {
-            let age = self.people[id].age;
-            let fertility = if self.people[id].sex == Sex::Female {
-                // To get the average child/woman add all bellow fertilises and divide by 6
-                if age < Some(20 * 12) {
-                    1.1
-                } else if age < Some(30 * 12) {
-                    3.0
-                } else if age < Some(40 * 12) {
-                    3.8
-                } else if age < Some(50 * 12) {
-                    2.0
-                } else if age < Some(60 * 12) {
-                    1.0
-                } else {
-                    0.3
-                }
-            } else {
-                0.0
-            };
-            self.people[id].fertility = fertility;
-        }
-    }
-
-    pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
-        if sex == &Sex::Male {
-            let name_f: BufReader<File> = BufReader::new(
-                File::open("names/male_names.txt").unwrap_or_else(|_e|
-                    panic!("male_names.txt not found!")
-                )
-            );
-            name_f
-                .lines()
-                .map(|l| l.expect("Couldn't read line"))
-                .choose(&mut rand::thread_rng())
-        } else {
-            let name_f: BufReader<File> = BufReader::new(
-                File::open("names/female_names.txt").unwrap_or_else(|_e|
-                    panic!("female_names.txt not found!")
-                )
-            );
-            name_f
-                .lines()
-                .map(|l| l.expect("Couldn't read line"))
-                .choose(&mut rand::thread_rng())
-        }
-    }
-
-    pub fn fix_lovers(&mut self) {
-        for id in 0..self.people.len() {
-            if self.lover_fix && self.people[id].age != None {
-                // Set the lover as None in person.lover if they are dead
-                // THIS IS A VERY INEFFICIENT CHECK
-                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
-                    for person in self.people.clone().into_iter() {
-                        if
-                            self.people[id].lover.is_some() &&
-                            Some(person.id) == self.people[id].lover
-                        {
-                            if Some(person.id).is_none() {
-                                self.people[id].lover = None;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
