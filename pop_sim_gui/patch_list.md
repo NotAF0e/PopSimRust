@@ -49,3 +49,5 @@
 - **O** [23/02/23] Changed some code structure which improved performance of the simulation a bit
 - **O** [23/02/23] Began adding the code structure more sim stats
 - **O** [25/02/23] Changed code structure further: the code is now split into 2 files
+- **O** [25/02/23] Deprecated *pop_sim_gui_threaded*
+- **O** [27/02/23] Even more code stucture changes

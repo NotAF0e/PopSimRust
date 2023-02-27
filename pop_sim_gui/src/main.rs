@@ -6,14 +6,14 @@
 //
 // -[] More start settings and better start screen
 // -[] Better sim screen
-// -[] More stat tracking for end screen
+// -[x] More stat tracking for end screen
 // -[] Epidemics
 // ---------------------------------------------------
 
-#![windows_subsystem = "windows"] // Disables terminal on windows machines
+// #![windows_subsystem = "windows"] // Disables terminal on windows machines
 
-use crate::sim::*;
-mod sim;
+use crate::simulation::*;
+mod simulation;
 
 use std::{ convert::From, ops::RangeInclusive, time::{ Duration, Instant }, vec };
 
@@ -49,8 +49,8 @@ fn load_icon(path: &str) -> eframe::IconData {
 fn main() {
     pub struct App {
         app: AppData,
-        sim: sim::Sim,
-        sim_stats: sim::SimStats,
+        sim: simulation::Sim,
+        sim_stats: simulation::SimStats,
     }
 
     impl App {
@@ -199,12 +199,7 @@ fn main() {
                     if self.sim.months_to_sim != 0 && self.sim.sim_running {
                         // Updating the sim
                         if self.sim.people.len() != 0 {
-                            self.sim.update_sim();
-
-                            if self.sim.months_to_sim % 100 == 0 {
-                                self.sim.fix_lovers();
-                            }
-                            self.sim.people.retain(|person| person.age.is_some());
+                            self.sim.update_sim(&mut self.sim_stats);
 
                             self.sim.months_to_sim -= 1;
 
@@ -239,17 +234,21 @@ fn main() {
                             .size(15.0)
                     );
 
-                    self.sim.sim_running = self.better_button(
-                        ui,
-                        self.sim.sim_running,
-                        vec!["Playing", "Paused"]
-                    );
+                    egui::CollapsingHeader
+                        ::new(egui::RichText::new(format!("Sim screen options")).size(15.0))
+                        .show(ui, |ui| {
+                            self.sim.sim_running = self.better_button(
+                                ui,
+                                self.sim.sim_running,
+                                vec!["Playing", "Paused"]
+                            );
 
-                    self.app.table_shown = self.better_button(
-                        ui,
-                        self.app.table_shown,
-                        vec!["Table enabled", "Table disabled"]
-                    );
+                            self.app.table_shown = self.better_button(
+                                ui,
+                                self.app.table_shown,
+                                vec!["Table enabled", "Table disabled"]
+                            );
+                        });
 
                     // Plot which shows population through time
                     egui::Window
@@ -349,7 +348,7 @@ fn main() {
                     ui.label(
                         egui::RichText
                             ::new(format!("Simulation stats:"))
-                            .size(50.0)
+                            .size(45.0)
                             .text_style(egui::TextStyle::Heading)
                     );
                     ui.label(
@@ -361,21 +360,39 @@ fn main() {
                         egui::RichText
                             ::new(
                                 format!(
-                                    "-Total people that ever existed: {}",
-                                    self.sim.people.last().unwrap().id + 1
+                                    "-Months Passed: {}",
+                                    self.sim.start_months - self.sim.months_to_sim
                                 )
                             )
-                            .size(30.0)
+                            .size(25.0)
                     );
                     ui.label(
                         egui::RichText
                             ::new(
                                 format!(
-                                    "-Months Passed: {}",
-                                    self.sim.start_months - self.sim.months_to_sim
+                                    "-Total people that ever existed: {}",
+                                    self.sim_stats.people_born + self.sim_stats.people_died
                                 )
                             )
-                            .size(30.0)
+                            .size(25.0)
+                    );
+                    ui.label(
+                        egui::RichText
+                            ::new(format!("-Total ever born: {}", self.sim_stats.people_born))
+                            .size(25.0)
+                    );
+                    ui.label(
+                        egui::RichText
+                            ::new(format!("-Total ever died: {}", self.sim_stats.people_died))
+                            .size(25.0)
+                    );
+
+                    ui.separator();
+                    ui.label(
+                        egui::RichText
+                            ::new(format!("Application stats:"))
+                            .size(45.0)
+                            .text_style(egui::TextStyle::Heading)
                     );
                     ui.label(
                         egui::RichText
@@ -385,7 +402,7 @@ fn main() {
                                     self.app.all_frame_times / self.app.num_of_frame_updates
                                 )
                             )
-                            .size(30.0)
+                            .size(25.0)
                     );
                 }
 
@@ -423,8 +440,14 @@ fn main() {
                     num_of_frame_updates: 0,
                 },
 
-                sim_stats: SimStats {
+                sim_stats: simulation::SimStats {
                     graph_data: vec![],
+
+                    people_born: 0,
+                    people_died: 0,
+                    average_lifespan: 0,
+                    amount_of_lovers_total: 0,
+                    average_fertility: 0,
                 },
             }
         }

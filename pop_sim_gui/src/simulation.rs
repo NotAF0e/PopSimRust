@@ -40,6 +40,12 @@ pub struct Sim {
 
 pub struct SimStats {
     pub graph_data: Vec<[f64; 2]>,
+
+    pub people_born: i32,
+    pub people_died: i32,
+    pub average_lifespan: i32,
+    pub amount_of_lovers_total: i32,
+    pub average_fertility: i32,
 }
 
 impl Sim {
@@ -62,7 +68,14 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self) {
+    pub fn update_sim(&mut self, sim_stats: &mut SimStats) {
+        // Stat check vairables
+        let mut born = 0;
+        let mut died = 0;
+
+        self.people.retain(|person| person.age.is_some());
+
+        // Main sim loop (1 month of calculations)
         for id in 0..self.people.len() {
             if self.people[id].age != None {
                 // Ages all people by 1 month
@@ -98,31 +111,47 @@ impl Sim {
                     self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12) &&
                     rand::thread_rng().gen_range(0.0..1.0) > 0.98
                 {
-                    // Age of death in months
+                    // Handles death of a person
                     self.people[id].age = None;
+
+                    died += 1;
                 }
 
                 // println!("{}", self.people.len());
-            }
-            // Creating babies
-            if self.people[id].age > Some(12 * 12) && self.people[id].lover != None {
-                // Divide top range buy 12 to get amount of average days that a woman can reproduce for
-                let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
-                if baby_chance <= self.people[id].fertility {
-                    // Creates a baby!!!
-                    let sex: Sex = if rand::random::<f32>() < 0.5 {
-                        Sex::Male
-                    } else {
-                        Sex::Female
-                    };
 
-                    let john: Person = self.create_person(sex);
+                // Creating babies
+                if self.people[id].age > Some(12 * 12) && self.people[id].lover != None {
+                    // Divide top range buy 12 to get amount of average days that a woman can reproduce for
+                    let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
+                    if baby_chance <= self.people[id].fertility {
+                        // Creates a baby!!!
+                        let sex: Sex = if rand::random::<f32>() < 0.5 {
+                            Sex::Male
+                        } else {
+                            Sex::Female
+                        };
 
-                    self.people.push(john);
+                        let john: Person = self.create_person(sex);
+
+                        self.people.push(john);
+                        born += 1;
+                    }
                 }
             }
+
             self.update_fertility(id);
         }
+
+        if self.months_to_sim % 100 == 0 {
+            self.fix_lovers();
+        }
+        for id in 0..self.people.len() {
+            if self.people[id].age == None {
+            }
+        }
+
+        sim_stats.people_born += born;
+        sim_stats.people_died += died;
     }
 
     pub fn update_fertility(&mut self, id: usize) {
@@ -150,6 +179,27 @@ impl Sim {
         }
     }
 
+    pub fn fix_lovers(&mut self) {
+        for id in 0..self.people.len() {
+            if self.lover_fix && self.people[id].age != None {
+                // Set the lover as None in person.lover if they are dead
+                // THIS IS A VERY INEFFICIENT CHECK
+                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
+                    for person in self.people.clone().into_iter() {
+                        if
+                            self.people[id].lover.is_some() &&
+                            Some(person.id) == self.people[id].lover
+                        {
+                            if Some(person.id).is_none() {
+                                self.people[id].lover = None;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     pub fn generate_name(&mut self, sex: &Sex) -> Option<String> {
         if sex == &Sex::Male {
             let name_f: BufReader<File> = BufReader::new(
@@ -171,27 +221,6 @@ impl Sim {
                 .lines()
                 .map(|l| l.expect("Couldn't read line"))
                 .choose(&mut rand::thread_rng())
-        }
-    }
-
-    pub fn fix_lovers(&mut self) {
-        for id in 0..self.people.len() {
-            if self.lover_fix && self.people[id].age != None {
-                // Set the lover as None in person.lover if they are dead
-                // THIS IS A VERY INEFFICIENT CHECK
-                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
-                    for person in self.people.clone().into_iter() {
-                        if
-                            self.people[id].lover.is_some() &&
-                            Some(person.id) == self.people[id].lover
-                        {
-                            if Some(person.id).is_none() {
-                                self.people[id].lover = None;
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
