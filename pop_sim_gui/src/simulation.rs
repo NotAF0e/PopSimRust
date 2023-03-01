@@ -1,21 +1,27 @@
-use rand::Rng;
-use rand::seq::IteratorRandom;
-use rand::prelude::*;
-use rand::distributions::WeightedIndex;
+// This module handles the simulation aspect of PopSim
+
+pub(crate) mod epidemic;
+
+use rand::{ Rng, thread_rng, seq::IteratorRandom, distributions::{ WeightedIndex, Distribution } };
 
 use std::{ fs::File, io::{ BufRead, BufReader } };
+
+use self::epidemic::EpidemicDetails;
 
 // Person data struct
 #[derive(Debug, PartialEq, Clone)]
 pub struct Person {
     pub id: i64,
     pub name: String,
+
     // In months
     pub age: Option<i16>,
     pub sex: Sex,
     pub fertility: f32,
     pub lover: Option<i64>,
-    pub has_disease: bool,
+
+    pub epidemic: EpidemicDetails,
+
     pub seed: f32,
 }
 
@@ -25,9 +31,14 @@ pub enum Sex {
     Female,
 }
 
+#[derive(Clone)]
 pub struct Sim {
     pub population: i64,
     pub people: Vec<Person>,
+
+    pub epidemic: Box<epidemic::Epidemic>,
+    pub progress_epidemic: bool,
+    pub progress_cure: bool,
 
     pub months_to_sim: i32,
     pub sim_running: bool,
@@ -42,7 +53,7 @@ pub struct SimStats {
     pub graph_data: Vec<[f64; 2]>,
 
     pub people_born: i32,
-    pub people_died: i32,
+    pub people_dead: i32,
     pub average_lifespan: i32,
     pub amount_of_lovers_total: i32,
     pub average_fertility: i32,
@@ -58,11 +69,16 @@ impl Sim {
             age: Some(0),
             sex,
             fertility: 0.0,
-            has_disease: false,
             lover: None,
 
+            epidemic: EpidemicDetails {
+                has_disease: false,
+                has_cure: false,
+                people_infected: 0,
+            },
+
             // Seed is for random values which will stay consistent
-            seed: rand::thread_rng().gen_range(0.1..100.0),
+            seed: rand::thread_rng().gen_range(0.0..100.0),
         };
 
         temp_person
@@ -71,7 +87,7 @@ impl Sim {
     pub fn update_sim(&mut self, sim_stats: &mut SimStats) {
         // Stat check vairables
         let mut born = 0;
-        let mut died = 0;
+        let mut dead = 0;
 
         self.people.retain(|person| person.age.is_some());
 
@@ -114,7 +130,7 @@ impl Sim {
                     // Handles death of a person
                     self.people[id].age = None;
 
-                    died += 1;
+                    dead += 1;
                 }
 
                 // println!("{}", self.people.len());
@@ -138,8 +154,15 @@ impl Sim {
                     }
                 }
             }
+            let mut sim = self.clone();
 
             self.update_fertility(id);
+            self.people = self::epidemic::Epidemic::update_epidemic(
+                &mut self.epidemic,
+                id,
+                &mut sim,
+                self.people.clone().as_mut()
+            );
         }
 
         if self.months_to_sim % 100 == 0 {
@@ -147,11 +170,15 @@ impl Sim {
         }
         for id in 0..self.people.len() {
             if self.people[id].age == None {
+                let spread_chance = rand::thread_rng().gen_range(0.0..100.0);
+
+                if spread_chance > 95.0 {
+                }
             }
         }
 
         sim_stats.people_born += born;
-        sim_stats.people_died += died;
+        sim_stats.people_dead += dead;
     }
 
     pub fn update_fertility(&mut self, id: usize) {

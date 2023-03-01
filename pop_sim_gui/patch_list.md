@@ -9,18 +9,18 @@
 - **O**: Other
 
 ---
-**These are changes regarding: *pop_sim_rust_gui*!**
+**These are changes regarding: *pop_sim_gui*!**
 
 ## **Actual file:**
 
-- **O** [07/11/23] Added *patch_list.md* to *pop_sim_rust_gui*
+- **O** [07/11/23] Added *patch_list.md* to *pop_sim_gui*
 - **B** [07/11/23] Person table will no longer show will a population of 0
 - **F** [07/11/23] Added spacers into the person table
 - **F** [07/11/23] Fixed a bug with adding values to graph before removing dead people
-- **O** [07/11/23] Added *male_names.txt* and *female_names.txt* to *pop_sim_rust_gui*
+- **O** [07/11/23] Added *male_names.txt* and *female_names.txt* to *pop_sim_gui*
 - **F** [07/11/23] People are now given a random name from either *male_names.txt* or *female_names.txt* on birth dependent on their sex
-- **O** [10/11/23] Formatted all of *pop_sim_rust_gui/main.rs*
-- **O** [17/01/23] Added todo to *pop_sim_rust_gui/main.rs*
+- **O** [10/11/23] Formatted all of *pop_sim_gui/main.rs*
+- **O** [17/01/23] Added todo to *pop_sim_gui/main.rs*
 - **B** [18/01/23] Fixed people not spawning in set pairs
 - **O** [18/01/23] Changed code structure for easier programming
 - **F** [18/01/23] Added temporary close table button as it was causing performance issues
@@ -47,7 +47,10 @@
 - **F** [23/02/23] Made progress on the new simulation start screen
 - **F** [23/02/23] Improved the frame time calculator and added the average frame time to the end screen
 - **O** [23/02/23] Changed some code structure which improved performance of the simulation a bit
-- **O** [23/02/23] Began adding the code structure more sim stats
+- **O** [23/02/23] Began adding the code structure for more sim stats
 - **O** [25/02/23] Changed code structure further: the code is now split into 2 files
 - **O** [25/02/23] Deprecated *pop_sim_gui_threaded*
 - **O** [27/02/23] Even more code stucture changes
+- **F** [28/02/23] Began adding the structure neede for the epidemic system
+- **F** [28/02/23] Continued with the epidemic system with: epidemic initialization and epidemic ending
+- **F** [27/02/23] Fixed the readme a bit

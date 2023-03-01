@@ -13,6 +13,7 @@
 // #![windows_subsystem = "windows"] // Disables terminal on windows machines
 
 use crate::simulation::*;
+use crate::simulation::epidemic::*;
 mod simulation;
 
 use std::{ convert::From, ops::RangeInclusive, time::{ Duration, Instant }, vec };
@@ -49,7 +50,7 @@ fn load_icon(path: &str) -> eframe::IconData {
 fn main() {
     pub struct App {
         app: AppData,
-        sim: simulation::Sim,
+        sim: Sim,
         sim_stats: simulation::SimStats,
     }
 
@@ -209,7 +210,7 @@ fn main() {
                                 self.sim.people.len() as f64,
                             ]);
                         } else {
-                            ui.colored_label(Color32::from_rgb(222, 0, 0), "Simulation died :(");
+                            ui.colored_label(Color32::from_rgb(222, 0, 0), "Population died :(");
                         }
                     }
 
@@ -233,6 +234,35 @@ fn main() {
                             ::new(format!("Months left: {}", self.sim.months_to_sim))
                             .size(15.0)
                     );
+
+                    egui::CollapsingHeader
+                        ::new(egui::RichText::new(format!("Control epidemic")).size(15.0))
+                        .show(ui, |ui| {
+                            self.sim.progress_epidemic = self.better_button(
+                                ui,
+                                self.sim.progress_epidemic,
+                                vec!["Epidemic progressing", "No epidemic"]
+                            );
+                            if self.sim.progress_epidemic {
+                                if !self.sim.progress_cure {
+                                    self.sim.progress_cure = self.better_button(
+                                        ui,
+                                        self.sim.progress_cure,
+                                        vec!["", "No cure"]
+                                    );
+                                } else if self.sim.epidemic.cure_produced {
+                                    ui.label(
+                                        egui::RichText::new(format!("Cure complete!")).size(15.0)
+                                    );
+                                } else {
+                                    ui.label(
+                                        egui::RichText
+                                            ::new(format!("Cure progressing..."))
+                                            .size(15.0)
+                                    );
+                                }
+                            }
+                        });
 
                     egui::CollapsingHeader
                         ::new(egui::RichText::new(format!("Sim screen options")).size(15.0))
@@ -283,7 +313,7 @@ fn main() {
                                     for id in row_range {
                                         let text = format!(
                                             "[ID: {:?}] Name: {:?} |  Age: {:?} | Sex: {:?} | \
-                                        Fertility: {:?} | Lover: {:?} | Random seed: {:?}",
+                                        Fertility: {:?} | Lover: {:?} | {:?} | Seed: {:?}",
 
                                             self.sim.people[id].id,
                                             self.sim.people[id].name,
@@ -295,6 +325,7 @@ fn main() {
                                             self.sim.people[id].sex,
                                             self.sim.people[id].fertility,
                                             self.sim.people[id].lover,
+                                            self.sim.people[id].epidemic,
                                             self.sim.people[id].seed
                                         );
                                         let collap_header_text =
@@ -371,7 +402,7 @@ fn main() {
                             ::new(
                                 format!(
                                     "-Total people that ever existed: {}",
-                                    self.sim_stats.people_born + self.sim_stats.people_died
+                                    self.sim_stats.people_born + self.sim_stats.people_dead
                                 )
                             )
                             .size(25.0)
@@ -383,7 +414,7 @@ fn main() {
                     );
                     ui.label(
                         egui::RichText
-                            ::new(format!("-Total ever died: {}", self.sim_stats.people_died))
+                            ::new(format!("-Total ever dead: {}", self.sim_stats.people_dead))
                             .size(25.0)
                     );
 
@@ -420,6 +451,19 @@ fn main() {
                     people: vec![],
                     population: -1,
 
+                    epidemic: Box::new(Epidemic {
+                        population_infected: false,
+                        population_cured: false,
+                        cure_produced: false,
+
+                        cure_remaining_time: 100,
+
+                        infection_range: 0.0..0.0,
+                        lethality: 0.0,
+                    }),
+                    progress_epidemic: false,
+                    progress_cure: false,
+
                     sim_running: true,
                     lover_fix: false,
                     months_to_sim: 2400,
@@ -444,7 +488,7 @@ fn main() {
                     graph_data: vec![],
 
                     people_born: 0,
-                    people_died: 0,
+                    people_dead: 0,
                     average_lifespan: 0,
                     amount_of_lovers_total: 0,
                     average_fertility: 0,
