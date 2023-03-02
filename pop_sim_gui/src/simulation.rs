@@ -1,12 +1,8 @@
 // This module handles the simulation aspect of PopSim
 
-pub(crate) mod epidemic;
-
 use rand::{ Rng, thread_rng, seq::IteratorRandom, distributions::{ WeightedIndex, Distribution } };
 
-use std::{ fs::File, io::{ BufRead, BufReader } };
-
-use self::epidemic::EpidemicDetails;
+use std::{ fs::File, io::{ BufRead, BufReader }, ops::Range };
 
 // Person data struct
 #[derive(Debug, PartialEq, Clone)]
@@ -35,10 +31,6 @@ pub enum Sex {
 pub struct Sim {
     pub population: i64,
     pub people: Vec<Person>,
-
-    pub epidemic: Box<epidemic::Epidemic>,
-    pub progress_epidemic: bool,
-    pub progress_cure: bool,
 
     pub months_to_sim: i32,
     pub sim_running: bool,
@@ -84,12 +76,10 @@ impl Sim {
         temp_person
     }
 
-    pub fn update_sim(&mut self, sim_stats: &mut SimStats) {
+    pub fn update_sim(&mut self, epidemic: &mut Epidemic, sim_stats: &mut SimStats) {
         // Stat check vairables
         let mut born = 0;
         let mut dead = 0;
-
-        self.people.retain(|person| person.age.is_some());
 
         // Main sim loop (1 month of calculations)
         for id in 0..self.people.len() {
@@ -125,7 +115,9 @@ impl Sim {
                 // println!("{}", ages[dist.sample(&mut rng)]);
                 if
                     self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12) &&
-                    rand::thread_rng().gen_range(0.0..1.0) > 0.98
+                    (rand::thread_rng().gen_range(0.0..1.0) > 0.98 ||
+                        (self.people[id].epidemic.has_disease &&
+                            rand::thread_rng().gen_range(0.0..1.0) > 0.88))
                 {
                     // Handles death of a person
                     self.people[id].age = None;
@@ -154,28 +146,18 @@ impl Sim {
                     }
                 }
             }
-            let mut sim = self.clone();
-
             self.update_fertility(id);
-            self.people = self::epidemic::Epidemic::update_epidemic(
-                &mut self.epidemic,
-                id,
-                &mut sim,
-                self.people.clone().as_mut()
-            );
         }
+        if epidemic.progress_epidemic {
+            epidemic.update_epidemic(self);
+        }
+        epidemic.population_infected = epidemic.check_end_epidemic(self);
 
         if self.months_to_sim % 100 == 0 {
             self.fix_lovers();
         }
-        for id in 0..self.people.len() {
-            if self.people[id].age == None {
-                let spread_chance = rand::thread_rng().gen_range(0.0..100.0);
 
-                if spread_chance > 95.0 {
-                }
-            }
-        }
+        self.people.retain(|person| person.age.is_some());
 
         sim_stats.people_born += born;
         sim_stats.people_dead += dead;
@@ -248,6 +230,83 @@ impl Sim {
                 .lines()
                 .map(|l| l.expect("Couldn't read line"))
                 .choose(&mut rand::thread_rng())
+        }
+    }
+}
+
+// Epidemic code
+#[derive(Clone)]
+pub struct Epidemic {
+    pub progress_epidemic: bool,
+    pub progress_cure: bool,
+
+    pub population_infected: bool,
+    pub population_cured: bool,
+    pub cure_produced: bool,
+
+    pub cure_remaining_time: i8,
+
+    pub infection_range: Range<f32>,
+    pub lethality: f32,
+}
+
+#[derive(Clone, PartialEq, Debug)]
+pub struct EpidemicDetails {
+    pub has_disease: bool,
+    pub has_cure: bool,
+    pub people_infected: i16,
+}
+
+impl Epidemic {
+    pub fn update_epidemic(&mut self, sim: &mut Sim) {
+        let sim_mut = sim.clone();
+
+        for id in 0..sim.people.len() {
+            if !sim.people[id].epidemic.has_disease {
+                // Initial epidemic start
+                if self.progress_epidemic && !self.population_infected {
+                    self.population_infected = true;
+                    sim.people[
+                        rand::thread_rng().gen_range(0..sim_mut.people.len())
+                    ].epidemic.has_disease = true;
+
+                    println!("INFECTED!");
+                }
+
+                // Main loop which will infect people who are not cured
+                if
+                    !sim.people[id].epidemic.has_cure &&
+                    self.progress_epidemic &&
+                    self.population_infected &&
+                    !self.cure_produced &&
+                    !self.population_cured
+                {
+                    if
+                        sim.people[id].epidemic.has_disease &&
+                        sim.people[id].epidemic.people_infected > 6
+                    {
+                    }
+                }
+                if sim.people[id].epidemic.has_cure {
+                    sim.people[id].epidemic.has_disease = false;
+                }
+            }
+        }
+    }
+
+    pub fn begin_cure(&mut self) {}
+
+    pub fn check_end_epidemic(&mut self, sim: &mut Sim) -> bool {
+        // Stops epidemic if nobody is infected
+        if sim.people.iter().all(|person| person.epidemic.has_disease == false) {
+            self.population_infected = false;
+            self.population_cured = false;
+            self.progress_epidemic = false;
+            self.progress_cure = false;
+            println!("EPIDEMIC END!");
+            return false;
+        } else {
+            return true;
         }
     }
 }

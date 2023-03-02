@@ -13,7 +13,6 @@
 // #![windows_subsystem = "windows"] // Disables terminal on windows machines
 
 use crate::simulation::*;
-use crate::simulation::epidemic::*;
 mod simulation;
 
 use std::{ convert::From, ops::RangeInclusive, time::{ Duration, Instant }, vec };
@@ -51,6 +50,7 @@ fn main() {
     pub struct App {
         app: AppData,
         sim: Sim,
+        sim_epidemic: Epidemic,
         sim_stats: simulation::SimStats,
     }
 
@@ -199,8 +199,12 @@ fn main() {
 
                     if self.sim.months_to_sim != 0 && self.sim.sim_running {
                         // Updating the sim
-                        if self.sim.people.len() != 0 {
-                            self.sim.update_sim(&mut self.sim_stats);
+
+                        if self.sim.people.len() != 0 { 
+                            self.sim.update_sim(
+                                &mut self.sim_epidemic,
+                                &mut self.sim_stats
+                            );
 
                             self.sim.months_to_sim -= 1;
 
@@ -238,19 +242,19 @@ fn main() {
                     egui::CollapsingHeader
                         ::new(egui::RichText::new(format!("Control epidemic")).size(15.0))
                         .show(ui, |ui| {
-                            self.sim.progress_epidemic = self.better_button(
+                            self.sim_epidemic.progress_epidemic = self.better_button(
                                 ui,
-                                self.sim.progress_epidemic,
+                                self.sim_epidemic.progress_epidemic,
                                 vec!["Epidemic progressing", "No epidemic"]
                             );
-                            if self.sim.progress_epidemic {
-                                if !self.sim.progress_cure {
-                                    self.sim.progress_cure = self.better_button(
+                            if self.sim_epidemic.progress_epidemic {
+                                if !self.sim_epidemic.progress_cure {
+                                    self.sim_epidemic.progress_cure = self.better_button(
                                         ui,
-                                        self.sim.progress_cure,
+                                        self.sim_epidemic.progress_cure,
                                         vec!["", "No cure"]
                                     );
-                                } else if self.sim.epidemic.cure_produced {
+                                } else if self.sim_epidemic.cure_produced {
                                     ui.label(
                                         egui::RichText::new(format!("Cure complete!")).size(15.0)
                                     );
@@ -451,19 +455,6 @@ fn main() {
                     people: vec![],
                     population: -1,
 
-                    epidemic: Box::new(Epidemic {
-                        population_infected: false,
-                        population_cured: false,
-                        cure_produced: false,
-
-                        cure_remaining_time: 100,
-
-                        infection_range: 0.0..0.0,
-                        lethality: 0.0,
-                    }),
-                    progress_epidemic: false,
-                    progress_cure: false,
-
                     sim_running: true,
                     lover_fix: false,
                     months_to_sim: 2400,
@@ -471,6 +462,19 @@ fn main() {
                     start_settings_set: false,
                     start_people_created: false,
                     start_pairs_of_people: 5,
+                },
+                sim_epidemic: Epidemic {
+                    progress_epidemic: false,
+                    progress_cure: false,
+
+                    population_infected: false,
+                    population_cured: false,
+                    cure_produced: false,
+
+                    cure_remaining_time: 100,
+
+                    infection_range: 0.0..0.0,
+                    lethality: 0.0,
                 },
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc

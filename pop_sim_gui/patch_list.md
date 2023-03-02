@@ -50,7 +50,9 @@
 - **O** [23/02/23] Began adding the code structure for more sim stats
 - **O** [25/02/23] Changed code structure further: the code is now split into 2 files
 - **O** [25/02/23] Deprecated *pop_sim_gui_threaded*
-- **O** [27/02/23] Even more code stucture changes
+- **O** [27/02/23] Even more code structure changes
 - **F** [28/02/23] Began adding the structure neede for the epidemic system
 - **F** [28/02/23] Continued with the epidemic system with: epidemic initialization and epidemic ending
-- **F** [27/02/23] Fixed the readme a bit
+- **F** [01/03/23] Fixed the readme a bit
+- **B** [02/03/23] Fixed many issues which occured with the epidemic system
+- **F** [02/03/23] An epidemic can now be started and will automatically stop when nobody is infected
