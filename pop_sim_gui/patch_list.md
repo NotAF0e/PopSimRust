@@ -56,3 +56,6 @@
 - **F** [01/03/23] Fixed the readme a bit
 - **B** [02/03/23] Fixed many issues which occured with the epidemic system
 - **F** [02/03/23] An epidemic can now be started and will automatically stop when nobody is infected
+- **F** [06/03/23] The infection system of the epidemic is complete, now all that remains is a better death system for those who pass and a curing system
+- **F** [06/03/23] Added an end sim button
+- **O** [06/03/23] Reformatted and restructured the code a bit
