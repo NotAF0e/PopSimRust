@@ -252,7 +252,7 @@ fn main() {
                             self.better_button(ui, self.sim.sim_running, vec!["Playing", "Paused"]);
 
                         let mut end_sim = false;
-                        end_sim = self.better_button(ui, end_sim, vec!["End", "Ended"]);
+                        end_sim = self.better_button(ui, end_sim, vec!["", "End simulation"]);
                         if end_sim {
                             self.sim.months_to_sim = 0;
                         }
@@ -288,13 +288,16 @@ fn main() {
                                 );
                             }
 
-                            ui.label(
-                                egui::RichText::new(format!(
-                                    "Epidemic stats: {:#?}",
-                                    self.sim_epidemic
-                                ))
-                                .size(15.0),
-                            );
+                            egui::ScrollArea::vertical()
+                                .max_height(300.0)
+                                .max_width(250.0)
+                                .always_show_scroll(false)
+                                .show(ui, |ui| {
+                                    ui.label(
+                                        egui::RichText::new(format!("{}", self.sim_epidemic))
+                                            .size(15.0),
+                                    );
+                                });
                         }
                     });
 
@@ -317,7 +320,7 @@ fn main() {
 
                     // Plot which shows number of infected people through time
                     egui::Window::new("Plot - Number of infected against months")
-                        .default_pos(Pos2 { x: 107.0, y: 300.0 })
+                        .default_pos(Pos2 { x: 7.0, y: 550.0 })
                         .show(ctx, |ui| {
                             let data: PlotPoints =
                                 PlotPoints::new(self.sim_epidemic.stats.graph_data.clone());
@@ -485,26 +488,7 @@ fn main() {
                     start_people_created: false,
                     start_pairs_of_people: 5,
                 },
-                sim_epidemic: Epidemic {
-                    progress_epidemic: false,
-                    progress_cure: false,
-
-                    population_infected: false,
-                    population_cured: false,
-
-                    cure_remaining_time: 100,
-                    cure_produced: false,
-
-                    infection_range: 0.0..0.0,
-                    r_number: 0,
-                    infectivity: 0.0,
-                    lethality: 0.0,
-
-                    stats: EpidemicPersonStats {
-                        graph_data: vec![],
-                        number_of_infected: 0,
-                    },
-                },
+                sim_epidemic: Epidemic::default(),
 
                 // Checks for spawning Adam and Eve, months, start button, amount of pairs, etc
                 app: AppData {

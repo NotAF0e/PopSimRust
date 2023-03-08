@@ -59,3 +59,4 @@
 - **F** [06/03/23] The infection system of the epidemic is complete, now all that remains is a better death system for those who pass and a curing system
 - **F** [06/03/23] Added an end sim button
 - **O** [06/03/23] Reformatted and restructured the code a bit
+- **F** [08/03/23] I greatly improved the realism of the epidemic sytem and added ui with displays all stats as well as a graph

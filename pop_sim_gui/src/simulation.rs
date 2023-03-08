@@ -119,11 +119,11 @@ impl Sim {
                 let ages = [2, 5, 10, 25, 35, 45, 60, 70, 80, 90];
                 let weights = [5, 5, 25, 55, 75, 105, 135, 1050, 350, 150];
                 let dist = WeightedIndex::new(&weights).unwrap();
-                // println!("{}", ages[dist.sample(&mut rng)]);
+
                 if self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12)
                     && (rand::thread_rng().gen_range(0.0..1.0) > 0.98
-                        || (self.people[id].epidemic.infected
-                            && rand::thread_rng().gen_range(0.0..1.0) > 0.95))
+                        || (self.people[id].epidemic.people_infected > 3
+                            && rand::thread_rng().gen_range(0.0..1.0) > 0.94))
                 {
                     // Handles death of a person
                     self.people[id].age = None;
@@ -157,7 +157,7 @@ impl Sim {
         if epidemic.progress_epidemic {
             epidemic.update_epidemic(self);
         }
-        epidemic.population_infected = epidemic.check_end_epidemic(self);
+        epidemic.population_infected = epidemic.check_end_epidemic();
 
         if self.months_to_sim % 100 == 0 {
             self.fix_lovers();
@@ -237,7 +237,7 @@ impl Sim {
     }
 }
 
-// Epidemic code
+// Epidemic code ----------------------------------------------------------------------------------
 #[derive(Clone, Debug)]
 pub struct Epidemic {
     pub progress_epidemic: bool,
@@ -257,10 +257,64 @@ pub struct Epidemic {
     pub stats: EpidemicPersonStats,
 }
 
+impl Default for Epidemic {
+    fn default() -> Self {
+        Epidemic {
+            progress_epidemic: false,
+            progress_cure: false,
+
+            population_infected: false,
+            population_cured: false,
+
+            cure_remaining_time: 100,
+            cure_produced: false,
+
+            infection_range: 0.0..0.0,
+            r_number: 0,
+            infectivity: 0.0,
+            lethality: 0.0,
+
+            stats: EpidemicPersonStats {
+                sim_state: SimState::NoEpidemic,
+                graph_data: vec![],
+                number_of_infected: 0,
+            },
+        }
+    }
+}
+
+impl std::fmt::Display for Epidemic {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        return write!(
+            f,
+            "{:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}",
+            ("Sim state: ", self.stats.sim_state),
+            ("Number of infected: ", self.stats.number_of_infected),
+            ("Progress epidemic: ", self.progress_epidemic),
+            ("Progress cure: ", self.progress_cure),
+            ("Population infected: ", self.population_infected),
+            ("Population cured: ", self.population_cured),
+            ("Cure remaining time: ", self.cure_remaining_time),
+            ("Cure produced: ", self.cure_produced),
+            ("Infection range: ", &self.infection_range),
+            ("R number: ", self.r_number),
+            ("Infectivity: ", self.infectivity),
+            ("Lethality: ", self.lethality)
+        );
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct EpidemicPersonStats {
+    pub sim_state: SimState,
     pub graph_data: Vec<[f64; 2]>,
     pub number_of_infected: usize,
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum SimState {
+    Infected,
+    NoEpidemic,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -294,7 +348,8 @@ impl Epidemic {
                     let range_l = rng.gen_range(0.0..75.0);
                     let range_r = range_l + rng.gen_range(0.0..25.0);
                     self.infection_range = range_l..range_r;
-                    println!("INFECTED!");
+
+                    self.stats.sim_state = SimState::Infected;
                 }
             }
 
@@ -307,7 +362,6 @@ impl Epidemic {
             {
                 if sim.people[id].epidemic.people_infected < self.r_number.into()
                     && self.infectivity > rng.gen_range(0.0..10.0)
-                // && self.infection_range.contains(&sim.people[id].seed)
                 {
                     sim.people[rng.gen_range(0..sim_mut.people.len())]
                         .epidemic
@@ -328,19 +382,25 @@ impl Epidemic {
 
     pub fn begin_cure(&mut self) {}
 
-    pub fn check_end_epidemic(&mut self, sim: &mut Sim) -> bool {
+    pub fn check_end_epidemic(&mut self) -> bool {
+        let mut rng = rand::thread_rng();
+
+        if !self.progress_epidemic {
+            self.r_number = rng.gen_range(1..15);
+            self.infectivity = rng.gen_range(0.0..10.0);
+
+            let range_l = rng.gen_range(0.0..75.0);
+            let range_r = range_l + rng.gen_range(0.0..25.0);
+            self.infection_range = range_l..range_r;
+        }
         // Stops epidemic if nobody is infected
-        if sim
-            .people
-            .iter()
-            .all(|person| person.epidemic.infected == false)
-            && !self.progress_epidemic
-        {
+        if self.stats.number_of_infected == 0 {
             self.population_infected = false;
             self.population_cured = false;
             self.progress_epidemic = false;
             self.progress_cure = false;
-            println!("EPIDEMIC END!");
+
+            self.stats.sim_state = SimState::NoEpidemic;
             return false;
         } else {
             return true;
