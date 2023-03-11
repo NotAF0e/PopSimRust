@@ -60,3 +60,6 @@
 - **F** [06/03/23] Added an end sim button
 - **O** [06/03/23] Reformatted and restructured the code a bit
 - **F** [08/03/23] I greatly improved the realism of the epidemic sytem and added ui with displays all stats as well as a graph
+- **O** [11/03/23] Removed a non-needed crate from
+- **F** [11/03/23] Increased the realism of epidemics and began adding curing
+- **B** [11/03/23] Fixed an issue with the epidemic system which stopped the whole population from becoming infected after some died
