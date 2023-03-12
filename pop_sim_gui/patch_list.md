@@ -1,8 +1,8 @@
-# **Format of patch_list.md:**
+# **Format of patch_list.md: **
 
 - type [ Date ] Feature/Fix info
 
-## **Types:**
+## **Types: **
 
 - **B**: Bug fix
 - **F**: Feature addition
@@ -11,7 +11,7 @@
 ---
 **These are changes regarding: *pop_sim_gui*!**
 
-## **Actual file:**
+## **Actual file: **
 
 - **O** [07/11/23] Added *patch_list.md* to *pop_sim_gui*
 - **B** [07/11/23] Person table will no longer show will a population of 0
@@ -20,7 +20,7 @@
 - **O** [07/11/23] Added *male_names.txt* and *female_names.txt* to *pop_sim_gui*
 - **F** [07/11/23] People are now given a random name from either *male_names.txt* or *female_names.txt* on birth dependent on their sex
 - **O** [10/11/23] Formatted all of *pop_sim_gui/main.rs*
-- **O** [17/01/23] Added todo to *pop_sim_gui/main.rs*
+- **O** [17/01/23] Added to-do to *pop_sim_gui/main.rs*
 - **B** [18/01/23] Fixed people not spawning in set pairs
 - **O** [18/01/23] Changed code structure for easier programming
 - **F** [18/01/23] Added temporary close table button as it was causing performance issues
@@ -37,7 +37,7 @@
 - **O** [01/02/23] Streamlined the code a bit
 - **F** [01/02/23] Added simulation end window
 - **F** [07/02/23] Began adding the random death causes system
-- **O** [07/02/23] Removed imigration system as it was causing many issues
+- **O** [07/02/23] Removed immigration system as it was causing many issues
 - **B** [07/02/23] Finally fixed a lover check and remove bug which has been plaguing the project for a month
 
 - **F** [19/02/23] Added a button which disables the lover check fix as it is incredibly badly optimised
@@ -51,15 +51,16 @@
 - **O** [25/02/23] Changed code structure further: the code is now split into 2 files
 - **O** [25/02/23] Deprecated *pop_sim_gui_threaded*
 - **O** [27/02/23] Even more code structure changes
-- **F** [28/02/23] Began adding the structure neede for the epidemic system
+- **F** [28/02/23] Began adding the structure needed for the epidemic system
 - **F** [28/02/23] Continued with the epidemic system with: epidemic initialization and epidemic ending
 - **F** [01/03/23] Fixed the readme a bit
-- **B** [02/03/23] Fixed many issues which occured with the epidemic system
+- **B** [02/03/23] Fixed many issues which occurred with the epidemic system
 - **F** [02/03/23] An epidemic can now be started and will automatically stop when nobody is infected
 - **F** [06/03/23] The infection system of the epidemic is complete, now all that remains is a better death system for those who pass and a curing system
 - **F** [06/03/23] Added an end sim button
 - **O** [06/03/23] Reformatted and restructured the code a bit
-- **F** [08/03/23] I greatly improved the realism of the epidemic sytem and added ui with displays all stats as well as a graph
+- **F** [08/03/23] I greatly improved the realism of the epidemic system and added ui with displays all stats as well as a graph
 - **O** [11/03/23] Removed a non-needed crate from
 - **F** [11/03/23] Increased the realism of epidemics and began adding curing
 - **B** [11/03/23] Fixed an issue with the epidemic system which stopped the whole population from becoming infected after some died
+- **F** [12/03/23] Further fixed the above issue with rebalancing of values
