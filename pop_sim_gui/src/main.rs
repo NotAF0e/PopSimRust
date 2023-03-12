@@ -2,12 +2,12 @@
 
 // TODO:
 // ---------------------------------------------------
-// -[] *When these ↓ todos are complete we in beta ver!!!*
+// -[/] *When these ↓ todos are complete we in beta ver!!!*
 //
-// -[] More start settings and better start screen
-// -[] Better sim screen
+// -[x] More start settings and better start screen
+// -[x] Better sim screen
 // -[x] More stat tracking for end screen
-// -[] Epidemics
+// -[/] Epidemics
 // ---------------------------------------------------
 
 // #![windows_subsystem = "windows"] // Disables terminal on windows machines
@@ -232,6 +232,7 @@ fn main() {
                         egui::RichText::new(format!("Population: {}", self.sim.people.len()))
                             .size(125.0),
                     );
+
                     ui.label(
                         egui::RichText::new(format!(
                             "Months Passed: {}",
@@ -239,46 +240,76 @@ fn main() {
                         ))
                         .size(25.0),
                     );
+
                     ui.label(
                         egui::RichText::new(format!("Months left: {}", self.sim.months_to_sim))
                             .size(15.0),
                     );
 
-                    egui::CollapsingHeader::new(
-                        egui::RichText::new(format!("Sim screen options")).size(15.0),
-                    )
-                    .show(ui, |ui| {
-                        self.sim.sim_running =
-                            self.better_button(ui, self.sim.sim_running, vec!["Playing", "Paused"]);
+                    self.sim.sim_running =
+                        self.better_button(ui, self.sim.sim_running, vec!["Playing", "Paused"]);
 
-                        let mut end_sim = false;
-                        end_sim = self.better_button(ui, end_sim, vec!["", "End simulation"]);
-                        if end_sim {
-                            self.sim.months_to_sim = 0;
-                        }
+                    let mut end_sim = false;
+                    end_sim = self.better_button(ui, end_sim, vec!["", "End simulation"]);
+                    if end_sim {
+                        self.sim.months_to_sim = 0;
+                    }
 
-                        self.app.table_shown = self.better_button(
-                            ui,
-                            self.app.table_shown,
-                            vec!["Table enabled", "Table disabled"],
-                        );
-                    });
+                    self.app.table_shown = self.better_button(
+                        ui,
+                        self.app.table_shown,
+                        vec!["Table enabled", "Table disabled"],
+                    );
 
                     egui::CollapsingHeader::new(
                         egui::RichText::new(format!("Control epidemic")).size(15.0),
                     )
                     .show(ui, |ui| {
+                        if !self.sim_epidemic.progress_epidemic {
+                            egui::Grid::new("epidemic_settings").show(ui, |ui| {
+                                ui.label(egui::RichText::new(format!(
+                                    "Number of people to infect(1 - 100):"
+                                )));
+                                ui.add(
+                                    egui::DragValue::new(
+                                        &mut self.sim_epidemic.start_vals.num_of_people_to_infect,
+                                    )
+                                    .clamp_range(RangeInclusive::new(1, 100)),
+                                );
+                                ui.end_row();
+
+                                ui.label(egui::RichText::new(format!("R number(0 - 20):")));
+                                ui.add(
+                                    egui::DragValue::new(
+                                        &mut self.sim_epidemic.start_vals.r_number,
+                                    )
+                                    .clamp_range(RangeInclusive::new(0, 20)),
+                                );
+                                ui.end_row();
+
+                                ui.label(egui::RichText::new(format!("Infectivity(0 - 1000):")));
+                                ui.add(
+                                    egui::DragValue::new(
+                                        &mut self.sim_epidemic.start_vals.infectivity,
+                                    )
+                                    .clamp_range(RangeInclusive::new(0.0, 1000.0)),
+                                );
+                                ui.end_row();
+                            });
+                        }
+
                         self.sim_epidemic.progress_epidemic = self.better_button(
                             ui,
                             self.sim_epidemic.progress_epidemic,
-                            vec!["Epidemic progressing", "No epidemic"],
+                            vec!["Epidemic progressing", "Begin epidemic"],
                         );
+
                         if self.sim_epidemic.progress_epidemic {
                             if !self.sim_epidemic.progress_cure {
                                 self.sim_epidemic.progress_cure = self.better_button(
                                     ui,
                                     self.sim_epidemic.progress_cure,
-                                    vec!["", "No cure"],
+                                    vec!["", "Begin cure"],
                                 );
                             } else if self.sim_epidemic.cure_produced {
                                 ui.label(egui::RichText::new(format!("Cure complete!")).size(15.0));
@@ -303,7 +334,7 @@ fn main() {
 
                     // Plot which shows population through time
                     egui::Window::new("Plot - Population against months")
-                        .default_pos(Pos2 { x: 7.0, y: 300.0 })
+                        .default_pos(Pos2 { x: 200.0, y: 400.0 })
                         .show(ctx, |ui| {
                             let data: PlotPoints =
                                 PlotPoints::new(self.sim_stats.graph_data.clone());
@@ -319,21 +350,23 @@ fn main() {
                         });
 
                     // Plot which shows number of infected people through time
-                    egui::Window::new("Plot - Number of infected against months")
-                        .default_pos(Pos2 { x: 7.0, y: 550.0 })
-                        .show(ctx, |ui| {
-                            let data: PlotPoints =
-                                PlotPoints::new(self.sim_epidemic.stats.graph_data.clone());
-                            let line = Line::new(data);
-                            Plot::new("plot")
-                                .view_aspect(2.0)
-                                .allow_drag(false)
-                                .allow_scroll(false)
-                                .allow_zoom(false)
-                                .allow_boxed_zoom(false)
-                                .allow_double_click_reset(false)
-                                .show(ui, |plot_ui| plot_ui.line(line));
-                        });
+                    if self.sim_epidemic.progress_epidemic {
+                        egui::Window::new("Plot - Number of infected against months")
+                            .default_pos(Pos2 { x: 7.0, y: 550.0 })
+                            .show(ctx, |ui| {
+                                let data: PlotPoints =
+                                    PlotPoints::new(self.sim_epidemic.stats.graph_data.clone());
+                                let line = Line::new(data);
+                                Plot::new("plot")
+                                    .view_aspect(2.0)
+                                    .allow_drag(false)
+                                    .allow_scroll(false)
+                                    .allow_zoom(false)
+                                    .allow_boxed_zoom(false)
+                                    .allow_double_click_reset(false)
+                                    .show(ui, |plot_ui| plot_ui.line(line));
+                            });
+                    }
 
                     // A table with all the people in the simulation
                     if self.app.table_shown {
@@ -390,6 +423,7 @@ fn main() {
                                 );
                         });
                     }
+
                     // Frame time calculations
                     self.app.frame_time = self.app.frame_start.elapsed();
                     self.app.all_frame_times += self.app.frame_start.elapsed();
@@ -422,35 +456,20 @@ fn main() {
                         egui::RichText::new(format!("-Population: {}", self.sim.people.len()))
                             .size(30.0),
                     );
+
                     ui.label(
                         egui::RichText::new(format!(
-                            "-Months Passed: {}",
-                            self.sim.start_months - self.sim.months_to_sim
-                        ))
-                        .size(25.0),
-                    );
-                    ui.label(
-                        egui::RichText::new(format!(
-                            "-Total people that ever existed: {}",
-                            self.sim_stats.people_born + self.sim_stats.people_dead
-                        ))
-                        .size(25.0),
-                    );
-                    ui.label(
-                        egui::RichText::new(format!(
-                            "-Total ever born: {}",
-                            self.sim_stats.people_born
-                        ))
-                        .size(25.0),
-                    );
-                    ui.label(
-                        egui::RichText::new(format!(
-                            "-Total ever dead: {}",
+                            "-Months Passed: {}\n
+                            -Total people that ever existed: {}\n
+                            -Total ever born: {}\n
+                            -Total ever dead: {}",
+                            self.sim.start_months - self.sim.months_to_sim,
+                            self.sim_stats.people_born + self.sim_stats.people_dead,
+                            self.sim_stats.people_born,
                             self.sim_stats.people_dead
                         ))
                         .size(25.0),
                     );
-
                     ui.separator();
                     ui.label(
                         egui::RichText::new(format!("Application stats:"))
@@ -465,8 +484,6 @@ fn main() {
                         .size(25.0),
                     );
                 }
-
-                // println!("{:?}", self.sim_data.people);
 
                 ctx.request_repaint();
             });
