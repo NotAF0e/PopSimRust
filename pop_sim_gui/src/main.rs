@@ -7,7 +7,7 @@
 // -[x] More start settings and better start screen
 // -[x] Better sim screen
 // -[x] More stat tracking for end screen
-// -[/] Epidemics
+// -[/] Epidemics: Infection [x], Curing [ ]
 // ---------------------------------------------------
 
 // #![windows_subsystem = "windows"] // Disables terminal on windows machines
@@ -459,18 +459,34 @@ fn main() {
 
                     ui.label(
                         egui::RichText::new(format!(
-                            "-Months Passed: {}\n
-                            -Total people that ever existed: {}\n
-                            -Total ever born: {}\n
-                            -Total ever dead: {}",
+                            "-Months Passed: {}",
                             self.sim.start_months - self.sim.months_to_sim,
+                        ))
+                        .size(25.0),
+                    );
+                    ui.label(
+                        egui::RichText::new(format!(
+                            "-Total people that ever existed: {}",
                             self.sim_stats.people_born + self.sim_stats.people_dead,
+                        ))
+                        .size(25.0),
+                    );
+                    ui.label(
+                        egui::RichText::new(format!(
+                            "-Total ever born: {}",
                             self.sim_stats.people_born,
+                        ))
+                        .size(25.0),
+                    );
+                    ui.label(
+                        egui::RichText::new(format!(
+                            "-Total ever dead: {}",
                             self.sim_stats.people_dead
                         ))
                         .size(25.0),
                     );
                     ui.separator();
+                    
                     ui.label(
                         egui::RichText::new(format!("Application stats:"))
                             .size(45.0)

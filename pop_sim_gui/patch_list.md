@@ -64,4 +64,5 @@
 - **F** [11/03/23] Increased the realism of epidemics and began adding curing
 - **B** [11/03/23] Fixed an issue with the epidemic system which stopped the whole population from becoming infected after some died
 - **F** [12/03/23] Further fixed the above issue with rebalancing of values
-- **F** [12/03/23] Users can now customise the start of the simulation with different sliders
+- **F** [13/03/23] Users can now customise the start of the simulation with different sliders
+- **B** [15/03/23] Fixed an ui formatting issue
