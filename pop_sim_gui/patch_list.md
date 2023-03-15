@@ -66,3 +66,5 @@
 - **F** [12/03/23] Further fixed the above issue with rebalancing of values
 - **F** [13/03/23] Users can now customise the start of the simulation with different sliders
 - **B** [15/03/23] Fixed an ui formatting issue
+- **F** [15/03/23] Began adding the curing system
+- **F** [15/03/23] Added most of the lethality system

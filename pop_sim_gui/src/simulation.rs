@@ -120,9 +120,10 @@ impl Sim {
                 let dist = WeightedIndex::new(&weights).unwrap();
 
                 if self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12)
-                    && (rand::thread_rng().gen_range(0.0..1.0) > 0.98
-                        || (self.people[id].epidemic.people_infected > 2
-                            && rand::thread_rng().gen_range(0.0..1.0) > 0.95))
+                    && rand::thread_rng().gen_range(0.0..1.0) > 0.98
+                    || (self.people[id].epidemic.infected
+                        && self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12)
+                        && rand::thread_rng().gen_range(0.0..1.0) > 0.98)
                 {
                     // Handles death of a person
                     self.people[id].age = None;
@@ -134,7 +135,8 @@ impl Sim {
 
                 // Creating babies
                 if self.people[id].age > Some(12 * 12)
-                    && !self.people[id].epidemic.infected
+                    && !(self.people[id].epidemic.infected
+                        && (epidemic.lethality > 1.0 || rand::thread_rng().gen_bool(0.0)))
                     && self.people[id].lover != None
                 {
                     // Divide top range buy 12 to get amount of average days that a woman can reproduce for
@@ -288,6 +290,7 @@ impl Default for Epidemic {
                 num_of_people_to_infect: 0,
                 r_number: 0,
                 infectivity: 0.0,
+                lethality: 0.0,
             },
         }
     }
@@ -297,9 +300,10 @@ impl std::fmt::Display for Epidemic {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         return write!(
             f,
-            "{:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}",
+            "{:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}\n {:?}",
             ("Sim state: ", self.stats.sim_state),
             ("Number of infected: ", self.stats.number_of_infected),
+            ("Number of cured: ", self.stats.number_of_cured),
             ("Progress epidemic: ", self.progress_epidemic),
             ("Progress cure: ", self.progress_cure),
             ("Cure remaining time: ", self.cure_remaining_time),
@@ -324,6 +328,7 @@ pub struct EpidemicStartVals {
     pub num_of_people_to_infect: i16,
     pub r_number: i8,
     pub infectivity: f32,
+    pub lethality: f32,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -380,6 +385,7 @@ impl Epidemic {
 
         let mut people_to_infect = start_params.num_of_people_to_infect;
         start_params.infectivity /= 1000.0;
+        start_params.lethality /= 20.0;
 
         for id in 0..sim.people.len() {
             if !sim.people[id].epidemic.infected {
@@ -398,6 +404,7 @@ impl Epidemic {
 
                     self.r_number = start_params.r_number;
                     self.infectivity = start_params.infectivity;
+                    self.lethality = start_params.lethality;
 
                     self.stats.sim_state = EpidemicSimState::Infected;
                     people_to_infect -= 1;
@@ -428,18 +435,24 @@ impl Epidemic {
         let mut rng = rand::thread_rng();
 
         if self.progress_cure {
-            if self.cure_remaining_time == 0.0 {
+            if self.cure_remaining_time <= 0.0 {
                 self.cure_produced = true;
             } else {
-                self.cure_remaining_time -= 0.01;
+                self.cure_remaining_time -= 1.0;
             }
 
-            if self.stats.number_of_cured == 0 && self.cure_produced {
-                let person_to_cure = rng.gen_range(0..sim.people.len());
+            if self.cure_produced {
+                let cures_in_a_month = 5;
+                
+                for _ in 0..=cures_in_a_month {
+                    let person_to_cure = rng.gen_range(0..sim.people.len());
 
-                if !sim.people[person_to_cure].epidemic.cured {
-                    sim.people[person_to_cure].epidemic.cured = true;
+                    if !sim.people[person_to_cure].epidemic.cured {
+                        sim.people[person_to_cure].epidemic.infected = false;
+                        sim.people[person_to_cure].epidemic.cured = true;
+                    }
                 }
+                
             }
         }
 

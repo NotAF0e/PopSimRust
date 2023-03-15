@@ -295,6 +295,14 @@ fn main() {
                                     .clamp_range(RangeInclusive::new(0.0, 1000.0)),
                                 );
                                 ui.end_row();
+                                ui.label(egui::RichText::new(format!("Lethality(0 - 100):")));
+                                ui.add(
+                                    egui::DragValue::new(
+                                        &mut self.sim_epidemic.start_vals.lethality,
+                                    )
+                                    .clamp_range(RangeInclusive::new(0.0, 100.0)),
+                                );
+                                ui.end_row();
                             });
                         }
 
