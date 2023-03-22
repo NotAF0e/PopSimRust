@@ -1,7 +1,7 @@
 // This module handles the simulation aspect of PopSim
 
 use rand::{
-    distributions::{Distribution, WeightedIndex},
+    distributions::{Distribution, Uniform, WeightedIndex},
     seq::IteratorRandom,
     thread_rng, Rng,
 };
@@ -84,30 +84,34 @@ impl Sim {
     }
 
     pub fn update_sim(&mut self, epidemic: &mut Epidemic, sim_stats: &mut SimStats) {
+        let rng = &mut rand::thread_rng();
+        let percentage_dist = Uniform::new(0.0, 100.0);
+
         // Stat check vairables
         let mut born = 0;
         let mut dead = 0;
+
+        // Death weights
+        let ages = [1, 5, 10, 25, 35, 45, 60, 70, 80, 90];
+        let weights = [3, 2, 25, 55, 75, 105, 340, 7050, 350, 150];
+        let ages_dist = WeightedIndex::new(&weights).unwrap();
 
         // Main sim loop (1 month of calculations)
         for id in 0..self.people.len() {
             if self.people[id].age != None {
                 // Ages all people by 1 month
-                self.people[id].age = Some(self.people[id].age.unwrap_or(0) + 1);
-
-                // println!("{:?}", people_temp);
+                self.people[id].age = Some(self.people[id].age.map(|age| age + 1).unwrap());
 
                 // Chooses people what will have babies
                 if self.people[id].lover == None && self.people[id].age > Some(12 * 12) {
                     // Creates a random number to chose a lover for person
-                    let lover = rand::thread_rng().gen_range(0..self.people.len());
-
-                    // println!("{}", lover);
+                    let lover = rng.gen_range(0..self.people.len());
 
                     // If the person is not the lover and if the person does not have a lover one is given
                     if lover != id
                         && self.people[lover].lover == None
                         && self.people[id].sex != self.people[lover].sex
-                        && rand::thread_rng().gen_range(0.0..100.0) >= 95.0
+                        && percentage_dist.sample(rng) >= 95.0
                     {
                         self.people[id].lover = Some(self.people[lover].id);
                         self.people[lover].lover = Some(self.people[id].id);
@@ -115,15 +119,12 @@ impl Sim {
                 }
 
                 // Changes id to -1 for people who will be killed/removed from vec
-                let ages = [2, 5, 10, 25, 35, 45, 60, 70, 80, 90];
-                let weights = [5, 5, 25, 55, 75, 105, 135, 1050, 350, 150];
-                let dist = WeightedIndex::new(&weights).unwrap();
-
-                if self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12)
-                    && rand::thread_rng().gen_range(0.0..1.0) > 0.98
+                if self.people[id].age > Some(ages[ages_dist.sample(&mut thread_rng())] * 12)
+                    && percentage_dist.sample(rng) > 98.0
                     || (self.people[id].epidemic.infected
-                        && self.people[id].age > Some(ages[dist.sample(&mut thread_rng())] * 12)
-                        && rand::thread_rng().gen_range(0.0..1.0) > 0.98)
+                        && self.people[id].age
+                            > Some(ages[ages_dist.sample(&mut thread_rng())] * 12)
+                        && percentage_dist.sample(rng) > 98.0 - (epidemic.lethality * 2.0))
                 {
                     // Handles death of a person
                     self.people[id].age = None;
@@ -131,28 +132,28 @@ impl Sim {
                     dead += 1;
                 }
 
-                // println!("{}", self.people.len());
+                let epidemic_birth_check = epidemic.progress_epidemic
+                    && self.people[id].epidemic.infected
+                    && rng.gen_bool((epidemic.lethality).into());
 
                 // Creating babies
-                if self.people[id].age > Some(12 * 12)
-                    && !(self.people[id].epidemic.infected
-                        && (epidemic.lethality > 1.0 || rand::thread_rng().gen_bool(0.0)))
-                    && self.people[id].lover != None
-                {
-                    // Divide top range buy 12 to get amount of average days that a woman can reproduce for
-                    let baby_chance = rand::thread_rng().gen_range(0.0..350.0);
-                    if baby_chance <= self.people[id].fertility {
-                        // Creates a baby!!!
-                        let sex: Sex = if rand::random::<f32>() < 0.5 {
-                            Sex::Male
-                        } else {
-                            Sex::Female
-                        };
+                if self.people[id].age > Some(15 * 12) && self.people[id].lover != None {
+                    if !epidemic_birth_check {
+                        // Divide top range by 12 to get amount of average days that a woman can reproduce for
+                        let baby_chance = rng.gen_range(0.0..350.0);
+                        if baby_chance <= self.people[id].fertility {
+                            // Creates a baby!!!
+                            let sex: Sex = if rand::random::<f32>() < 0.5 {
+                                Sex::Male
+                            } else {
+                                Sex::Female
+                            };
 
-                        let john: Person = self.create_person(sex);
+                            let john: Person = self.create_person(sex);
 
-                        self.people.push(john);
-                        born += 1;
+                            self.people.push(john);
+                            born += 1;
+                        }
                     }
                 }
             }
@@ -212,7 +213,7 @@ impl Sim {
             if self.lover_fix && self.people[id].age != None {
                 // Set the lover as None in person.lover if they are dead
                 // THIS IS A VERY INEFFICIENT CHECK
-                if Some(self.people[id].age.unwrap() * 12) > Some(12 * 12) {
+                if Some(self.people[id].age.unwrap() * 12) > Some(15 * 12) {
                     for person in self.people.clone().into_iter() {
                         if self.people[id].lover.is_some()
                             && Some(person.id) == self.people[id].lover
@@ -385,7 +386,7 @@ impl Epidemic {
 
         let mut people_to_infect = start_params.num_of_people_to_infect;
         start_params.infectivity /= 1000.0;
-        start_params.lethality /= 20.0;
+        start_params.lethality /= 100.0;
 
         for id in 0..sim.people.len() {
             if !sim.people[id].epidemic.infected {
@@ -443,7 +444,7 @@ impl Epidemic {
 
             if self.cure_produced {
                 let cures_in_a_month = 5;
-                
+
                 for _ in 0..=cures_in_a_month {
                     let person_to_cure = rng.gen_range(0..sim.people.len());
 
@@ -452,7 +453,6 @@ impl Epidemic {
                         sim.people[person_to_cure].epidemic.cured = true;
                     }
                 }
-                
             }
         }
 

@@ -10,7 +10,7 @@
 // -[/] Epidemics: Infection [x], Curing [ ]
 // ---------------------------------------------------
 
-// #![windows_subsystem = "windows"] // Disables terminal on windows machines
+#![windows_subsystem = "windows"] // Disables terminal on windows machines
 
 use crate::simulation::*;
 mod simulation;

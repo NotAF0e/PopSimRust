@@ -68,3 +68,4 @@
 - **B** [15/03/23] Fixed an ui formatting issue
 - **F** [15/03/23] Began adding the curing system
 - **F** [15/03/23] Added most of the lethality system
+- **F** [22/03/23] Completed the lethality system and improved the life expectancy weighted ages
