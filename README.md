@@ -1,5 +1,5 @@
 ![alt text](https://github.com/NotAF0e/PopSimRust/blob/master/pop_sim_gui/PopSimLogo.png)
-
+# This project is now complete!!!
 ## An infinitely unfinished population simulator
 
 A GUI population simulator built in rust for the sake of speed.
